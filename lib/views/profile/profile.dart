@@ -1,0 +1,289 @@
+import '../widgets/hex_text.dart';
+import 'all_versions.dart';
+import 'edit.dart';
+import 'history.dart';
+import 'password.dart';
+import 'posts.dart';
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.primaryBG,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.topRight,
+              children: [
+                Image.asset('cover'.png),
+                Positioned(
+                  right: 0,
+                  left: 0,
+                  bottom: -54.h,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          CircleAvatar(
+                            radius: 57.h,
+                            backgroundColor: Colors.white,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(73.h),
+                              child: Image.asset(
+                                'placeholder'.png,
+                                height: 107.h,
+                                width: 107.h,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 62.h),
+            HexText(
+              '@Chinwo4Christ007',
+              fontSize: 16.sp,
+              align: TextAlign.center,
+              color: AppColors.primary,
+              fontWeight: FontWeight.w700,
+            ),
+            SizedBox(height: 21.h),
+            IntrinsicHeight(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          HexText(
+                            '5',
+                            fontSize: 16.sp,
+                            color: AppColors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          HexText(
+                            ' Creators',
+                            fontSize: 16.sp,
+                            color: AppColors.black,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      HexText(
+                        'Follow',
+                        fontSize: 16.sp,
+                        color: AppColors.grey200,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 60.h),
+                    child: VerticalDivider(
+                      color: const Color(0xffA0A0A0),
+                      width: 0,
+                      thickness: 1.h,
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          HexText(
+                            '5',
+                            fontSize: 16.sp,
+                            color: AppColors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          HexText(
+                            ' Topics',
+                            fontSize: 16.sp,
+                            color: AppColors.black,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      HexText(
+                        'Following',
+                        fontSize: 16.sp,
+                        color: AppColors.grey200,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 52.h),
+            ListView.separated(
+              separatorBuilder: (_, __) => Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.h),
+                child: Divider(
+                  height: 0.h,
+                  thickness: 1.h,
+                  color: const Color(0xffE6E6E6),
+                ),
+              ),
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemCount: all.length,
+              itemBuilder: (c, i) {
+                return InkWell(
+                  onTap: () {
+                    if (all[i].first == 'Log out') {
+                      showModalBottomSheet(
+                        backgroundColor: Colors.white,
+                        context: context,
+                        isScrollControlled: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(50.h),
+                            topLeft: Radius.circular(50.h),
+                          ),
+                        ),
+                        builder: (c) {
+                          return const LogoutDialog();
+                        },
+                      );
+                    } else {
+                      push(context, all[i].last);
+                    }
+                  },
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 25.h, horizontal: 25.h),
+                    child: Row(
+                      children: [
+                        Image.asset('p$i'.png, height: 24.h),
+                        SizedBox(width: 30.h),
+                        HexText(
+                          all[i].first,
+                          fontSize: 16.sp,
+                          color: all[i].first == 'Log out'
+                              ? AppColors.red
+                              : AppColors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        const Spacer(),
+                        SizedBox(width: 8.h),
+                        if (i != 6) Image.asset('go'.png, height: 24.h)
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<List> get all => [
+        ['Edit Profile', const EditProfileScreen()],
+        ['Preferred Bible Translation', const AllVersionScreen()],
+        ['History', const HistoryScreen()],
+        ['My Posts', const MyPostsScreen()],
+        ['My Tips', const MyPostsScreen()],
+        ['Change Password', const ChangePasswordScreen()],
+        ['Log out']
+      ];
+}
+
+class LogoutDialog extends StatelessWidget {
+  const LogoutDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 25.h),
+      physics: const ClampingScrollPhysics(),
+      children: [
+        Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: HexText(
+                'Logout',
+                fontSize: 14.sp,
+                align: TextAlign.center,
+                color: AppColors.black,
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  'close'.png,
+                  height: 24.h,
+                  width: 24.h,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 30.h),
+          child: HexText(
+            'Are you sure you want to logout?',
+            fontSize: 16.sp,
+            align: TextAlign.center,
+            color: AppColors.black,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        HexButton(
+          'Logout',
+          buttonColor: AppColors.primary,
+          height: 55,
+          safeArea: false,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w400,
+          textColor: AppColors.white,
+          borderColor: AppColors.primary,
+          borderRadius: 10.h,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        SizedBox(height: 20.h),
+        HexButton(
+          'Cancel',
+          buttonColor: AppColors.white,
+          height: 55,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w400,
+          textColor: AppColors.red,
+          borderColor: AppColors.grey,
+          borderRadius: 10.h,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+  }
+}
