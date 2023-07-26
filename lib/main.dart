@@ -1,5 +1,5 @@
+import 'package:hexcelon/views/auth/onboard_view.dart';
 import 'package:hexcelon/views/create/media.dart';
-import 'package:hexcelon/views/home/main_layout.dart';
 
 import 'core/models/navigator.dart';
 import 'core/storage/local_storage.dart';
@@ -14,7 +14,6 @@ Future<void> main() async {
   await AppCache.init(); //Initialize Hive
   cameras = await availableCameras();
 
-  print(cameras);
   await GlobalConfiguration().loadFromAsset('.config');
   runApp(const App());
 }
@@ -37,7 +36,7 @@ class App extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         navigatorKey: AppNavigator.navKey,
-        home: const MainLayout(),
+        home: const OnboardScreen(),
       ), // AgentMainLayout ClientMainLayout
     );
   }

@@ -1,3 +1,10 @@
+import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+import 'package:hexcelon/views/create/create.dart';
+import 'package:image_editor_plus/image_editor_plus.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import '../widgets/hex_text.dart';
 
 class ChooseMediaScreen extends StatefulWidget {
@@ -15,125 +22,240 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff191919),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(25.h),
-          child: Column(
+      body: Stack(
+        children: [
+          currentIndex == 0 ? const AudioRecorder() : const PhotoCamera(),
+          Column(
             children: [
-              Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Image.asset(
-                      'close'.png,
-                      height: 24.h,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const Spacer(),
-                  InkWell(
-                    onTap: () {},
-                    child: Image.asset(
-                      'flash'.png,
-                      height: 24.h,
-                    ),
-                  ),
-                  SizedBox(width: 30.h),
-                  InkWell(
-                    onTap: () {},
-                    child: Image.asset(
-                      'turn'.png,
-                      height: 24.h,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 37.h),
-              const PhotoCamera(),
-              SizedBox(height: 20.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      currentIndex = 0;
-                      setState(() {});
-                    },
-                    child: HexText(
-                      'Audio',
-                      fontSize: 16.sp,
-                      color: currentIndex == 0 ? Colors.white : Colors.grey,
-                      align: TextAlign.center,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 35.h),
-                  InkWell(
-                    onTap: () {
-                      currentIndex = 1;
-                      setState(() {});
-                    },
-                    child: HexText(
-                      'Photo',
-                      fontSize: 16.sp,
-                      color: currentIndex == 1 ? Colors.white : Colors.grey,
-                      align: TextAlign.center,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 35.h),
-                  InkWell(
-                    onTap: () {
-                      currentIndex = 2;
-                      setState(() {});
-                    },
-                    child: HexText(
-                      'Video',
-                      fontSize: 16.sp,
-                      color: currentIndex == 2 ? Colors.white : Colors.grey,
-                      align: TextAlign.center,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20.h),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset('take'.png, height: 65.h),
-                  Row(
+              Container(
+                color: const Color(0xff191919),
+                padding: EdgeInsets.all(25.h),
+                child: SafeArea(
+                  bottom: false,
+                  child: Column(
                     children: [
-                      const Expanded(child: SizedBox()),
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.only(left: 58.h),
-                          child: Image.asset('pick'.png, height: 33.h),
-                        ),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Image.asset(
+                              'close'.png,
+                              height: 24.h,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const Spacer(),
+                          InkWell(
+                            onTap: () {
+                              _cameraController?.setFlashMode(FlashMode.always);
+                            },
+                            child: Image.asset(
+                              'flash'.png,
+                              height: 24.h,
+                            ),
+                          ),
+                          SizedBox(width: 30.h),
+                          InkWell(
+                            onTap: () {
+                              if (_cameraController?.description ==
+                                  cameras[0]) {
+                                _cameraController?.setDescription(cameras[1]);
+                              } else {
+                                _cameraController?.setDescription(cameras[0]);
+                              }
+                            },
+                            child: Image.asset(
+                              'turn'.png,
+                              height: 24.h,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
+                    ],
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Container(
+                color: const Color(0xff191919),
+                padding: EdgeInsets.symmetric(horizontal: 25.h),
+                child: SafeArea(
+                  top: false,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              currentIndex = 0;
+                              setState(() {});
+                            },
+                            child: HexText(
+                              'Audio',
+                              fontSize: 16.sp,
+                              color: currentIndex == 0
+                                  ? Colors.white
+                                  : Colors.grey,
+                              align: TextAlign.center,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 35.h),
+                          InkWell(
+                            onTap: () {
+                              currentIndex = 1;
+                              setState(() {});
+                            },
+                            child: HexText(
+                              'Photo',
+                              fontSize: 16.sp,
+                              color: currentIndex == 1
+                                  ? Colors.white
+                                  : Colors.grey,
+                              align: TextAlign.center,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 35.h),
+                          InkWell(
+                            onTap: () {
+                              currentIndex = 2;
+                              setState(() {});
+                            },
+                            child: HexText(
+                              'Video',
+                              fontSize: 16.sp,
+                              color: currentIndex == 2
+                                  ? Colors.white
+                                  : Colors.grey,
+                              align: TextAlign.center,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20.h),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          GestureDetector(
+                            onTapUp: (a) {
+                              _childColor = null;
+                              setState(() {});
+                              takePicture().then((File? file) async {
+                                if (mounted) {
+                                  final editedImage = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ImageEditor(
+                                        image: file!.readAsBytesSync(),
+                                      ),
+                                    ),
+                                  );
+                                  if (editedImage != null) {
+                                    push(context, CreatePostScreen());
+                                  }
+                                }
+                              });
+                            },
+                            onTapDown: (a) {
+                              _childColor = Colors.grey;
+                              setState(() {});
+                            },
+                            child: Image.asset(
+                              'take'.png,
+                              height: 65.h,
+                              color: _childColor,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              const Expanded(child: SizedBox()),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.only(left: 58.h),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      final XFile? file = await ImagePicker()
+                                          .pickImage(
+                                              source: ImageSource.gallery);
+                                      if (file != null) {
+                                        final editedImage =
+                                            await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ImageEditor(
+                                              image: File(file.path)
+                                                  .readAsBytesSync(),
+                                            ),
+                                          ),
+                                        );
+                                        if (editedImage != null) {
+                                          push(context, CreatePostScreen());
+                                        }
+                                      }
+                                    },
+                                    child: Image.asset(
+                                      'pick'.png,
+                                      height: 33.h,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 20.h),
+                      HexText(
+                        'Post\n●',
+                        fontSize: 16.sp,
+                        color: Colors.white,
+                        align: TextAlign.center,
+                        fontWeight: FontWeight.bold,
                       ),
                     ],
-                  )
-                ],
-              ),
-              SizedBox(height: 20.h),
-              HexText(
-                'Post\n●',
-                fontSize: 16.sp,
-                color: Colors.white,
-                align: TextAlign.center,
-                fontWeight: FontWeight.bold,
-              ),
+                  ),
+                ),
+              )
             ],
           ),
-        ),
+        ],
       ),
     );
   }
+
+  Color? _childColor;
+
+  Future<File?> takePicture() async {
+    final CameraController? cameraController = _cameraController;
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      // showInSnackBar('Error: select a camera first.');
+      return null;
+    }
+
+    if (cameraController.value.isTakingPicture) {
+      // A capture is already pending, do nothing.
+      return null;
+    }
+
+    try {
+      final file = await cameraController.takePicture();
+      return File(file.path);
+    } on CameraException {
+      // showInSnackBar('Error: ${e.code}\n${e.description}');
+      return null;
+    }
+  }
 }
+
+CameraController? _cameraController;
 
 class PhotoCamera extends StatefulWidget {
   const PhotoCamera({super.key});
@@ -144,7 +266,6 @@ class PhotoCamera extends StatefulWidget {
 
 class _PhotoCameraState extends State<PhotoCamera>
     with WidgetsBindingObserver, TickerProviderStateMixin {
-  CameraController? controller;
   File? imageFile;
   double _minAvailableZoom = 1.0;
   double _maxAvailableZoom = 1.0;
@@ -164,13 +285,14 @@ class _PhotoCameraState extends State<PhotoCamera>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    controller?.dispose();
+    _cameraController!.setFlashMode(FlashMode.off);
+    _cameraController?.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final CameraController? cameraController = controller;
+    final CameraController? cameraController = _cameraController;
 
     // App state changed before we got the chance to initialize.
     if (cameraController == null || !cameraController.value.isInitialized) {
@@ -185,7 +307,7 @@ class _PhotoCameraState extends State<PhotoCamera>
   }
 
   Widget _cameraPreviewWidget() {
-    final CameraController? cameraController = controller;
+    final CameraController? cameraController = _cameraController;
     if (cameraController == null || !cameraController.value.isInitialized) {
       return const Center(child: HexProgress());
     }
@@ -238,24 +360,24 @@ class _PhotoCameraState extends State<PhotoCamera>
 
   Future<void> _handleScaleUpdate(ScaleUpdateDetails details) async {
     // When there are not exactly two fingers on screen don't scale
-    if (controller == null || _pointers != 2) {
+    if (_cameraController == null || _pointers != 2) {
       return;
     }
 
     _currentScale = (_baseScale * details.scale)
         .clamp(_minAvailableZoom, _maxAvailableZoom);
 
-    await controller!.setZoomLevel(_currentScale);
+    await _cameraController!.setZoomLevel(_currentScale);
   }
 
   void showInSnackBar(String message) {}
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
-    if (controller == null) {
+    if (_cameraController == null) {
       return;
     }
 
-    final CameraController cameraController = controller!;
+    final CameraController cameraController = _cameraController!;
 
     final Offset offset = Offset(
       details.localPosition.dx / constraints.maxWidth,
@@ -272,7 +394,7 @@ class _PhotoCameraState extends State<PhotoCamera>
       imageFormatGroup: ImageFormatGroup.jpeg,
     );
 
-    controller = cameraController;
+    _cameraController = cameraController;
 
     // If the controller is updated then update the UI.
     cameraController.addListener(() {
@@ -320,39 +442,125 @@ class _PhotoCameraState extends State<PhotoCamera>
     }
   }
 
-  void onTakePictureButtonPressed() {
-    takePicture().then((File? file) {
-      if (mounted) {
-        setState(() {
-          imageFile = file;
-        });
-      }
+  @override
+  Widget build(BuildContext context) {
+    return _cameraPreviewWidget();
+  }
+}
+
+class AudioRecorder extends StatefulWidget {
+  const AudioRecorder({super.key});
+
+  @override
+  State<AudioRecorder> createState() => _AudioRecorderState();
+}
+
+class _AudioRecorderState extends State<AudioRecorder> {
+  FlutterSoundRecorder? _audioRecorder;
+  bool _isRecording = false;
+  String? _localPath;
+
+  @override
+  void initState() {
+    _prepareSaveDir();
+
+    super.initState();
+    _initAudioRecorder();
+  }
+
+  void _initAudioRecorder() {
+    _audioRecorder = FlutterSoundRecorder();
+    _audioRecorder!.openRecorder().then((value) {
+      print("Audio session initialized");
     });
   }
 
-  Future<File?> takePicture() async {
-    final CameraController? cameraController = controller;
-    if (cameraController == null || !cameraController.value.isInitialized) {
-      showInSnackBar('Error: select a camera first.');
-      return null;
+  void _startRecording() async {
+    if (!_isRecording) {
+      await _audioRecorder!.startRecorder(
+        toFile: _localPath,
+      );
+      setState(() {
+        _isRecording = true;
+      });
     }
+  }
 
-    if (cameraController.value.isTakingPicture) {
-      // A capture is already pending, do nothing.
-      return null;
-    }
-
-    try {
-      final file = await cameraController.takePicture();
-      return File(file.path);
-    } on CameraException catch (e) {
-      showInSnackBar('Error: ${e.code}\n${e.description}');
-      return null;
+  void _stopRecording() async {
+    if (_isRecording) {
+      await _audioRecorder!.stopRecorder();
+      setState(() {
+        _isRecording = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return _cameraPreviewWidget();
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(_isRecording ? Icons.stop : Icons.mic),
+              onPressed: () {
+                _checkPermission();
+                if (_isRecording) {
+                  _stopRecording();
+                } else {
+                  _startRecording();
+                }
+              },
+              iconSize: 48.0,
+              color: Colors.red, // Change the icon color here
+            ),
+            Text(
+              _isRecording ? 'Recording...' : 'Tap to Record',
+              style: const TextStyle(fontSize: 24),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _audioRecorder?.closeRecorder();
+    super.dispose();
+  }
+
+  Future<bool> _checkPermission() async {
+    if (Platform.isAndroid) {
+      final PermissionStatus status = await Permission.storage.status;
+      if (status != PermissionStatus.granted) {
+        final PermissionStatus result = await Permission.storage.request();
+        if (result == PermissionStatus.granted) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> _prepareSaveDir() async {
+    final String path = await _findLocalPath();
+    _localPath = '$path${Platform.pathSeparator}Grip';
+
+    final Directory savedDir = Directory(_localPath!);
+    final bool hasExisted = await savedDir.exists();
+    if (!hasExisted) {
+      savedDir.create();
+    }
+  }
+
+  Future<String> _findLocalPath() async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    return directory.path;
   }
 }

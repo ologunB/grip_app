@@ -1,6 +1,7 @@
 import '../widgets/hex_text.dart';
 import 'all_versions.dart';
 import 'edit.dart';
+import 'tips.dart';
 import 'history.dart';
 import 'password.dart';
 import 'posts.dart';
@@ -203,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ['Preferred Bible Translation', const AllVersionScreen()],
         ['History', const HistoryScreen()],
         ['My Posts', const MyPostsScreen()],
-        ['My Tips', const MyPostsScreen()],
+        ['My Tips', const TipsScreen()],
         ['Change Password', const ChangePasswordScreen()],
         ['Log out']
       ];
