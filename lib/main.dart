@@ -1,4 +1,4 @@
-import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcelon/views/create/media.dart';
 import 'package:hexcelon/views/home/main_layout.dart';
 
 import 'core/models/navigator.dart';
@@ -12,7 +12,9 @@ Future<void> main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   setupLocator();
   await AppCache.init(); //Initialize Hive
+  cameras = await availableCameras();
 
+  print(cameras);
   await GlobalConfiguration().loadFromAsset('.config');
   runApp(const App());
 }

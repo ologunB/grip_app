@@ -116,26 +116,26 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
       ),
     );
   }
-
-  List<String> get topics => [
-        'Inspiration',
-        'Love',
-        'Peace',
-        'Relationship',
-        'Encouragement',
-        'Prayer',
-        'Validation',
-        'Career',
-        'Anxiety',
-        'Rejection',
-        'Praise',
-        'Purpose',
-        'Healing',
-        'Money',
-        'Self Control',
-        'Fasting',
-        'Joy',
-        'Righteousness',
-        'Breakthrough',
-      ];
 }
+
+List<String> get topics => [
+      'Inspiration',
+      'Love',
+      'Peace',
+      'Relationship',
+      'Encouragement',
+      'Prayer',
+      'Validation',
+      'Career',
+      'Anxiety',
+      'Rejection',
+      'Praise',
+      'Purpose',
+      'Healing',
+      'Money',
+      'Self Control',
+      'Fasting',
+      'Joy',
+      'Righteousness',
+      'Breakthrough',
+    ];

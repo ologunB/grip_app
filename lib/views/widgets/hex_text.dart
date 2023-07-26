@@ -8,6 +8,7 @@ export 'dart:math';
 
 export 'package:another_flushbar/flushbar.dart';
 export 'package:cached_network_image/cached_network_image.dart';
+export 'package:camera/camera.dart';
 export 'package:file_picker/file_picker.dart';
 export 'package:flutter/cupertino.dart' hide RefreshCallback;
 export 'package:flutter/gestures.dart';

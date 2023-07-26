@@ -168,8 +168,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 }
 
 class SelectPhoto extends StatelessWidget {
-  const SelectPhoto({super.key});
+  const SelectPhoto({super.key, this.title});
 
+  final String? title;
   @override
   Widget build(BuildContext context) {
     final ImagePicker picker = ImagePicker();
@@ -183,7 +184,7 @@ class SelectPhoto extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: HexText(
-                'Select a Photo',
+                title ?? 'Select a Photo',
                 fontSize: 14.sp,
                 align: TextAlign.center,
                 color: AppColors.black,

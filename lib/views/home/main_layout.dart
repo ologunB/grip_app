@@ -1,4 +1,5 @@
 import '../bible/all_versions.dart';
+import '../create/media.dart';
 import '../profile/profile.dart';
 import '../widgets/hex_text.dart';
 import 'explore.dart';
@@ -47,6 +48,7 @@ class _MainLayoutState extends State<MainLayout> {
         currentIndex: currentIndex,
         onTap: (i) {
           if (i == 2) {
+            push(context, const ChooseMediaScreen(), true);
             return;
           }
           currentIndex = i;

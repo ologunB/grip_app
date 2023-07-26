@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   another_flushbar: ^1.12.30
   cached_network_image: ^3.2.2
+  camera: ^0.10.5+2
   dio: ^5.2.0+1
   file_picker: ^5.3.3
   flutter_datetime_picker_plus: ^2.0.1
@@ -36,13 +37,13 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_lints: ^2.0.2
 flutter_native_splash:
-  color: "#FFFFFF"
+  color: "#FFF6ED"
   image: assets/images/logo.png
   android_12:
     image: assets/images/logo.png
-    icon_background_color: "#ffffff"
+    icon_background_color: "#FFF6ED"
     image_dark: assets/images/logo.png
-    icon_background_color_dark: "#ffffff"
+    icon_background_color_dark: "#FFF6ED"
   android: true
   ios: true
   web: true
@@ -53,7 +54,7 @@ flutter_native_splash:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo2.png"
+  image_path: "assets/images/logo.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
 
 # flutter pub run flutter_launcher_icons
