@@ -1,6 +1,6 @@
 import '../profile/post_details.dart';
 import '../widgets/hex_text.dart';
-import 'messages.dart';
+import 'chat_room.dart';
 
 class OtherProfileScreen extends StatefulWidget {
   const OtherProfileScreen({super.key});
@@ -28,7 +28,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           Positioned(
                             right: 0,
                             left: 0,
-                            bottom: -54.h,
+                            bottom: -57.h,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -175,7 +175,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           SizedBox(width: 20.h),
                           InkWell(
                             onTap: () {
-                              push(context, const MessagesScreen());
+                              push(context, const ChatRoomScreen());
                             },
                             borderRadius: BorderRadius.circular(15.h),
                             child: Container(

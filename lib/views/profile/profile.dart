@@ -1,3 +1,6 @@
+import 'package:hexcelon/core/apis/base_api.dart';
+
+import '../auth/login_view.dart';
 import '../widgets/hex_text.dart';
 import 'all_versions.dart';
 import 'edit.dart';
@@ -268,6 +271,8 @@ class LogoutDialog extends StatelessWidget {
           borderRadius: 10.h,
           onPressed: () {
             Navigator.pop(context);
+            AppCache.clear();
+            pushAndRemoveUntil(context, const LoginScreen());
           },
         ),
         SizedBox(height: 20.h),
