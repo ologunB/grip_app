@@ -1,4 +1,5 @@
 import '../widgets/hex_text.dart';
+import '../widgets/visibility.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -16,9 +17,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryBG,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryBG,
+        backgroundColor: Colors.white,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
         title: HexText(
@@ -30,17 +31,17 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         elevation: 0,
       ),
       bottomSheet: Container(
-        color: AppColors.primaryBG,
+        color: Colors.white,
         padding: EdgeInsets.all(25.h),
         child: HexButton(
           'Change Password',
-          buttonColor: AppColors.primary,
-          height: 55,
-          fontSize: 14.sp,
+          buttonColor: AppColors.black,
+          height: 60,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w400,
           textColor: AppColors.white,
-          borderColor: AppColors.primary,
-          borderRadius: 20.h,
+          borderColor: Colors.transparent,
+          borderRadius: 10.h,
           onPressed: () {},
         ),
       ),
@@ -53,26 +54,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             textInputAction: TextInputAction.done,
             controller: oldPassword,
             obscureText: hideText,
-            suffix: Padding(
-              padding: EdgeInsets.only(right: 12.h),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      hideText = !hideText;
-                      setState(() {});
-                    },
-                    child: Icon(
-                      hideText
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: AppColors.black,
-                      size: 22.h,
-                    ),
-                  )
-                ],
-              ),
+            suffix: GripVisibility(
+              onTap: () {
+                hideText = !hideText;
+                setState(() {});
+              },
+              hideText: hideText,
             ),
             validator: (a) {
               return Utils.isValidPassword(a);
@@ -85,26 +72,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             textInputAction: TextInputAction.done,
             controller: password,
             obscureText: hideText,
-            suffix: Padding(
-              padding: EdgeInsets.only(right: 12.h),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      hideText = !hideText;
-                      setState(() {});
-                    },
-                    child: Icon(
-                      hideText
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: AppColors.black,
-                      size: 22.h,
-                    ),
-                  )
-                ],
-              ),
+            suffix: GripVisibility(
+              onTap: () {
+                hideText = !hideText;
+                setState(() {});
+              },
+              hideText: hideText,
             ),
             validator: (a) {
               return Utils.isValidPassword(a);
@@ -117,26 +90,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             textInputAction: TextInputAction.done,
             controller: cPassword,
             obscureText: hideText,
-            suffix: Padding(
-              padding: EdgeInsets.only(right: 12.h),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      hideText = !hideText;
-                      setState(() {});
-                    },
-                    child: Icon(
-                      hideText
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: AppColors.black,
-                      size: 22.h,
-                    ),
-                  )
-                ],
-              ),
+            suffix: GripVisibility(
+              onTap: () {
+                hideText = !hideText;
+                setState(() {});
+              },
+              hideText: hideText,
             ),
             validator: (a) {
               return Utils.isValidPassword(a);
@@ -150,9 +109,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 onTap: () {},
                 child: HexText(
                   'Forgot Password?',
-                  fontSize: 15.sp,
+                  fontSize: 14.sp,
                   color: AppColors.primary,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
             ],

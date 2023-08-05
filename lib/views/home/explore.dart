@@ -15,9 +15,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
       backgroundColor: AppColors.primaryBG,
       appBar: AppBar(
         elevation: 0,
-        centerTitle: false,
         backgroundColor: AppColors.primaryBG,
         titleSpacing: 20.h,
+        centerTitle: false,
         title: CupertinoTextField(
           prefix: Column(
             mainAxisSize: MainAxisSize.min,
@@ -29,7 +29,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ],
           ),
           placeholder: 'Search',
-          placeholderStyle: GoogleFonts.nunito(
+          placeholderStyle: TextStyle(
+            fontFamily: 'Nova',
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: AppColors.grey,
@@ -49,10 +50,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
         children: [
           StaggeredGrid.count(
             crossAxisCount: 2,
-            mainAxisSpacing: 25.h,
-            crossAxisSpacing: 25.h,
-            children:
-                [1, 1, 1, 1, 1, 1].map((e) => const ExploreItem()).toList(),
+            mainAxisSpacing: 6.h,
+            crossAxisSpacing: 6.h,
+            children: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                .map((e) => const ExploreItem())
+                .toList(),
           ),
         ],
       ),

@@ -10,78 +10,44 @@ class AuthScaffold extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: AppColors.primary),
         elevation: 0,
       ),
-      body: Stack(
-        children: [
-          Column(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 25.h),
+          child: Column(
             children: [
-              Expanded(
-                child: Image.asset(
-                  'bg'.png,
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  fit: BoxFit.cover,
+              SizedBox(height: 40.h),
+              if (title.length == 3)
+                Padding(
+                  padding: EdgeInsets.only(bottom: 60.h),
+                  child: Image.asset(title[1].png, height: 120.h),
                 ),
+              HexText(
+                title.first,
+                fontSize: 32.sp,
+                color: AppColors.primary,
+                align: TextAlign.center,
+                fontWeight: FontWeight.w800,
               ),
-              Expanded(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.white,
-                ),
-              )
+              SizedBox(height: 5.h),
+              HexText(
+                title.last,
+                fontSize: 16.sp,
+                color: AppColors.grey,
+                align: TextAlign.center,
+                fontWeight: FontWeight.normal,
+              ),
+              SizedBox(height: 40.h),
+              body,
+              SizedBox(height: 40.h),
             ],
           ),
-          SafeArea(
-            child: ListView(
-              children: [
-                SizedBox(height: 25.h),
-                Image.asset('logo'.png, height: 48.h),
-                SizedBox(height: 70.h),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 42.h, horizontal: 25.h),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.h),
-                      topRight: Radius.circular(50.h),
-                    ),
-                    color: Colors.white,
-                  ),
-                  child: Column(
-                    children: [
-                      if (title.length == 3)
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 16.h),
-                          child: Image.asset(title[1].png, height: 160.h),
-                        ),
-                      HexText(
-                        title.first,
-                        fontSize: 28.sp,
-                        color: Colors.black,
-                        align: TextAlign.center,
-                        fontWeight: FontWeight.w900,
-                      ),
-                      SizedBox(height: 5.h),
-                      HexText(
-                        title.last,
-                        fontSize: 16.sp,
-                        color: Colors.black,
-                        align: TextAlign.center,
-                        fontWeight: FontWeight.normal,
-                      ),
-                      SizedBox(height: 21.h),
-                      body
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -1,5 +1,4 @@
 import '../widgets/hex_text.dart';
-import 'messages.dart';
 import 'notification.dart';
 import 'post_details.dart';
 
@@ -14,26 +13,48 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryBG,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         elevation: 0,
         centerTitle: false,
-        backgroundColor: AppColors.primaryBG,
+        backgroundColor: AppColors.white,
         titleSpacing: 25.h,
-        title: Image.asset('logo'.png, height: 28.h),
+        title: CupertinoTextField(
+          prefix: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.h),
+                child: Image.asset(
+                  'search'.png,
+                  height: 24.h,
+                  color: const Color(0xffE0E0E0),
+                ),
+              ),
+            ],
+          ),
+          placeholder: 'Search',
+          placeholderStyle: TextStyle(
+            fontFamily: 'Nova',
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xffE0E0E0),
+          ),
+          padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(20.h),
+            border: Border.all(color: const Color(0xffE0E0E0)),
+          ),
+          maxLines: 3,
+          minLines: 1,
+        ),
         actions: [
           Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
                 children: [
-                  InkWell(
-                    onTap: () {
-                      push(context, const MessagesScreen());
-                    },
-                    borderRadius: BorderRadius.circular(50.h),
-                    child: Image.asset('h0'.png, height: 44.h),
-                  ),
-                  SizedBox(width: 25.h),
                   InkWell(
                     onTap: () {
                       push(context, const NotificationScreen());

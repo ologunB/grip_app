@@ -1,5 +1,3 @@
-import 'package:share_plus/share_plus.dart';
-
 import '../widgets/hex_text.dart';
 import 'profile.dart';
 
@@ -77,7 +75,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         'J.P at the dinner',
                         fontSize: 15.sp,
                         color: AppColors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w800,
                       ),
                       SizedBox(height: 22.h),
                       Image.asset('slide'.png)
@@ -99,7 +97,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       ),
                     ),
                     const Spacer(),
-                    ...[1, 2, 3, 4, 5]
+                    ...[1, 2, 3, 4, 5, 6]
                         .map(
                           (e) => Padding(
                             padding: EdgeInsets.only(bottom: 20.h),
@@ -107,7 +105,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               onTap: () {
                                 if (e == 1) {
                                   Share.share('This is a post');
-                                } else if (e == 2) {
+                                } else if (e == 3) {
                                   showModalBottomSheet(
                                     backgroundColor: Colors.white,
                                     context: context,
@@ -122,10 +120,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       return const CommentsDialog();
                                     },
                                   );
-                                } else if (e == 3) {
+                                } else if (e == 4) {
                                   liked = !liked;
                                   setState(() {});
-                                } else if (e == 4) {
+                                } else if (e == 5) {
                                   showModalBottomSheet(
                                     backgroundColor: Colors.white,
                                     context: context,
@@ -143,8 +141,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 } else {}
                               },
                               child: Image.asset(
-                                e == 3 && liked ? 'like'.png : 'v$e'.png,
-                                height: 32.h,
+                                e == 4 && liked ? 'like'.png : 'v$e'.png,
+                                height: 26.h,
                               ),
                             ),
                           ),
@@ -174,18 +172,19 @@ class CommentsDialog extends StatelessWidget {
           BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .8),
       child: ListView(
         shrinkWrap: true,
-        padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 25.h),
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.h),
         physics: const ClampingScrollPhysics(),
         children: [
           Stack(
             children: [
               Align(
-                alignment: Alignment.centerLeft,
+                alignment: Alignment.center,
                 child: HexText(
-                  'Comments',
+                  '579 comments',
                   fontSize: 14.sp,
                   align: TextAlign.center,
                   color: AppColors.black,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               Align(
@@ -194,11 +193,7 @@ class CommentsDialog extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(context);
                   },
-                  child: Image.asset(
-                    'close'.png,
-                    height: 24.h,
-                    width: 24.h,
-                  ),
+                  child: Image.asset('close'.png, height: 20.h, width: 20.h),
                 ),
               ),
             ],
@@ -215,40 +210,89 @@ class CommentsDialog extends StatelessWidget {
                   ),
                 )
               : ListView.separated(
-                  separatorBuilder: (_, __) => SizedBox(height: 25.h),
+                  separatorBuilder: (_, __) => SizedBox(height: 12.h),
                   itemCount: 4,
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
                   physics: const ClampingScrollPhysics(),
                   itemBuilder: (c, i) {
                     return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CircleAvatar(
-                          radius: 25.h,
+                          radius: 16.h,
                           backgroundColor: Colors.white,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(40.h),
                             child: Image.asset(
                               'placeholder'.png,
-                              height: 48.h,
-                              width: 48.h,
+                              height: 31.h,
+                              width: 31.h,
                             ),
                           ),
                         ),
                         SizedBox(width: 9.h),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              HexText(
+                                'martini_rond',
+                                fontSize: 13.sp,
+                                color: AppColors.grey,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              SizedBox(height: 5.h),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: HexText(
+                                      'How neatly I write the date in my book with the man of the hour',
+                                      fontSize: 13.sp,
+                                      color: AppColors.black,
+                                      maxLines: 4,
+                                    ),
+                                  ),
+                                  SizedBox(width: 6.h),
+                                  HexText(
+                                    '22h',
+                                    fontSize: 15.sp,
+                                    color: AppColors.grey,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 11.h),
+                              Row(
+                                children: [
+                                  HexText(
+                                    'View replies (4)',
+                                    fontSize: 13.sp,
+                                    color: AppColors.grey,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  RotatedBox(
+                                    quarterTurns: 1,
+                                    child: Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      size: 16.h,
+                                      color: AppColors.grey,
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 30.h),
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Image.asset('like'.png, height: 18.h),
+                            SizedBox(height: 5.h),
                             HexText(
-                              'Aaron',
-                              fontSize: 16.sp,
-                              color: AppColors.black,
-                            ),
-                            SizedBox(height: 3.h),
-                            HexText(
-                              'God is good',
-                              fontSize: 12.sp,
-                              color: AppColors.black,
+                              '8098',
+                              fontSize: 13.sp,
+                              color: AppColors.grey,
                             ),
                           ],
                         )
@@ -257,27 +301,32 @@ class CommentsDialog extends StatelessWidget {
                   },
                 ),
           SizedBox(height: 25.h),
-          Row(
-            children: [
-              Expanded(
-                child: CupertinoTextField(
-                  padding: EdgeInsets.all(15.h),
-                  placeholderStyle: GoogleFonts.nunito(
-                      fontSize: 14.sp, color: AppColors.grey),
-                  placeholder: 'Leave a comment',
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AppColors.primary,
-                      width: 1.h,
+          SafeArea(
+            child: Row(
+              children: [
+                Expanded(
+                  child: CupertinoTextField(
+                    padding: EdgeInsets.all(15.h),
+                    placeholderStyle: TextStyle(
+                      fontFamily: 'Nova',
+                      fontSize: 14.sp,
+                      color: AppColors.grey,
+                    ),
+                    placeholder: 'Leave a comment',
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: const Color(0xffE0E0E0),
+                        width: 1.h,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(width: 12.h),
-              Image.asset('send'.png, height: 50.h)
-            ],
-          )
+                SizedBox(width: 12.h),
+                Image.asset('send'.png, height: 50.h)
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -338,20 +387,6 @@ class DevotionalDialog extends StatelessWidget {
           color: AppColors.black,
         ),
         SizedBox(height: 150.h),
-        HexButton(
-          'Dismiss',
-          buttonColor: AppColors.primary,
-          height: 55,
-          safeArea: false,
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w400,
-          textColor: AppColors.white,
-          borderColor: AppColors.primary,
-          borderRadius: 10.h,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ],
     );
   }

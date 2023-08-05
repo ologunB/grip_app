@@ -158,7 +158,7 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                                     ),
                                   );
                                   if (editedImage != null) {
-                                    push(context, CreatePostScreen());
+                                    push(context, const CreatePostScreen());
                                   }
                                 }
                               });
@@ -197,7 +197,8 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                                           ),
                                         );
                                         if (editedImage != null) {
-                                          push(context, CreatePostScreen());
+                                          push(context,
+                                              const CreatePostScreen());
                                         }
                                       }
                                     },
@@ -470,9 +471,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
   void _initAudioRecorder() {
     _audioRecorder = FlutterSoundRecorder();
-    _audioRecorder!.openRecorder().then((value) {
-      print("Audio session initialized");
-    });
+    _audioRecorder!.openRecorder().then((value) {});
   }
 
   void _startRecording() async {

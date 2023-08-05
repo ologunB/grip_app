@@ -1,4 +1,5 @@
 import '../widgets/hex_text.dart';
+import 'verses.dart';
 
 class PassageScreen extends StatefulWidget {
   const PassageScreen({super.key});
@@ -10,45 +11,58 @@ class PassageScreen extends StatefulWidget {
 class _PassageScreenState extends State<PassageScreen> {
   @override
   Widget build(BuildContext context) {
+    double width = (MediaQuery.of(context).size.width - 147.h) / 5;
     return Scaffold(
-      backgroundColor: AppColors.primaryBG,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryBG,
+        backgroundColor: Colors.white,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
         title: HexText(
           'Romans',
-          fontSize: 16.sp,
+          fontSize: 20.sp,
           color: AppColors.black,
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.w600,
         ),
         elevation: 0,
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 16.h),
         children: [
           Padding(
-            padding: EdgeInsets.all(16.h),
-            child: HexText(
-              'Chapter 1',
-              fontSize: 16.sp,
-              color: AppColors.black,
-              align: TextAlign.center,
-              fontWeight: FontWeight.bold,
+            padding: EdgeInsets.all(25.h),
+            child: Wrap(
+              spacing: 24.h,
+              runSpacing: 24.h,
+              children: List.generate(150, (i) => i + 1)
+                  .map(
+                    (e) => InkWell(
+                      onTap: () {
+                        push(context, const VersesScreen());
+                      },
+                      borderRadius: BorderRadius.circular(20.h),
+                      child: Container(
+                        width: width,
+                        height: width * 64 / 56,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.h),
+                          border: Border.all(
+                            width: 1.h,
+                            color: const Color(0xffDCDCDC),
+                          ),
+                        ),
+                        child: HexText(
+                          '$e',
+                          fontSize: 16.sp,
+                          color: Colors.black,
+                          align: TextAlign.center,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
-          ),
-          HexText(
-            '''   1. Lorem ipsum dolor sit amet consectetur. Cras mauris enim vulputate sapien vitae. Viverra nulla scelerisque consectetur sed quam massa non eget. Orci faucibus viverra tristique pellentesque feugiat lorem.
-
-   2. Mauris odio scelerisque lacus nunc malesuada.
-Nullam sapien neque in habitasse ante eget. Consequat massa consequat faucibus nulla in amet vel. Suscipit feugiat montes pellentesque cras turpis. 
-
-   3. Pellentesque et quisque lacus justo tortor sapien. Eu platea a faucibus vivamus eu nulla metus diam.
-Vel eu amet volutpat posuere tempor urna accumsan. Ultrices ac amet urna vel neque faucibus rutrum viverra ipsum. 
-
-   4. Mi eu est varius commodo gravida iaculis nunc. Adipiscing lacus mauris facilisis facilisi eget quisque eu. Risus amet amet tortor sed leo facilisis. Eu netus eu sed risus tortor. Neque posuere a porttitor viverra.''',
-            fontSize: 16.sp,
-            color: AppColors.black,
           ),
         ],
       ),

@@ -19,99 +19,122 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: Container(
-        padding: EdgeInsets.all(25.h),
-        decoration: BoxDecoration(
-          image: DecorationImage(fit: BoxFit.fill, image: AssetImage('bg'.png)),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              HexText(
-                'Welcome to GRIP',
-                fontSize: 28.sp,
-                color: AppColors.primary,
-                align: TextAlign.center,
-                fontWeight: FontWeight.w900,
-              ),
-              SizedBox(height: 16.h),
-              HexText(
-                'Select at least 5 topics to\npersonalise your feed',
-                fontSize: 16.sp,
-                color: Colors.black,
-                align: TextAlign.center,
-              ),
-              SizedBox(height: 40.h),
-              Expanded(
-                child: NotificationListener<OverscrollIndicatorNotification>(
-                  onNotification: (OverscrollIndicatorNotification overscroll) {
-                    overscroll.disallowIndicator();
-                    return true;
-                  },
-                  child: ListView(
-                    children: [
-                      Wrap(
-                        spacing: 12.h,
-                        runSpacing: 12.h,
-                        children: topics.map(
-                          (e) {
-                            bool contains = selected.contains(e);
-                            return InkWell(
-                              onTap: () {
-                                if (contains) {
-                                  selected.remove(e);
-                                } else {
-                                  selected.add(e);
-                                }
-                                setState(() {});
-                              },
-                              child: Container(
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(height: 20.h),
+            HexText(
+              'Welcome to GRIP',
+              fontSize: 32.sp,
+              color: AppColors.primary,
+              align: TextAlign.center,
+              fontWeight: FontWeight.w700,
+            ),
+            SizedBox(height: 5.h),
+            HexText(
+              'Select at least 5 topics to\npersonalise your feed',
+              fontSize: 16.sp,
+              color: AppColors.grey,
+              align: TextAlign.center,
+              fontWeight: FontWeight.normal,
+            ),
+            SizedBox(height: 40.h),
+            Expanded(
+              child: NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: (OverscrollIndicatorNotification overscroll) {
+                  overscroll.disallowIndicator();
+                  return true;
+                },
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 25.h),
+                  children: [
+                    Wrap(
+                      spacing: 12.h,
+                      runSpacing: 12.h,
+                      children: topics.map(
+                        (e) {
+                          bool contains = selected.contains(e);
+                          return InkWell(
+                            onTap: () {
+                              if (contains) {
+                                selected.remove(e);
+                              } else {
+                                selected.add(e);
+                              }
+                              setState(() {});
+                            },
+                            child: Container(
+                                height: 50.h,
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 26.h, vertical: 14.h),
+                                    horizontal: contains ? 10.h : 22.h),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20.h),
                                   border: Border.all(
                                     width: 1.h,
-                                    color: AppColors.black,
+                                    color: contains
+                                        ? AppColors.black
+                                        : const Color(0xff868686),
                                   ),
                                   color: !contains
                                       ? Colors.transparent
-                                      : AppColors.primary,
+                                      : AppColors.black,
                                 ),
-                                child: HexText(
-                                  e,
-                                  fontSize: 16.sp,
-                                  color:
-                                      contains ? Colors.white : AppColors.black,
-                                  align: TextAlign.center,
-                                ),
-                              ),
-                            );
-                          },
-                        ).toList(),
-                      ),
-                      SizedBox(height: 12.h),
-                    ],
-                  ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        HexText(
+                                          '#$e',
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w400,
+                                          color: contains
+                                              ? Colors.white
+                                              : const Color(0xff868686),
+                                          align: TextAlign.center,
+                                        ),
+                                        if (contains)
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(left: 10.h),
+                                            child: Image.asset(
+                                              'mark'.png,
+                                              height: 16.h,
+                                            ),
+                                          )
+                                      ],
+                                    )
+                                  ],
+                                )),
+                          );
+                        },
+                      ).toList(),
+                    ),
+                    SizedBox(height: 12.h),
+                  ],
                 ),
               ),
-              HexButton(
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25.h),
+              child: HexButton(
                 'Continue',
-                buttonColor: AppColors.primary,
-                height: 55,
-                fontSize: 14.sp,
+                buttonColor: AppColors.black,
+                height: 60,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w400,
                 textColor: AppColors.white,
-                borderColor: AppColors.primary,
-                borderRadius: 20.h,
+                borderColor: Colors.transparent,
+                borderRadius: 10.h,
                 onPressed: selected.length < 5
                     ? null
                     : () {
                         push(context, const FollowPeopleScreen());
                       },
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );

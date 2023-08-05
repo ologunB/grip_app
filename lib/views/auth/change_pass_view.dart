@@ -17,8 +17,9 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
   Widget build(BuildContext context) {
     return AuthScaffold(
       title: const [
-        'Change Your\nPassword',
-        'Change your password to a secure\nvalue',
+        'Set new password',
+        'change',
+        'Enter new password',
       ],
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -43,7 +44,7 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
                       hideText
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
-                      color: AppColors.black,
+                      color: AppColors.primary,
                       size: 22.h,
                     ),
                   )
@@ -75,7 +76,7 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
                       hideText
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
-                      color: AppColors.black,
+                      color: AppColors.primary,
                       size: 22.h,
                     ),
                   )
@@ -86,20 +87,21 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
               return Utils.isValidPassword(a);
             },
           ),
-          SizedBox(height: 35.h),
+          SizedBox(height: 50.h),
           HexButton(
-            'Change Password',
-            buttonColor: AppColors.primary,
-            height: 55,
-            fontSize: 14.sp,
+            'Set Password',
+            height: 60,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w400,
             textColor: AppColors.white,
-            borderColor: AppColors.primary,
-            borderRadius: 20.h,
+            buttonColor: AppColors.black,
+            borderColor: Colors.transparent,
+            borderRadius: 10.h,
             onPressed: () {
               pushAndRemoveUntil(context, const LoginScreen());
             },
           ),
+          SizedBox(height: 50.h),
         ],
       ),
     );

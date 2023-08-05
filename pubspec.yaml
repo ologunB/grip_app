@@ -21,7 +21,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.6.2
   get_it: ^7.6.0
   global_configuration: ^2.0.0-nullsafety.1
-  google_fonts: 4.0.4
+  #google_fonts: 4.0.4
   grouped_list: ^5.1.2
   hive_flutter: ^1.1.0
   image_editor_plus: ^0.2.5
@@ -70,3 +70,18 @@ flutter:
   assets:
     - assets/images/
     - assets/cfg/
+  fonts:
+    - family: Nova
+      fonts:
+        - asset: assets/fonts/400.otf
+          weight: 400
+        - asset: assets/fonts/500.otf
+          weight: 500
+        - asset: assets/fonts/600.otf
+          weight: 600
+        - asset: assets/fonts/700.otf
+          weight: 700
+        - asset: assets/fonts/800.otf
+          weight: 800
+        - asset: assets/fonts/900.otf
+          weight: 900

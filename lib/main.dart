@@ -24,14 +24,14 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(390, 812),
+      designSize: const Size(428, 926),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, builder) => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Grip',
         theme: ThemeData(
-          textTheme: GoogleFonts.nunitoTextTheme(Theme.of(context).textTheme),
+          fontFamily: 'Nova',
           primaryColor: AppColors.primary,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),

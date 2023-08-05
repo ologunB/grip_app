@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 export 'dart:async';
 export 'dart:convert';
@@ -18,7 +17,6 @@ export 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 export 'package:global_configuration/global_configuration.dart';
-export 'package:google_fonts/google_fonts.dart';
 export 'package:hexcelon/views/auth/auth_scaffold.dart';
 export 'package:intl/intl.dart' hide TextDirection;
 export 'package:keyboard_attachable/keyboard_attachable.dart';
@@ -79,35 +77,16 @@ class HexText extends StatelessWidget {
       maxLines: maxLines,
       overflow: overflow,
       softWrap: true,
-      style: fontFamily == 'avenir'
-          ? GoogleFonts.sen(
-              color: color,
-              letterSpacing: letterSpacing,
-              fontSize: fontSize,
-              height: height,
-              fontStyle: fontStyle,
-              fontWeight: fontWeight,
-              decoration: decoration,
-            )
-          : fontFamily == 'inter'
-              ? GoogleFonts.inter(
-                  color: color,
-                  letterSpacing: letterSpacing,
-                  fontSize: fontSize,
-                  height: height,
-                  fontStyle: fontStyle,
-                  fontWeight: fontWeight,
-                  decoration: decoration,
-                )
-              : GoogleFonts.nunito(
-                  color: color,
-                  letterSpacing: letterSpacing,
-                  fontSize: fontSize,
-                  height: height,
-                  fontStyle: fontStyle,
-                  fontWeight: fontWeight,
-                  decoration: decoration,
-                ),
+      style: TextStyle(
+        fontFamily: 'Nova',
+        color: color,
+        letterSpacing: letterSpacing,
+        fontSize: fontSize,
+        height: height,
+        fontStyle: fontStyle,
+        fontWeight: fontWeight,
+        decoration: decoration,
+      ),
     );
   }
 }

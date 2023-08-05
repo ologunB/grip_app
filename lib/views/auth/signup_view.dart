@@ -56,7 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       hideText
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
-                      color: AppColors.black,
+                      color: AppColors.primary,
                       size: 22.h,
                     ),
                   )
@@ -67,7 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
               return Utils.isValidPassword(a);
             },
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 30.h),
           InkWell(
             onTap: () {
               tick = tick == 0 ? 1 : 0;
@@ -95,18 +95,18 @@ class _SignupScreenState extends State<SignupScreen> {
           SizedBox(height: 30.h),
           HexButton(
             'Create Account',
-            buttonColor: AppColors.primary,
-            height: 55,
-            fontSize: 14.sp,
+            buttonColor: AppColors.black,
+            height: 60,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w400,
             textColor: AppColors.white,
-            borderColor: AppColors.primary,
-            borderRadius: 20.h,
+            borderColor: Colors.transparent,
+            borderRadius: 10.h,
             onPressed: () {
               push(context, const FollowTopicsScreen());
             },
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 16.h),
           HexText(
             'or sign up with',
             fontSize: 14.sp,
@@ -114,7 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
             align: TextAlign.center,
             fontWeight: FontWeight.normal,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 16.h),
           Row(
             children: [
               Expanded(
@@ -125,49 +125,52 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [Image.asset('google'.png, height: 25.h)],
                   ),
                   buttonColor: AppColors.white,
-                  height: 55,
-                  fontSize: 14.sp,
+                  height: 60,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
                   textColor: AppColors.black,
                   borderColor: AppColors.grey,
-                  borderRadius: 20.h,
+                  borderRadius: 10.h,
                   onPressed: () {},
                 ),
               ),
-              SizedBox(width: 12.h),
-              Expanded(
-                child: HexButton(
-                  '  Apple',
-                  icon: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'apple'.png,
-                        height: 25.h,
-                        color: Colors.white,
-                      )
-                    ],
+              if (Platform.isIOS)
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 12.h),
+                    child: HexButton(
+                      '  Apple',
+                      icon: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'apple'.png,
+                            height: 25.h,
+                            color: Colors.white,
+                          )
+                        ],
+                      ),
+                      buttonColor: AppColors.black,
+                      height: 60,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      textColor: AppColors.white,
+                      borderColor: AppColors.black,
+                      borderRadius: 10.h,
+                      onPressed: () {},
+                    ),
                   ),
-                  buttonColor: AppColors.black,
-                  height: 55,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
-                  textColor: AppColors.white,
-                  borderColor: AppColors.black,
-                  borderRadius: 20.h,
-                  onPressed: () {},
                 ),
-              ),
             ],
           ),
-          SizedBox(height: 26.h),
+          SizedBox(height: 50.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               HexText(
-                'Already have an account?',
+                'Already have an account? ',
                 fontSize: 14.sp,
-                color: AppColors.black,
+                color: AppColors.grey,
                 fontWeight: FontWeight.normal,
               ),
               InkWell(

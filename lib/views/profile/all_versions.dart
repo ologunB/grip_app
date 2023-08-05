@@ -13,7 +13,7 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryBG,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,9 +32,9 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
                     SizedBox(width: 12.h),
                     HexText(
                       'Bible',
-                      fontSize: 30.sp,
+                      fontSize: 28.sp,
                       color: AppColors.black,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.bold,
                     ),
                   ],
                 )),
@@ -62,7 +62,7 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
                             'KJV',
                             fontSize: 16.sp,
                             color: AppColors.black,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                           SizedBox(height: 8.h),
                           HexText(

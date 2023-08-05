@@ -1,6 +1,5 @@
 import '../profile/post_details.dart';
 import '../widgets/hex_text.dart';
-import 'chat_room.dart';
 
 class OtherProfileScreen extends StatefulWidget {
   const OtherProfileScreen({super.key});
@@ -13,7 +12,13 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.primaryBG,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: AppColors.primary),
+        ),
+        backgroundColor: Colors.white,
         body: LayoutBuilder(
           builder: (context, viewportConstraints) {
             return CustomScrollView(
@@ -21,51 +26,36 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                 SliverToBoxAdapter(
                   child: Column(
                     children: [
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Image.asset('cover'.png),
-                          Positioned(
-                            right: 0,
-                            left: 0,
-                            bottom: -57.h,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Stack(
-                                  alignment: Alignment.bottomRight,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 57.h,
-                                      backgroundColor: Colors.white,
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(73.h),
-                                        child: Image.asset(
-                                          'placeholder'.png,
-                                          height: 107.h,
-                                          width: 107.h,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SafeArea(
-                              child: BackButton(color: Colors.white)),
-                        ],
+                      SizedBox(
+                        height: 36.h +
+                            MediaQuery.of(context).padding.top -
+                            kToolbarHeight,
                       ),
-                      SizedBox(height: 62.h),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(60.h),
+                        child: Image.asset(
+                          'placeholder'.png,
+                          height: 107.h,
+                          width: 107.h,
+                        ),
+                      ),
+                      SizedBox(height: 18.h),
                       HexText(
                         'Roger Korsgaard',
                         fontSize: 18.sp,
                         align: TextAlign.center,
                         color: AppColors.black,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w800,
                       ),
-                      SizedBox(height: 33.h),
+                      SizedBox(height: 4.h),
+                      HexText(
+                        '#prayer #fasting #purpose\n#self-control #relationship',
+                        fontSize: 16.sp,
+                        align: TextAlign.center,
+                        color: AppColors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      SizedBox(height: 18.h),
                       IntrinsicHeight(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -154,14 +144,14 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 50.h, vertical: 13.h),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.h),
+                                borderRadius: BorderRadius.circular(10.h),
                                 border: Border.all(
                                   width: 1.h,
                                   color: AppColors.black,
                                 ),
                                 color: selected
                                     ? Colors.transparent
-                                    : AppColors.primary,
+                                    : AppColors.black,
                               ),
                               child: HexText(
                                 selected ? 'Following' : 'Follow',
@@ -172,7 +162,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 20.h),
+                          /* SizedBox(width: 20.h),
                           InkWell(
                             onTap: () {
                               push(context, const ChatRoomScreen());
@@ -196,10 +186,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                                 align: TextAlign.center,
                               ),
                             ),
-                          )
+                      )*/
                         ],
                       ),
-                      SizedBox(height: 30.h),
+                      SizedBox(height: 36.h),
                       Row(children: [item(0), item(1), item(2)]),
                     ],
                   ),

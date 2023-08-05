@@ -10,79 +10,138 @@ class OnboardScreen extends StatefulWidget {
 }
 
 class _OnboardScreenState extends State<OnboardScreen> {
+  Timer? timer;
+  @override
+  void initState() {
+    timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+      index = (index + 1) % 3;
+      if (index == 0) {
+        controller.jumpToPage(0);
+        return;
+      }
+      controller.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.linear,
+      );
+    });
+    super.initState();
+  }
+
+  PageController controller = PageController();
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(50.h),
-        decoration: BoxDecoration(
-          image: DecorationImage(fit: BoxFit.fill, image: AssetImage('bg'.png)),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Image.asset('logo'.png, height: 48.h),
-              SizedBox(height: 40.h),
-              HexText(
-                'Growing In Purpose',
-                fontSize: 28.sp,
-                color: Colors.black,
-                fontFamily: 'avenir',
-                align: TextAlign.center,
-                fontWeight: FontWeight.w900,
-              ),
-              SizedBox(height: 18.h),
-              HexText(
-                'GRIP is home to curated\ndevotionals from Christian content\ncreators',
-                fontSize: 16.sp,
-                fontFamily: 'avenir',
-                color: Colors.black,
-                align: TextAlign.center,
-                fontWeight: FontWeight.w500,
-              ),
-              SizedBox(height: 18.h),
-              const Spacer(),
-              SizedBox(height: 18.h),
-              HexButton(
-                'Get Started',
-                buttonColor: AppColors.primary,
-                height: 70,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                textColor: AppColors.white,
-                borderColor: AppColors.primary,
-                borderRadius: 20.h,
-                onPressed: () {
-                  push(context, const SignupScreen());
-                },
-              ),
-              SizedBox(height: 14.h),
-              HexButton(
-                'Log in',
-                buttonColor: Colors.transparent,
-                height: 70,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                textColor: AppColors.black,
-                borderColor: AppColors.black,
-                borderRadius: 20.h,
-                onPressed: () {
-                  push(context, const LoginScreen());
-                },
-              ),
-              SizedBox(height: 44.h),
-              HexText(
-                'By continuing, you agree to grip product’s data policy, cookie policy, terms and supplemental conditions',
-                fontSize: 16.sp,
-                fontFamily: 'avenir',
-                color: Colors.black,
-                align: TextAlign.center,
-                fontWeight: FontWeight.w400,
-              ),
-            ],
+      backgroundColor: Color(index == 0
+          ? 0xffD7E2FF
+          : index == 1
+              ? 0xffCCFFDC
+              : 0xffFDFBC2),
+      body: Stack(
+        children: [
+          PageView(
+            controller: controller,
+            onPageChanged: (a) => setState(() => index = a),
+            children: [0, 1, 2]
+                .map(
+                  (e) => Column(
+                    children: [
+                      SizedBox(height: 120.h),
+                      HexText(
+                        b[e],
+                        fontSize: 28.sp,
+                        color: Colors.black,
+                        align: TextAlign.center,
+                        fontWeight: FontWeight.w900,
+                      ),
+                      SizedBox(height: 30.h),
+                      Expanded(child: Image.asset('onboard$e'.png)),
+                      SizedBox(height: 60.h),
+                      Visibility(
+                        visible: false,
+                        maintainState: true,
+                        maintainAnimation: true,
+                        maintainSize: true,
+                        child: bottom(),
+                      )
+                    ],
+                  ),
+                )
+                .toList(),
           ),
-        ),
+          Align(alignment: Alignment.bottomCenter, child: bottom()),
+        ],
       ),
     );
   }
+
+  Widget bottom() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 25.h),
+          child: HexButton(
+            'Create Account',
+            buttonColor: AppColors.black,
+            height: 60,
+            fontSize: 16.sp,
+            safeArea: false,
+            fontWeight: FontWeight.w400,
+            textColor: Colors.white,
+            borderColor: AppColors.black,
+            borderRadius: 10.h,
+            onPressed: () {
+              push(context, const SignupScreen());
+            },
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 25.h),
+          child: HexButton(
+            'Log in',
+            buttonColor: Colors.white,
+            height: 60,
+            safeArea: false,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+            textColor: AppColors.black,
+            borderColor: Colors.transparent,
+            borderRadius: 10.h,
+            onPressed: () {
+              push(context, const LoginScreen());
+            },
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 28.h),
+          child: SafeArea(
+            top: false,
+            child: HexText(
+              'By continuing, you agree to grip product’s data policy, cookie policy, terms and supplemental conditions',
+              fontSize: 16.sp,
+              color: Colors.black,
+              align: TextAlign.center,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<String> get b => [
+        'Discover Stories from\nChristian Creators',
+        'Explore the Bible with\nAmazing Creator',
+        'Experience Bible\nStudy with Creators',
+      ];
 }

@@ -21,9 +21,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryBG,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryBG,
+        backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
         title: HexText(
@@ -32,19 +32,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
           color: AppColors.black,
           fontWeight: FontWeight.w600,
         ),
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: AppColors.primary),
       ),
       body: empty
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('empty'.png, height: 120.h),
-                Row(children: [SizedBox(height: 79.h)]),
+                Image.asset('empty'.png, height: 150.h),
+                Row(children: [SizedBox(height: 20.h)]),
                 HexText(
                   'No Notification',
                   fontSize: 28.sp,
-                  color: AppColors.black,
-                  fontWeight: FontWeight.w900,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w700,
                   align: TextAlign.center,
                 ),
                 SizedBox(height: 15.h),
@@ -70,7 +70,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 SizedBox(height: 19.h),
                 ListView.separated(
                   separatorBuilder: (_, __) => Padding(
-                    padding: EdgeInsets.symmetric(vertical: 15.h),
+                    padding: EdgeInsets.symmetric(vertical: 25.h),
                     child: Divider(
                       height: 0.h,
                       thickness: 1.h,
@@ -104,7 +104,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               'Pastor Iren uploaded a story',
                               fontSize: 16.sp,
                               color: AppColors.black,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w500,
                             ),
                             SizedBox(height: 5.h),
                             HexText(

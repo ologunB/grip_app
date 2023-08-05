@@ -30,21 +30,20 @@ class _OTPScreenState extends State<OTPScreen> {
             textAlign: TextAlign.center,
             controller: email,
           ),
-          SizedBox(height: 35.h),
+          SizedBox(height: 50.h),
           HexButton(
-            'Verify OTP',
-            buttonColor: AppColors.primary,
-            height: 55,
-            fontSize: 14.sp,
+            'Submit',
+            buttonColor: AppColors.black,
+            borderColor: Colors.transparent,
+            height: 60,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w400,
             textColor: AppColors.white,
-            borderColor: AppColors.primary,
-            borderRadius: 20.h,
+            borderRadius: 10.h,
             onPressed: () {
               push(context, const ChangePassScreen());
             },
           ),
-          SizedBox(height: 35.h),
         ],
       ),
     );

@@ -1,6 +1,6 @@
 import '../bible/all_versions.dart';
 import '../create/media.dart';
-import '../profile/profile.dart';
+import '../profile/creator_profile.dart';
 import '../widgets/hex_text.dart';
 import 'explore.dart';
 import 'home.dart';
@@ -18,7 +18,7 @@ class _MainLayoutState extends State<MainLayout> {
         AllVersionScreen(),
         SizedBox(),
         ExploreScreen(),
-        ProfileScreen(),
+        CreatorProfileScreen(),
       ];
 
   int currentIndex = 0;
@@ -31,17 +31,19 @@ class _MainLayoutState extends State<MainLayout> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.white,
         selectedItemColor: AppColors.black,
-        unselectedItemColor: AppColors.black,
+        unselectedItemColor: const Color(0xffB5B5B5),
         iconSize: 20.h,
-        selectedLabelStyle: GoogleFonts.nunito(
+        selectedLabelStyle: TextStyle(
+          fontFamily: 'Nova',
           fontSize: 12.sp,
           fontWeight: FontWeight.bold,
           color: AppColors.black,
         ),
-        unselectedLabelStyle: GoogleFonts.nunito(
+        unselectedLabelStyle: TextStyle(
+          fontFamily: 'Nova',
           fontSize: 12.sp,
           fontWeight: FontWeight.w400,
-          color: AppColors.black,
+          color: const Color(0xffB5B5B5),
         ),
         type: BottomNavigationBarType.fixed,
         elevation: 0,
@@ -74,6 +76,7 @@ class _MainLayoutState extends State<MainLayout> {
                           'h${i}0'.png,
                           height: 24.h,
                           width: 24.h,
+                          color: const Color(0xffB5B5B5),
                         ),
                       ),
                       activeIcon: Padding(
@@ -82,6 +85,7 @@ class _MainLayoutState extends State<MainLayout> {
                           'h${i}1'.png,
                           height: 24.h,
                           width: 24.h,
+                          color: AppColors.black,
                         ),
                       ),
                       label: ['Home', 'Bible', '', 'Explore', 'Profile'][i],

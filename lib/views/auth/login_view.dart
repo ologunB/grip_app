@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
             textInputAction: TextInputAction.next,
             controller: email,
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 30.h),
           HexField(
             hintText: 'Password',
             textInputType: TextInputType.text,
@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       hideText
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
-                      color: AppColors.black,
+                      color: AppColors.primary,
                       size: 22.h,
                     ),
                   )
@@ -60,15 +60,32 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           ),
           SizedBox(height: 30.h),
+          Row(
+            children: [
+              InkWell(
+                onTap: () {
+                  push(context, const ForgotScreen());
+                },
+                child: HexText(
+                  'Forgot Password?',
+                  fontSize: 14.sp,
+                  color: AppColors.primary,
+                  align: TextAlign.center,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 45.h),
           HexButton(
-            'Sign in',
-            buttonColor: AppColors.primary,
-            height: 55,
-            fontSize: 14.sp,
+            'Log in',
+            buttonColor: AppColors.black,
+            height: 60,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w400,
             textColor: AppColors.white,
-            borderColor: AppColors.primary,
-            borderRadius: 20.h,
+            borderColor: AppColors.black,
+            borderRadius: 10.h,
             onPressed: () {
               pushAndRemoveUntil(context, const MainLayout());
             },
@@ -92,42 +109,45 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [Image.asset('google'.png, height: 25.h)],
                   ),
                   buttonColor: AppColors.white,
-                  height: 55,
-                  fontSize: 14.sp,
+                  height: 60,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
                   textColor: AppColors.black,
                   borderColor: AppColors.grey,
-                  borderRadius: 20.h,
+                  borderRadius: 10.h,
                   onPressed: () {},
                 ),
               ),
-              SizedBox(width: 12.h),
-              Expanded(
-                child: HexButton(
-                  '  Apple',
-                  icon: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'apple'.png,
-                        height: 25.h,
-                        color: Colors.white,
-                      )
-                    ],
+              if (Platform.isIOS)
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 12.h),
+                    child: HexButton(
+                      '  Apple',
+                      icon: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'apple'.png,
+                            height: 25.h,
+                            color: Colors.white,
+                          )
+                        ],
+                      ),
+                      buttonColor: AppColors.black,
+                      height: 60,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      textColor: AppColors.white,
+                      borderColor: AppColors.black,
+                      borderRadius: 10.h,
+                      onPressed: () {},
+                    ),
                   ),
-                  buttonColor: AppColors.black,
-                  height: 55,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
-                  textColor: AppColors.white,
-                  borderColor: AppColors.black,
-                  borderRadius: 20.h,
-                  onPressed: () {},
                 ),
-              ),
             ],
           ),
-          SizedBox(height: 26.h),
+          SizedBox(height: 50.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -135,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Don’t have an account? ',
                 fontSize: 14.sp,
                 color: AppColors.black,
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.w500,
               ),
               InkWell(
                 onTap: () {
@@ -151,23 +171,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
           SizedBox(height: 21.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: () {
-                  push(context, const ForgotScreen());
-                },
-                child: HexText(
-                  'Forgot Password?',
-                  fontSize: 14.sp,
-                  color: AppColors.primary,
-                  align: TextAlign.center,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );

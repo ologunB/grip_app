@@ -17,7 +17,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
   Widget build(BuildContext context) {
     return AuthScaffold(
       title: const [
-        'Recover Your\nPassword',
+        'Recover Your Password',
         'forgot',
         'Confirm your email to recover your\npassword',
       ],
@@ -30,16 +30,16 @@ class _ForgotScreenState extends State<ForgotScreen> {
             textInputAction: TextInputAction.next,
             controller: email,
           ),
-          SizedBox(height: 35.h),
+          SizedBox(height: 50.h),
           HexButton(
-            'Reset Password',
-            buttonColor: AppColors.primary,
-            height: 55,
-            fontSize: 14.sp,
+            'Reset',
+            buttonColor: AppColors.black,
+            borderColor: Colors.transparent,
+            height: 60,
+            fontSize: 16.sp,
+            borderRadius: 10.h,
             fontWeight: FontWeight.w400,
             textColor: AppColors.white,
-            borderColor: AppColors.primary,
-            borderRadius: 20.h,
             onPressed: () {
               push(context, const OTPScreen());
             },
