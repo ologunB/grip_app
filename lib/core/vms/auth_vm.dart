@@ -1,5 +1,10 @@
+import 'package:hexcelon/views/home/main_layout.dart';
+
+import '../../views/auth/follow_topics_view.dart';
+import '../../views/auth/otp_view.dart';
 import '../../views/widgets/hex_text.dart';
 import '../apis/auth_api.dart';
+import '../models/category_model.dart';
 import 'base_vm.dart';
 
 class AuthViewModel extends BaseModel {
@@ -17,7 +22,7 @@ class AuthViewModel extends BaseModel {
     try {
       LoginResponse res = await _api.signup(a);
       vmContext.read<AuthViewModel>().setLoginResponse(res);
-      //   push(vmContext, const VerifyPhoneScreen());
+      push(vmContext, const OTPScreen());
       showVMSnackbar('Verify your account');
       setBusy(false);
     } on ZoperException catch (e) {
@@ -30,13 +35,13 @@ class AuthViewModel extends BaseModel {
   Future<void> verify(Map<String, dynamic> a) async {
     setBusy(true);
     try {
-      LoginResponse res = await _api.verify(a);
-      vmContext.read<AuthViewModel>().setLoginResponse(res);
-      LoginResponse user = LoginResponse();
-      user.tokens = res.tokens;
-      AppCache.setUser(user);
-      //  push(vmContext, const CreatePinScreen());
-      showVMSnackbar('Account has been verified successfully, Create a PIN');
+      await _api.verify(a);
+      LoginResponse? user = vmContext.read<AuthViewModel>().loginResponse;
+      user?.user?.verificationStatus = true;
+      AppCache.setUser(user!);
+      pushAndRemoveUntil(vmContext, const MainLayout());
+      push(vmContext, const FollowTopicsScreen());
+      showVMSnackbar('Account has been verified successfully');
       setBusy(false);
     } on ZoperException catch (e) {
       error = e.message;
@@ -45,19 +50,43 @@ class AuthViewModel extends BaseModel {
     }
   }
 
-  Future<LoginResponse?> resendOTP(String? id) async {
+  Future<void> resendOTP(String? id) async {
     setBusy(true);
     try {
-      LoginResponse a = await _api.resendOTP(id);
-      vmContext.read<AuthViewModel>().setLoginResponse(a);
-      showVMSnackbar('OTP resent successfully, Check your phone');
+      await _api.resendOTP(id);
+      showVMSnackbar('OTP resent successfully, Check your email');
       setBusy(false);
-      return a;
     } on ZoperException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
-      return null;
+    }
+  }
+
+  List<Category>? categories;
+  Future<void> getCategories() async {
+    setBusy(true);
+    try {
+      categories = await _api.getCategories();
+
+      setBusy(false);
+    } on ZoperException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+    }
+  }
+
+  List<UserModel>? creators;
+  Future<void> getCreators() async {
+    setBusy(true);
+    try {
+      creators = await _api.getCreators();
+      setBusy(false);
+    } on ZoperException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
     }
   }
 
@@ -66,16 +95,12 @@ class AuthViewModel extends BaseModel {
     try {
       LoginResponse res = await _api.login(a);
       LoginResponse user = LoginResponse();
-      user.tokens = res.tokens;
+      user.token = res.token;
       AppCache.setUser(user);
-      if (!res.user!.isPhoneVerified!) {
-        await resendOTP(res.user!.id);
+      if (!res.user!.verificationStatus!) {
+        //  await resendOTP(res.user!.id);
         //     push(vmContext, const VerifyPhoneScreen());
         showVMSnackbar('Verify your account');
-      } else if (!res.user!.isTransactionPinSet!) {
-        vmContext.read<AuthViewModel>().setLoginResponse(res);
-        //   push(vmContext, const CreatePinScreen());
-        showVMSnackbar('Create your PIN');
       } else {
         AppCache.setUser(res);
 
@@ -89,11 +114,10 @@ class AuthViewModel extends BaseModel {
     }
   }
 
-  Future<String?> generateResetPassword(String a,
-      {bool refresh = false}) async {
+  Future<String?> forgotPassword(String a, {bool refresh = false}) async {
     setBusy(true);
     try {
-      String token = await _api.generateResetPassword(a);
+      String token = await _api.forgotPassword(a);
       if (refresh) {
         showVMSnackbar('Reset OTP resent successfully');
       } else {
@@ -123,7 +147,36 @@ class AuthViewModel extends BaseModel {
     }
   }
 
-  // KYC
+  Future<bool> update(Map<String, dynamic> a) async {
+    setBusy(true);
+    try {
+      UserModel m = await _api.update(a);
+      LoginResponse? user = AppCache.getUser();
+      user?.user = m;
+      AppCache.setUser(user!);
+      setBusy(false);
+      return true;
+    } on ZoperException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+      return false;
+    }
+  }
+
+  Future<bool> follow(String a) async {
+    setBusy(true);
+    try {
+      await _api.follow(a);
+      setBusy(false);
+      return true;
+    } on ZoperException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+      return false;
+    }
+  }
 
   Future<String?> uploadMedia(File image) async {
     setBusy(true);

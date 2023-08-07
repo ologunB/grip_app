@@ -74,7 +74,7 @@ void successSnackBar(BuildContext context, String title) {
     flushbarStyle: FlushbarStyle.FLOATING,
     flushbarPosition: FlushbarPosition.TOP,
     duration: const Duration(seconds: 4),
-    backgroundColor: AppColors.white,
+    backgroundColor: const Color(0xFFE3CDC6),
   );
 
   if (!flushBar.isShowing()) {

@@ -1,5 +1,6 @@
 import 'package:hexcelon/views/auth/onboard_view.dart';
 import 'package:hexcelon/views/create/media.dart';
+import 'package:hexcelon/views/home/main_layout.dart';
 
 import 'core/models/navigator.dart';
 import 'core/storage/local_storage.dart';
@@ -23,21 +24,26 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(428, 926),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, builder) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Grip',
-        theme: ThemeData(
-          fontFamily: 'Nova',
-          primaryColor: AppColors.primary,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        navigatorKey: AppNavigator.navKey,
-        home: const OnboardScreen(),
-      ), // AgentMainLayout ClientMainLayout
+    return MultiProvider(
+      providers: allProviders,
+      child: ScreenUtilInit(
+        designSize: const Size(428, 926),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, builder) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Grip',
+          theme: ThemeData(
+            fontFamily: 'Nova',
+            primaryColor: AppColors.primary,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          navigatorKey: AppNavigator.navKey,
+          home: AppCache.getUser() == null
+              ? const OnboardScreen()
+              : const MainLayout(),
+        ), // AgentMainLayout ClientMainLayout
+      ),
     );
   }
 }

@@ -1,6 +1,9 @@
+import 'package:hexcelon/views/profile/creator_profile.dart';
+
+import '../../core/storage/local_storage.dart';
 import '../bible/all_versions.dart';
 import '../create/media.dart';
-import '../profile/creator_profile.dart';
+import '../profile/profile.dart';
 import '../widgets/hex_text.dart';
 import 'explore.dart';
 import 'home.dart';
@@ -13,20 +16,23 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  List<Widget> get screens => const [
-        HomeScreen(),
-        AllVersionScreen(),
-        SizedBox(),
-        ExploreScreen(),
-        CreatorProfileScreen(),
+  List<Widget> get screens => [
+        const HomeScreen(),
+        const AllVersionScreen(),
+        const SizedBox(),
+        const ExploreScreen(),
+        AppCache.getUser()?.user?.role == 'user'
+            ? const ProfileScreen()
+            : const CreatorProfileScreen(),
       ];
 
   int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    bool user = AppCache.getUser()?.user?.role == 'user';
     return Scaffold(
-      body: screens[currentIndex],
+      body: screens[(user ? [0, 1, 3, 4] : [0, 1, 2, 3, 4])[currentIndex]],
       backgroundColor: AppColors.white,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.white,
@@ -49,16 +55,16 @@ class _MainLayoutState extends State<MainLayout> {
         elevation: 0,
         currentIndex: currentIndex,
         onTap: (i) {
-          if (i == 2) {
+          if (!user && currentIndex == 2) {
             push(context, const ChooseMediaScreen(), true);
             return;
           }
           currentIndex = i;
           setState(() {});
         },
-        items: [0, 1, 2, 3, 4]
+        items: (user ? [0, 1, 3, 4] : [0, 1, 2, 3, 4])
             .map(
-              (i) => i == 2
+              (a) => a == 2
                   ? BottomNavigationBarItem(
                       icon: Padding(
                         padding: EdgeInsets.only(top: 12.h),
@@ -73,7 +79,7 @@ class _MainLayoutState extends State<MainLayout> {
                       icon: Padding(
                         padding: EdgeInsets.only(top: 12.h),
                         child: Image.asset(
-                          'h${i}0'.png,
+                          'h${a}0'.png,
                           height: 24.h,
                           width: 24.h,
                           color: const Color(0xffB5B5B5),
@@ -82,13 +88,13 @@ class _MainLayoutState extends State<MainLayout> {
                       activeIcon: Padding(
                         padding: EdgeInsets.only(top: 12.h),
                         child: Image.asset(
-                          'h${i}1'.png,
+                          'h${a}1'.png,
                           height: 24.h,
                           width: 24.h,
                           color: AppColors.black,
                         ),
                       ),
-                      label: ['Home', 'Bible', '', 'Explore', 'Profile'][i],
+                      label: ['Home', 'Bible', '', 'Explore', 'Profile'][a],
                     ),
             )
             .toList(),

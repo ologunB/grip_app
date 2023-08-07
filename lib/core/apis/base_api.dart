@@ -27,26 +27,28 @@ class BaseAPI {
       ),
     );
 
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (res, handler) {
-        res.headers['Authorization'] =
-            'Bearer ${AppCache.getUser()?.tokens?.access?.token}';
-        return handler.next(res);
-      },
-      onResponse: (res, handler) async {
-        if (res.statusCode == 401 &&
-            res.data['message'] == 'Please authenticate') {
-          try {
-            await refreshToken();
-          } catch (e) {
-            return handler.next(res);
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (res, handler) {
+          String? token = AppCache.getUser()?.token;
+          if (token != null) res.headers['Authorization'] = 'Bearer $token';
+          return handler.next(res);
+        },
+        onResponse: (res, handler) async {
+          if (res.statusCode == 401 &&
+              res.data['message'] == 'Please authenticate') {
+            try {
+              await refreshToken();
+            } catch (e) {
+              return handler.next(res);
+            }
+            return handler.resolve(await _retry(res.requestOptions));
           }
-          return handler.resolve(await _retry(res.requestOptions));
-        }
 
-        return handler.next(res);
-      },
-    ));
+          return handler.next(res);
+        },
+      ),
+    );
 
     return dio;
   }
@@ -57,7 +59,7 @@ class BaseAPI {
     String url = '${baseUrl}users/v1/auth/refresh-tokens';
     try {
       final Response<dynamic> res = await Dio().post<dynamic>(url,
-          data: {'refreshToken': AppCache.getUser()?.tokens?.refresh?.token});
+          data: {'refreshToken': AppCache.getUser()?.token});
       log(res.data);
       log(res.statusCode);
       switch (res.statusCode) {

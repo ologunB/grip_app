@@ -161,9 +161,9 @@ class ChapterDialog extends StatelessWidget {
                   child: HexText(
                     'Select Bible Chapter',
                     fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
                     align: TextAlign.center,
                     color: AppColors.black,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 Align(

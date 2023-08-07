@@ -200,7 +200,8 @@ class LogoutDialog extends StatelessWidget {
               alignment: Alignment.center,
               child: HexText(
                 'Logout',
-                fontSize: 14.sp,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
                 align: TextAlign.center,
                 color: AppColors.black,
               ),

@@ -12,10 +12,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryBG,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.primaryBG,
+        backgroundColor: AppColors.white,
         titleSpacing: 20.h,
         centerTitle: false,
         title: CupertinoTextField(
@@ -24,7 +24,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.h),
-                child: Image.asset('search'.png, height: 24.h),
+                child: Image.asset(
+                  'search'.png,
+                  height: 24.h,
+                  color: const Color(0xffE0E0E0),
+                ),
               ),
             ],
           ),
@@ -33,13 +37,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
             fontFamily: 'Nova',
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
-            color: AppColors.grey,
+            color: const Color(0xffE0E0E0),
           ),
           padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(20.h),
-            border: Border.all(color: AppColors.primary.withOpacity(.4)),
+            border: Border.all(color: const Color(0xffE0E0E0)),
           ),
           maxLines: 3,
           minLines: 1,

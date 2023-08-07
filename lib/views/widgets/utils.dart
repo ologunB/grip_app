@@ -51,7 +51,7 @@ class Utils {
   static String? isValidPassword(String? value) {
     value = value!.trim();
     if (value.trim().isEmpty) {
-      return "Password is required";
+      return "Password cannot be Empty";
     } else if (value.trim().length < 8) {
       return "Password is too short";
     } /* else if (!value.trim().contains(RegExp(r'\d'))) {

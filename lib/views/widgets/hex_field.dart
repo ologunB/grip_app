@@ -60,6 +60,14 @@ class HexField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    InputBorder border = OutlineInputBorder(
+      borderSide: BorderSide(
+        width: 1.h,
+        color: borderColor ?? const Color(0xffE0E0E0),
+      ),
+      borderRadius: BorderRadius.circular(10.h),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -74,9 +82,7 @@ class HexField extends StatelessWidget {
               color: color ?? AppColors.black,
             ),
           ),
-        CupertinoTextField(
-          prefix: prefix,
-          suffix: suffix,
+        TextFormField(
           enableInteractiveSelection: enableCopy,
           cursorColor: AppColors.black,
           cursorWidth: 1.h,
@@ -94,19 +100,23 @@ class HexField extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
           readOnly: readOnly,
-          placeholder: hintText,
-          placeholderStyle: TextStyle(
-            fontFamily: 'Nova',
-            color: hintColor ?? const Color(0xFF9E9E9E),
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w400,
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 16.h),
-          decoration: BoxDecoration(
-            border: Border.all(
-                width: 1.h, color: borderColor ?? const Color(0xffE0E0E0)),
-            borderRadius: BorderRadius.circular(10.h),
-            //  color: Colors.white,
+          decoration: InputDecoration(
+            prefix: SizedBox(width: 25.h),
+            contentPadding: EdgeInsets.symmetric(vertical: 0.h),
+            suffix: suffix,
+            hintText: hintText,
+            hintStyle: TextStyle(
+              fontFamily: 'Nova',
+              color: hintColor ?? const Color(0xFF9E9E9E),
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w400,
+            ),
+            border: border,
+            errorBorder: border,
+            enabledBorder: border,
+            focusedBorder: border,
+            focusedErrorBorder: border,
+            disabledBorder: border,
           ),
           onTap: onTap,
           obscureText: obscureText,
@@ -115,6 +125,7 @@ class HexField extends StatelessWidget {
           textAlign: textAlign ?? TextAlign.start,
           keyboardType: textInputType,
           onChanged: onChanged,
+          validator: validator,
         )
       ],
     );

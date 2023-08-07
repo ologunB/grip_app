@@ -1,8 +1,9 @@
+import '../models/category_model.dart';
 import 'base_api.dart';
 
 class AuthApi extends BaseAPI {
   Future<LoginResponse> signup(Map<String, dynamic> data) async {
-    String url = 'users/v1/auth/register';
+    String url = 'user/signup';
     log(data);
     try {
       final Response res = await dio().post(url, data: data);
@@ -19,15 +20,15 @@ class AuthApi extends BaseAPI {
     }
   }
 
-  Future<KycModel> getKyc() async {
-    String url = 'users/v1/kyc/${AppCache.getUser()?.user?.id}';
+  Future<LoginResponse> social(Map<String, dynamic> data) async {
+    String url = 'user/social';
+    log(data);
     try {
-      final Response res = await dio().get(url);
+      final Response res = await dio().post(url, data: data);
       log(res.data);
-      log(res.statusCode);
       switch (res.statusCode) {
-        case 200:
-          return KycModel.fromJson(res.data['data']['kyc']);
+        case 201:
+          return LoginResponse.fromJson(res.data['data']);
         default:
           throw error(res.data);
       }
@@ -37,49 +38,73 @@ class AuthApi extends BaseAPI {
     }
   }
 
-  Future<LoginResponse> verify(Map<String, dynamic> data) async {
-    String url = 'users/v1/auth/verify-account';
+  Future<List<Category>> getCategories() async {
+    String url = 'category';
+    try {
+      final Response res = await dio().get(url);
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          List<Category> dirs = [];
+          (res.data['data'] ?? []).forEach((a) {
+            dirs.add(Category.fromJson(a));
+          });
+          return dirs;
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw ZoperException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<List<UserModel>> getCreators() async {
+    String url = 'category';
+    try {
+      final Response res = await dio().get(url);
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          List<UserModel> dirs = [];
+          (res.data['data'] ?? []).forEach((a) {
+            dirs.add(UserModel.fromJson(a));
+          });
+          return dirs;
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw ZoperException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<bool> resendOTP(String? email) async {
+    String url = 'user/resend';
+    try {
+      final Response res = await dio().post(url, data: {'email': email});
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          return true;
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw ZoperException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<bool> verify(Map<String, dynamic> data) async {
+    String url = 'user/verify';
     log(data);
     try {
       final Response res = await dio().post(url, data: data);
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return LoginResponse.fromJson(res.data['data']);
-        default:
-          throw error(res.data);
-      }
-    } catch (e) {
-      log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
-    }
-  }
-
-  Future<LoginResponse> resendOTP(String? id) async {
-    String url = 'users/v1/auth/resend-otp';
-    try {
-      final Response res = await dio().post(url, data: {'userId': id});
-      log(res.data);
-      switch (res.statusCode) {
-        case 200:
-          return LoginResponse.fromJson(res.data['data']);
-        default:
-          throw error(res.data);
-      }
-    } catch (e) {
-      log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
-    }
-  }
-
-  Future<bool> createPin(String pin) async {
-    String url = 'users/v1/set-pin';
-    log(pin);
-    try {
-      final Response res = await dio().post(url, data: {'pin': pin});
-      log(res.data);
-      switch (res.statusCode) {
-        case 200:
           return true;
         default:
           throw error(res.data);
@@ -90,15 +115,15 @@ class AuthApi extends BaseAPI {
     }
   }
 
-  Future<bool> validatePin(String pin) async {
-    String url = 'users/v1/validate-transaction-pin';
-    log(pin);
+  Future<UserModel> update(Map<String, dynamic> data) async {
+    String url = 'user';
+    log(data);
     try {
-      final Response res = await dio().post(url, data: {'pin': pin});
+      final Response res = await dio().patch(url, data: data);
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return true;
+          return UserModel.fromJson(res.data['data']);
         default:
           throw error(res.data);
       }
@@ -108,11 +133,10 @@ class AuthApi extends BaseAPI {
     }
   }
 
-  Future<bool> updatePin(String pin) async {
-    String url = 'users/v1/set-pin';
-    log(pin);
+  Future<bool> follow(String? id) async {
+    String url = 'follow';
     try {
-      final Response res = await dio().put(url, data: {'pin': pin});
+      final Response res = await dio().post(url, data: {'creatorId': id});
       log(res.data);
       switch (res.statusCode) {
         case 200:
@@ -127,7 +151,7 @@ class AuthApi extends BaseAPI {
   }
 
   Future<LoginResponse> login(Map<String, dynamic> data) async {
-    String url = 'users/v1/auth/login';
+    String url = 'user/login';
     log(data);
     try {
       final Response res = await dio().post(url, data: data);
@@ -149,7 +173,7 @@ class AuthApi extends BaseAPI {
   }
 
   Future<LoginResponse> getUser() async {
-    String url = 'users/v1/auth/${AppCache.getUser()?.user?.id}';
+    String url = 'user';
     try {
       final Response res = await dio().get(url);
       log(res.data);
@@ -165,11 +189,10 @@ class AuthApi extends BaseAPI {
     }
   }
 
-  Future<String> generateResetPassword(String phoneNumber) async {
-    String url = 'users/v1/auth/forgot-password';
+  Future<String> forgotPassword(String? email) async {
+    String url = 'user/forgot';
     try {
-      final Response res =
-          await dio().post(url, data: {'phoneNumber': phoneNumber});
+      final Response res = await dio().post(url, data: {'email': email});
       log(res.statusCode);
       log(res.data);
       switch (res.statusCode) {
@@ -185,7 +208,7 @@ class AuthApi extends BaseAPI {
   }
 
   Future<bool> resetPassword(Map<String, dynamic> data) async {
-    String url = 'users/v1/auth/reset-password';
+    String url = 'user/reset';
     log(data);
     try {
       final Response res = await dio().post(url, data: data);
@@ -203,51 +226,13 @@ class AuthApi extends BaseAPI {
     }
   }
 
-  // KYC
-
-  Future<bool> verifyBVN(String val, String link) async {
-    String url = 'users/v1/kyc/validate-bvn';
+  Future<bool> changePassword(Map<String, dynamic> data) async {
+    String url = 'user/password';
+    log(data);
     try {
-      final Response res =
-          await dio().post(url, data: {'bvn': val, 'image': link});
+      final Response res = await dio().post(url, data: data);
+      log(res.data);
       log(res.statusCode);
-      log(res.data);
-      switch (res.statusCode) {
-        case 200:
-          return true;
-        default:
-          throw error(res.data);
-      }
-    } catch (e) {
-      log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
-    }
-  }
-
-  Future<bool> verifyDocument(Map<String, dynamic> data) async {
-    String url = 'users/v1/kyc/validate-identity';
-    log(data);
-    try {
-      final Response res = await dio().post(url, data: data);
-      log(res.data);
-      switch (res.statusCode) {
-        case 200:
-          return true;
-        default:
-          throw error(res.data);
-      }
-    } catch (e) {
-      log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
-    }
-  }
-
-  Future<bool> verifyAddress(Map<String, dynamic> data) async {
-    String url = 'users/v1/kyc/address-validation';
-    log(data);
-    try {
-      final Response res = await dio().post(url, data: data);
-      log(res.data);
       switch (res.statusCode) {
         case 200:
           return true;
@@ -261,12 +246,12 @@ class AuthApi extends BaseAPI {
   }
 
   Future<String> uploadMedia(File image) async {
-    String url = 'media/v1/upload/image';
+    String url = 'user/image';
     try {
       FormData forms = FormData();
       forms.files.add(
         MapEntry<String, MultipartFile>(
-          'file',
+          'image',
           MultipartFile.fromFileSync(
             image.path,
             filename: image.path.split('/').last,
@@ -277,8 +262,8 @@ class AuthApi extends BaseAPI {
       final Response res = await dio().post(url, data: forms);
       log(res.data);
       switch (res.statusCode) {
-        case 201:
-          return res.data['data']['media'].first['path']['download'];
+        case 200:
+          return res.data;
         default:
           throw error(res.data);
       }

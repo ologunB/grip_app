@@ -18,5 +18,5 @@ class AppColors {
   static const Color grey200 = Color(0xff75757E);
   static const Color btnInactive = Color(0xffE9E9EC);
   static const Color textInactive = Color(0xffB2B1BA);
-  static const Color primaryBG = Color(0xffFFF6ED);
+  static const Color primaryBG = Color(0xffFFFFFF);
 }

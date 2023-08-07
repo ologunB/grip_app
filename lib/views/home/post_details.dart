@@ -181,10 +181,10 @@ class CommentsDialog extends StatelessWidget {
                 alignment: Alignment.center,
                 child: HexText(
                   '579 comments',
-                  fontSize: 14.sp,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
                   align: TextAlign.center,
                   color: AppColors.black,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               Align(
@@ -347,7 +347,8 @@ class DevotionalDialog extends StatelessWidget {
           children: [
             HexText(
               'Study Devotional Message',
-              fontSize: 14.sp,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
               align: TextAlign.center,
               color: AppColors.black,
             ),

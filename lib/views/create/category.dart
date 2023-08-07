@@ -1,4 +1,3 @@
-import '../auth/follow_topics_view.dart';
 import '../widgets/hex_text.dart';
 
 class ChooseCategoryScreen extends StatefulWidget {
@@ -55,9 +54,9 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen> {
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
         padding: EdgeInsets.zero,
-        itemCount: topics.length,
+        itemCount: [].length,
         itemBuilder: (c, i) {
-          String a = topics[i];
+          String a = [][i];
           bool contains = selected.contains(a);
 
           return InkWell(
