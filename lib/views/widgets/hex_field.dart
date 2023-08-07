@@ -27,11 +27,12 @@ class HexField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final TextAlign? textAlign;
   final List<TextInputFormatter>? inputFormatters;
-
+  final Widget? suffixIcon;
   const HexField({
     super.key,
     this.prefix,
     this.suffix,
+    this.suffixIcon,
     this.validator,
     this.labelText,
     this.textInputAction,
@@ -101,9 +102,11 @@ class HexField extends StatelessWidget {
           ),
           readOnly: readOnly,
           decoration: InputDecoration(
+            counterStyle: const TextStyle(fontSize: 0),
             prefix: SizedBox(width: 25.h),
             contentPadding: EdgeInsets.symmetric(vertical: 0.h),
             suffix: suffix,
+            suffixIcon: suffixIcon,
             hintText: hintText,
             hintStyle: TextStyle(
               fontFamily: 'Nova',

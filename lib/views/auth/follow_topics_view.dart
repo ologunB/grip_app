@@ -1,11 +1,14 @@
+import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:hexcelon/views/auth/follow_people_view.dart';
 
 import '../../core/vms/auth_vm.dart';
 import '../widgets/hex_text.dart';
+import '../widgets/retry_widget.dart';
 
 class FollowTopicsScreen extends StatefulWidget {
-  const FollowTopicsScreen({super.key});
+  const FollowTopicsScreen({super.key, this.previous});
 
+  final List<String>? previous;
   @override
   State<FollowTopicsScreen> createState() => _FollowTopicsScreenState();
 }
@@ -13,7 +16,15 @@ class FollowTopicsScreen extends StatefulWidget {
 class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
   List<String> selected = [];
   @override
+  void initState() {
+    selected
+        .addAll(widget.previous ?? AppCache.getUser()?.user?.category ?? []);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool updateUser = widget.previous == null;
     return BaseView<AuthViewModel>(
       onModelReady: (m) => m.getCategories(),
       builder: (_, AuthViewModel model, __) => Scaffold(
@@ -30,7 +41,7 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 25.h, vertical: 10.h),
                   child: HexButton(
-                    'Continue',
+                    updateUser ? 'Continue' : 'Update',
                     buttonColor: AppColors.black,
                     height: 60,
                     fontSize: 16.sp,
@@ -42,11 +53,15 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
                     onPressed: selected.length < 5
                         ? null
                         : () async {
-                            bool a =
-                                await cModel.update({'category': selected});
-                            if (a) {
-                              pushReplacement(
-                                  context, const FollowPeopleScreen());
+                            if (updateUser) {
+                              bool a =
+                                  await cModel.update({'category': selected});
+                              if (a) {
+                                pushReplacement(
+                                    context, const FollowPeopleScreen());
+                              }
+                            } else {
+                              Navigator.pop(context, selected);
                             }
                           },
                   ),
@@ -55,24 +70,23 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
         body: model.busy
             ? const Center(child: HexProgress())
             : model.categories == null
-                ? HexText(
-                    'An error occurred, retry?',
-                    fontSize: 32.sp,
-                    color: AppColors.primary,
-                    align: TextAlign.center,
-                    fontWeight: FontWeight.w700,
+                ? RetryItem(
+                    onTap: () {
+                      model.getCreators();
+                    },
                   )
                 : SafeArea(
                     child: ListView(
                       children: [
                         SizedBox(height: 20.h),
-                        HexText(
-                          'Welcome to GRIP',
-                          fontSize: 32.sp,
-                          color: AppColors.primary,
-                          align: TextAlign.center,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        if (updateUser)
+                          HexText(
+                            'Welcome to GRIP',
+                            fontSize: 32.sp,
+                            color: AppColors.primary,
+                            align: TextAlign.center,
+                            fontWeight: FontWeight.w700,
+                          ),
                         SizedBox(height: 5.h),
                         HexText(
                           'Select at least 5 topics to\npersonalise your feed',

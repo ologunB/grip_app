@@ -94,17 +94,13 @@ class AuthViewModel extends BaseModel {
     setBusy(true);
     try {
       LoginResponse res = await _api.login(a);
-      LoginResponse user = LoginResponse();
-      user.token = res.token;
-      AppCache.setUser(user);
       if (!res.user!.verificationStatus!) {
-        //  await resendOTP(res.user!.id);
-        //     push(vmContext, const VerifyPhoneScreen());
-        showVMSnackbar('Verify your account');
+        await resendOTP(res.user!.email);
+        vmContext.read<AuthViewModel>().setLoginResponse(res);
+        push(vmContext, const OTPScreen());
       } else {
         AppCache.setUser(res);
-
-        //   pushAndRemoveUntil(vmContext, const MainLayout());
+        pushAndRemoveUntil(vmContext, const MainLayout());
       }
       setBusy(false);
     } on ZoperException catch (e) {
@@ -114,36 +110,48 @@ class AuthViewModel extends BaseModel {
     }
   }
 
-  Future<String?> forgotPassword(String a, {bool refresh = false}) async {
+  Future<void> forgotPassword(String? email, {bool refresh = false}) async {
     setBusy(true);
     try {
-      String token = await _api.forgotPassword(a);
+      await _api.forgotPassword(email);
       if (refresh) {
         showVMSnackbar('Reset OTP resent successfully');
       } else {
-        //    push(vmContext, VerifyForgotPassView(token: token, phone: a));
+        push(vmContext, OTPScreen(email: email));
       }
       setBusy(false);
-      return token;
     } on ZoperException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
-      return null;
     }
   }
 
-  Future<void> resetPassword(Map<String, dynamic> a) async {
+  Future<bool> resetPassword(Map<String, dynamic> a) async {
     setBusy(true);
     try {
       await _api.resetPassword(a);
-      //  pushAndRemoveUntil(vmContext, const LoginScreen());
-      showVMSnackbar('Password reset successfully, Login now');
       setBusy(false);
+      return true;
     } on ZoperException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
+      return false;
+    }
+  }
+
+  Future<bool> changePassword(Map<String, dynamic> a) async {
+    setBusy(true);
+    try {
+      await _api.changePassword(a);
+      setBusy(false);
+      return true;
+    } on ZoperException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+      return false;
     }
   }
 
@@ -164,7 +172,7 @@ class AuthViewModel extends BaseModel {
     }
   }
 
-  Future<bool> follow(String a) async {
+  Future<bool> follow(String? a) async {
     setBusy(true);
     try {
       await _api.follow(a);
@@ -181,7 +189,11 @@ class AuthViewModel extends BaseModel {
   Future<String?> uploadMedia(File image) async {
     setBusy(true);
     try {
-      String link = await _api.uploadMedia(image);
+      String? link = await _api.uploadMedia(image);
+      LoginResponse? user = AppCache.getUser();
+      user?.user?.image = link;
+      AppCache.setUser(user!);
+      setBusy(false);
       return link;
     } on ZoperException catch (e) {
       error = e.message;

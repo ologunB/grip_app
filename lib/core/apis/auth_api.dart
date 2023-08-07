@@ -60,7 +60,7 @@ class AuthApi extends BaseAPI {
   }
 
   Future<List<UserModel>> getCreators() async {
-    String url = 'category';
+    String url = 'user/creators';
     try {
       final Response res = await dio().get(url);
       log(res.data);
@@ -99,7 +99,6 @@ class AuthApi extends BaseAPI {
 
   Future<bool> verify(Map<String, dynamic> data) async {
     String url = 'user/verify';
-    log(data);
     try {
       final Response res = await dio().post(url, data: data);
       log(res.data);
@@ -117,7 +116,6 @@ class AuthApi extends BaseAPI {
 
   Future<UserModel> update(Map<String, dynamic> data) async {
     String url = 'user';
-    log(data);
     try {
       final Response res = await dio().patch(url, data: data);
       log(res.data);
@@ -152,16 +150,11 @@ class AuthApi extends BaseAPI {
 
   Future<LoginResponse> login(Map<String, dynamic> data) async {
     String url = 'user/login';
-    log(data);
     try {
       final Response res = await dio().post(url, data: data);
       log(res.data);
-      log(res.statusCode);
       switch (res.statusCode) {
-        case 201:
-          return LoginResponse.fromJson(res.data['data']);
         case 200:
-          if (res.data['data'].isEmpty) throw 'Invalid phone number';
           return LoginResponse.fromJson(res.data['data']);
         default:
           throw error(res.data);
@@ -189,7 +182,7 @@ class AuthApi extends BaseAPI {
     }
   }
 
-  Future<String> forgotPassword(String? email) async {
+  Future<bool> forgotPassword(String? email) async {
     String url = 'user/forgot';
     try {
       final Response res = await dio().post(url, data: {'email': email});
@@ -197,7 +190,7 @@ class AuthApi extends BaseAPI {
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return res.data['data']['token'];
+          return true;
         default:
           throw error(res.data);
       }
@@ -259,11 +252,11 @@ class AuthApi extends BaseAPI {
         ),
       );
 
-      final Response res = await dio().post(url, data: forms);
+      final Response res = await dio().patch(url, data: forms);
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return res.data;
+          return res.data['data'];
         default:
           throw error(res.data);
       }

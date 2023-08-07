@@ -1,10 +1,9 @@
-import 'package:hexcelon/views/auth/onboard_view.dart';
-import 'package:hexcelon/views/create/media.dart';
-import 'package:hexcelon/views/home/main_layout.dart';
-
 import 'core/models/navigator.dart';
 import 'core/storage/local_storage.dart';
 import 'locator.dart';
+import 'views/auth/onboard_view.dart';
+import 'views/create/media.dart';
+import 'views/home/main_layout.dart';
 import 'views/widgets/hex_text.dart';
 
 Future<void> main() async {

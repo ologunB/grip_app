@@ -1,4 +1,5 @@
 import 'package:hexcelon/core/apis/base_api.dart';
+import 'package:hexcelon/views/auth/follow_topics_view.dart';
 
 import '../auth/login_view.dart';
 import '../widgets/hex_text.dart';
@@ -61,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         SizedBox(height: 8.h),
                         HexText(
-                          'Follow',
+                          'Following',
                           fontSize: 16.sp,
                           color: AppColors.grey200,
                           fontWeight: FontWeight.w600,
@@ -76,32 +77,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         thickness: 1.h,
                       ),
                     ),
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            HexText(
-                              '5',
-                              fontSize: 16.sp,
-                              color: AppColors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            HexText(
-                              ' Topics',
-                              fontSize: 16.sp,
-                              color: AppColors.black,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        HexText(
-                          'Following',
-                          fontSize: 16.sp,
-                          color: AppColors.grey200,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ],
+                    InkWell(
+                      onTap: () async {
+                        await push(context, const FollowTopicsScreen());
+                        setState(() {});
+                      },
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              HexText(
+                                '${AppCache.getUser()?.user?.category?.length}',
+                                fontSize: 16.sp,
+                                color: AppColors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              HexText(
+                                ' Topics',
+                                fontSize: 16.sp,
+                                color: AppColors.black,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.h),
+                          HexText(
+                            'Following',
+                            fontSize: 16.sp,
+                            color: AppColors.grey200,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

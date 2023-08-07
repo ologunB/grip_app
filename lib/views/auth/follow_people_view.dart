@@ -1,5 +1,9 @@
+import 'package:hexcelon/core/apis/base_api.dart';
+import 'package:hexcelon/views/widgets/user_image.dart';
+
 import '../../core/vms/auth_vm.dart';
 import '../widgets/hex_text.dart';
+import '../widgets/retry_widget.dart';
 
 class FollowPeopleScreen extends StatefulWidget {
   const FollowPeopleScreen({super.key});
@@ -24,12 +28,10 @@ class _FollowPeopleScreenState extends State<FollowPeopleScreen> {
         body: model.busy
             ? const Center(child: HexProgress())
             : model.creators == null
-                ? HexText(
-                    'An error occurred, retry?',
-                    fontSize: 32.sp,
-                    color: AppColors.primary,
-                    align: TextAlign.center,
-                    fontWeight: FontWeight.w700,
+                ? RetryItem(
+                    onTap: () {
+                      model.getCreators();
+                    },
                   )
                 : SafeArea(
                     child: Column(
@@ -66,16 +68,14 @@ class _FollowPeopleScreenState extends State<FollowPeopleScreen> {
                                   bottom: 20.h, right: 25.h, left: 25.h),
                               itemCount: model.creators!.length,
                               itemBuilder: (c, i) {
+                                UserModel user = model.creators![i];
                                 bool contains = selected.contains(i);
                                 return Row(
                                   children: [
-                                    CircleAvatar(
-                                      radius: 30.h,
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(30.h),
-                                        child: Image.asset('user'.png),
-                                      ),
+                                    UserImage(
+                                      size: 60.h,
+                                      radius: 60.h,
+                                      imageUrl: user.image,
                                     ),
                                     SizedBox(width: 17.h),
                                     Column(
@@ -83,14 +83,14 @@ class _FollowPeopleScreenState extends State<FollowPeopleScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         HexText(
-                                          'Pastor Tobe',
+                                          '${user.username}',
                                           fontSize: 16.sp,
                                           color: AppColors.black,
                                           fontWeight: FontWeight.w500,
                                         ),
                                         SizedBox(height: 8.h),
                                         HexText(
-                                          '#prayer #fasting.....',
+                                          '${user.category?.join(', ')}',
                                           fontSize: 12.sp,
                                           color: AppColors.black,
                                         ),
@@ -102,7 +102,7 @@ class _FollowPeopleScreenState extends State<FollowPeopleScreen> {
                                       builder: (_, AuthViewModel fModel, __) =>
                                           InkWell(
                                         onTap: () {
-                                          fModel.follow('1');
+                                          fModel.follow(user.id.toString());
                                           if (contains) {
                                             selected.remove(i);
                                           } else {

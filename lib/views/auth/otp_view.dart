@@ -1,12 +1,14 @@
 import 'package:hexcelon/core/apis/base_api.dart';
+import 'package:hexcelon/views/auth/change_pass_view.dart';
 
 import '../../core/models/navigator.dart';
 import '../../core/vms/auth_vm.dart';
 import '../widgets/hex_text.dart';
 
 class OTPScreen extends StatefulWidget {
-  const OTPScreen({super.key});
+  const OTPScreen({super.key, this.email});
 
+  final String? email;
   @override
   State<OTPScreen> createState() => _OTPScreenState();
 }
@@ -38,8 +40,8 @@ class _OTPScreenState extends State<OTPScreen> {
             children: [
               HexField(
                 hintText: 'OTP',
-                textInputType: TextInputType.number,
-                textInputAction: TextInputAction.next,
+                textInputType: TextInputType.text,
+                textInputAction: TextInputAction.done,
                 maxLength: 5,
                 autoFocus: true,
                 textAlign: TextAlign.center,
@@ -70,12 +72,17 @@ class _OTPScreenState extends State<OTPScreen> {
 
                   if (formKey.currentState!.validate()) {
                     Utils.offKeyboard();
-                    Map<String, dynamic> userData = {
-                      "id": login?.user?.id,
-                      "code": code.text
-                    };
 
-                    model.verify(userData);
+                    if (widget.email == null) {
+                      model.verify({"id": login?.user?.id, "code": code.text});
+                    } else {
+                      push(
+                        context,
+                        ChangePassScreen(
+                          data: {'email': widget.email, 'code': code.text},
+                        ),
+                      );
+                    }
                   }
                 },
               ),

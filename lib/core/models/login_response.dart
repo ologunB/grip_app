@@ -5,7 +5,7 @@ class LoginResponse {
   LoginResponse({token, tokens, user});
   LoginResponse.fromJson(dynamic json) {
     token = json['token'];
-    user = json['user'] != null ? UserModel.fromJson(json['user']) : null;
+    user = UserModel.fromJson(json['user'] ?? json['userData'] ?? {});
   }
 
   Map<String, dynamic> toJson() {
@@ -13,9 +13,7 @@ class LoginResponse {
     if (user != null) {
       data['user'] = user!.toJson();
     }
-
     data['token'] = token;
-
     return data;
   }
 }
@@ -64,7 +62,7 @@ class UserModel {
     googleId = json['googleId'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    category = json['category']?.cast<String>();
+    category = json['category']?.cast<String>() ?? [];
   }
 
   Map<String, dynamic> toJson() {
