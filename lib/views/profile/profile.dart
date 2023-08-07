@@ -3,6 +3,7 @@ import 'package:hexcelon/views/auth/follow_topics_view.dart';
 
 import '../auth/login_view.dart';
 import '../widgets/hex_text.dart';
+import '../widgets/user_image.dart';
 import 'all_versions.dart';
 import 'edit.dart';
 import 'history.dart';
@@ -24,14 +25,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 30.h),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(73.h),
-                child: Image.asset('user'.png, height: 107.h, width: 107.h),
+              UserImage(
+                size: 107.h,
+                radius: 107.h,
+                imageUrl: AppCache.getUser()?.user?.image,
               ),
               SizedBox(height: 8.h),
               HexText(
-                '@Chinwo4Christ007',
+                '@${AppCache.getUser()?.user?.username}',
                 fontSize: 16.sp,
                 align: TextAlign.center,
                 color: AppColors.primary,
@@ -47,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Row(
                           children: [
                             HexText(
-                              '5',
+                              '${AppCache.getUser()?.user?.followingCount}',
                               fontSize: 16.sp,
                               color: AppColors.black,
                               fontWeight: FontWeight.bold,
@@ -87,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Row(
                             children: [
                               HexText(
-                                '${AppCache.getUser()?.user?.category?.length}',
+                                '${AppCache.getUser()?.user?.categories?.length}',
                                 fontSize: 16.sp,
                                 color: AppColors.black,
                                 fontWeight: FontWeight.bold,
@@ -129,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 itemCount: all.length,
                 itemBuilder: (c, i) {
                   return InkWell(
-                    onTap: () {
+                    onTap: () async {
                       if (all[i].first == 'Log out') {
                         showModalBottomSheet(
                           backgroundColor: Colors.white,
@@ -146,7 +147,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           },
                         );
                       } else {
-                        push(context, all[i].last);
+                        await push(context, all[i].last);
+                        setState(() {});
                       }
                     },
                     child: Container(

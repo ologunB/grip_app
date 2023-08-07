@@ -17,8 +17,9 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
   List<String> selected = [];
   @override
   void initState() {
-    selected
-        .addAll(widget.previous ?? AppCache.getUser()?.user?.category ?? []);
+    List<String>? previous =
+        AppCache.getUser()?.user?.categories?.map((e) => e.name!).toList();
+    selected.addAll(widget.previous ?? previous ?? []);
     super.initState();
   }
 

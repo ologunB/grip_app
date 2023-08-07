@@ -128,7 +128,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       textColor: AppColors.black,
                       borderColor: AppColors.grey,
                       borderRadius: 10.h,
-                      onPressed: () {},
+                      onPressed: () {
+                        model.signInWithGoogle();
+                      },
                     ),
                   ),
                   if (Platform.isIOS)

@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcelon/views/home/main_layout.dart';
 
 import '../../views/auth/follow_topics_view.dart';
@@ -163,6 +164,8 @@ class AuthViewModel extends BaseModel {
       user?.user = m;
       AppCache.setUser(user!);
       setBusy(false);
+      showVMSnackbar('Profile has been updated');
+
       return true;
     } on ZoperException catch (e) {
       error = e.message;
@@ -203,37 +206,56 @@ class AuthViewModel extends BaseModel {
     }
   }
 
-  Future<void> signInWithGoogle(BuildContext buildContext) async {
+  Future<void> signInWithGoogle() async {
     setBusy(true);
     try {
-/*      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: scopes);
+      final GoogleSignIn googleSignIn = GoogleSignIn();
       await googleSignIn.signOut();
+
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
 
-      print(3);
       if (googleSignInAccount != null) {
-        List<String> list = googleSignInAccount.displayName!.split(' ');
         Map<String, dynamic> data = {
-          "firstName": list.first,
-          "lastName": list.length > 1 ? list[1] : '',
+          "googleId": googleSignInAccount.id,
+          "username": googleSignInAccount.displayName ?? '',
           "email": googleSignInAccount.email,
           "picture": googleSignInAccount.photoUrl,
         };
-        print(data);
+        socialSignup(data);
       } else {
+        setBusy(false);
         showVMSnackbar('Choose an account', err: true);
       }
-      setBusy(false);*/
     } on PlatformException catch (e) {
       setBusy(false);
+      print(e);
       showVMSnackbar(e.message!, err: true);
     } on ZoperException catch (e) {
       error = e.message;
+      showVMSnackbar(e.message, err: true);
       setBusy(false);
     } catch (e) {
       setBusy(false);
       showVMSnackbar(e.toString(), err: true);
+    }
+  }
+
+  Future<void> socialSignup(Map<String, dynamic> a) async {
+    setBusy(true);
+    try {
+      LoginResponse res = await _api.social(a);
+
+      AppCache.setUser(res);
+      pushAndRemoveUntil(vmContext, const MainLayout());
+      if (res.user!.categories!.isEmpty) {
+        push(vmContext, const FollowTopicsScreen());
+      }
+    } on ZoperException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+      return null;
     }
   }
 }

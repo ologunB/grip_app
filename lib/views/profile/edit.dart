@@ -24,12 +24,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   void initState() {
-    phone = TextEditingController(text: AppCache.getUser()?.user?.phone);
-    email = TextEditingController(text: AppCache.getUser()?.user?.email);
-    name = TextEditingController(text: AppCache.getUser()?.user?.username);
+    UserModel? user = AppCache.getUser()?.user;
+    phone = TextEditingController(text: user?.phone);
+    email = TextEditingController(text: user?.email);
+    name = TextEditingController(text: user?.username);
     category = TextEditingController(
-        text: AppCache.getUser()?.user?.category?.join(', '));
-    imageUrl = AppCache.getUser()?.user?.image;
+        text: user?.categories?.map((e) => e.name).join(', '));
+    imageUrl = user?.image;
     super.initState();
   }
 

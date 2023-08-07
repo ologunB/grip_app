@@ -25,7 +25,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
           iconTheme: const IconThemeData(color: AppColors.primary),
           actions: [
             Padding(
-              padding: EdgeInsets.only(right: 25.h),
+              padding: EdgeInsets.only(right: 25.h, top: 10.h),
               child: Column(
                 children: [
                   InkWell(

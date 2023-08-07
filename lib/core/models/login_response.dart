@@ -1,3 +1,5 @@
+import 'category_model.dart';
+
 class LoginResponse {
   UserModel? user;
   String? token;
@@ -31,7 +33,9 @@ class UserModel {
   String? googleId;
   String? createdAt;
   String? updatedAt;
-  List<String>? category;
+  String? followersCount;
+  String? followingCount;
+  List<Category>? categories;
 
   UserModel({
     this.id,
@@ -46,7 +50,9 @@ class UserModel {
     this.googleId,
     this.createdAt,
     this.updatedAt,
-    this.category,
+    this.categories,
+    this.followersCount,
+    this.followingCount,
   });
 
   UserModel.fromJson(dynamic json) {
@@ -62,12 +68,17 @@ class UserModel {
     googleId = json['googleId'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    category = json['category']?.cast<String>() ?? [];
+    followersCount = json['followersCount'];
+    followingCount = json['followingCount'];
+    categories = [];
+    json['categories']?.forEach((v) {
+      categories!.add(Category.fromJson(v));
+    });
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['category'] = category;
+    data['categories'] = categories!.map((v) => v.toJson()).toList();
     data['id'] = id;
     data['username'] = username;
     data['email'] = email;
@@ -78,6 +89,8 @@ class UserModel {
     data['is_social'] = isSocial;
     data['image'] = image;
     data['googleId'] = googleId;
+    data['followersCount'] = followersCount;
+    data['followingCount'] = followingCount;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     return data;

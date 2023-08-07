@@ -90,7 +90,7 @@ class _FollowPeopleScreenState extends State<FollowPeopleScreen> {
                                         ),
                                         SizedBox(height: 8.h),
                                         HexText(
-                                          '${user.category?.join(', ')}',
+                                          '${user.categories?.join(', ')}',
                                           fontSize: 12.sp,
                                           color: AppColors.black,
                                         ),

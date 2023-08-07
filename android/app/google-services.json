@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "647882782439",
+    "project_id": "grip-10c12",
+    "storage_bucket": "grip-10c12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647882782439:android:5082be5a9f627141b15442",
+        "android_client_info": {
+          "package_name": "com.composir.grip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647882782439-vnu8q6t89un1eht9qoi6lebjo5ivcqui.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.composir.grip",
+            "certificate_hash": "c6e94cdc70d739c33571dad023b3455635423255"
+          }
+        },
+        {
+          "client_id": "647882782439-c9evq3sd5ecvh3pg2ebsfrqgek4dfqaa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFc5fdPOw10-pipudlhBDk5NdGjsUeQoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647882782439-c9evq3sd5ecvh3pg2ebsfrqgek4dfqaa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

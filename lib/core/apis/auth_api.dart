@@ -29,6 +29,8 @@ class AuthApi extends BaseAPI {
       switch (res.statusCode) {
         case 201:
           return LoginResponse.fromJson(res.data['data']);
+        case 200:
+          return LoginResponse.fromJson(res.data['data']);
         default:
           throw error(res.data);
       }
