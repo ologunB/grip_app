@@ -1,4 +1,4 @@
-import 'package:hexcelon/core/models/login_response.dart';
+import 'package:hexcelon/core/models/login_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class AppCache {
@@ -24,14 +24,14 @@ class AppCache {
     _defaultBox.put(bibleKey, a);
   }
 
-  static void setUser(LoginResponse a) {
+  static void setUser(LoginModel a) {
     _userBox.put(userKey, a.toJson());
   }
 
-  static LoginResponse? getUser() {
+  static LoginModel? getUser() {
     dynamic d = _userBox.get(userKey);
     if (d == null) return null;
-    return LoginResponse.fromJson(d);
+    return LoginModel.fromJson(d);
   }
 
   static Future<void> clear() async {

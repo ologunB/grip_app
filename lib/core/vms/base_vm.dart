@@ -4,8 +4,7 @@ import 'package:logger/logger.dart';
 import '../../views/widgets/snackbar.dart';
 import '../models/navigator.dart';
 
-export 'package:hexcelon/core/models/login_response.dart';
-export 'package:hexcelon/core/models/zoper_exception.dart';
+export 'package:hexcelon/core/models/login_model.dart';
 export 'package:hexcelon/core/storage/local_storage.dart';
 export 'package:provider/provider.dart';
 

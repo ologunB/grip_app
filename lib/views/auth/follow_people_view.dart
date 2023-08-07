@@ -1,6 +1,6 @@
-import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:hexcelon/views/widgets/user_image.dart';
 
+import '../../core/models/login_model.dart';
 import '../../core/vms/auth_vm.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/retry_widget.dart';

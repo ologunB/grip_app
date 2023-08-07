@@ -104,7 +104,8 @@ class HexField extends StatelessWidget {
           decoration: InputDecoration(
             counterStyle: const TextStyle(fontSize: 0),
             prefix: SizedBox(width: 25.h),
-            contentPadding: EdgeInsets.symmetric(vertical: 0.h),
+            contentPadding:
+                EdgeInsets.symmetric(vertical: maxLines != null ? 10 : 0.h),
             suffix: suffix,
             suffixIcon: suffixIcon,
             hintText: hintText,

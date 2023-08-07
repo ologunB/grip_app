@@ -55,7 +55,7 @@ class _MainLayoutState extends State<MainLayout> {
         elevation: 0,
         currentIndex: currentIndex,
         onTap: (i) {
-          if (!user && currentIndex == 2) {
+          if (!user && i == 2) {
             push(context, const ChooseMediaScreen(), true);
             return;
           }

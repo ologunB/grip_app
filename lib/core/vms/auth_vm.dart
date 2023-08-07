@@ -1,19 +1,24 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcelon/views/home/main_layout.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 
 import '../../views/auth/follow_topics_view.dart';
 import '../../views/auth/otp_view.dart';
 import '../../views/widgets/hex_text.dart';
 import '../apis/auth_api.dart';
 import '../models/category_model.dart';
+import '../models/error_util.dart';
 import 'base_vm.dart';
 
 class AuthViewModel extends BaseModel {
   final AuthApi _api = locator<AuthApi>();
   String? error;
 
-  LoginResponse? loginResponse;
-  void setLoginResponse(LoginResponse e) {
+  LoginModel? loginResponse;
+  void setLoginResponse(LoginModel e) {
     loginResponse = e;
     notifyListeners();
   }
@@ -21,12 +26,12 @@ class AuthViewModel extends BaseModel {
   Future<void> signup(Map<String, dynamic> a) async {
     setBusy(true);
     try {
-      LoginResponse res = await _api.signup(a);
+      LoginModel res = await _api.signup(a);
       vmContext.read<AuthViewModel>().setLoginResponse(res);
       push(vmContext, const OTPScreen());
       showVMSnackbar('Verify your account');
       setBusy(false);
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -37,14 +42,14 @@ class AuthViewModel extends BaseModel {
     setBusy(true);
     try {
       await _api.verify(a);
-      LoginResponse? user = vmContext.read<AuthViewModel>().loginResponse;
+      LoginModel? user = vmContext.read<AuthViewModel>().loginResponse;
       user?.user?.verificationStatus = true;
       AppCache.setUser(user!);
       pushAndRemoveUntil(vmContext, const MainLayout());
       push(vmContext, const FollowTopicsScreen());
       showVMSnackbar('Account has been verified successfully');
       setBusy(false);
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -57,7 +62,7 @@ class AuthViewModel extends BaseModel {
       await _api.resendOTP(id);
       showVMSnackbar('OTP resent successfully, Check your email');
       setBusy(false);
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -71,7 +76,7 @@ class AuthViewModel extends BaseModel {
       categories = await _api.getCategories();
 
       setBusy(false);
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -84,7 +89,7 @@ class AuthViewModel extends BaseModel {
     try {
       creators = await _api.getCreators();
       setBusy(false);
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -94,7 +99,7 @@ class AuthViewModel extends BaseModel {
   Future<void> login(Map<String, dynamic> a) async {
     setBusy(true);
     try {
-      LoginResponse res = await _api.login(a);
+      LoginModel res = await _api.login(a);
       if (!res.user!.verificationStatus!) {
         await resendOTP(res.user!.email);
         vmContext.read<AuthViewModel>().setLoginResponse(res);
@@ -104,7 +109,7 @@ class AuthViewModel extends BaseModel {
         pushAndRemoveUntil(vmContext, const MainLayout());
       }
       setBusy(false);
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -121,7 +126,7 @@ class AuthViewModel extends BaseModel {
         push(vmContext, OTPScreen(email: email));
       }
       setBusy(false);
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -134,7 +139,7 @@ class AuthViewModel extends BaseModel {
       await _api.resetPassword(a);
       setBusy(false);
       return true;
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -148,7 +153,7 @@ class AuthViewModel extends BaseModel {
       await _api.changePassword(a);
       setBusy(false);
       return true;
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -160,14 +165,14 @@ class AuthViewModel extends BaseModel {
     setBusy(true);
     try {
       UserModel m = await _api.update(a);
-      LoginResponse? user = AppCache.getUser();
+      LoginModel? user = AppCache.getUser();
       user?.user = m;
       AppCache.setUser(user!);
       setBusy(false);
       showVMSnackbar('Profile has been updated');
 
       return true;
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -181,7 +186,7 @@ class AuthViewModel extends BaseModel {
       await _api.follow(a);
       setBusy(false);
       return true;
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -193,12 +198,12 @@ class AuthViewModel extends BaseModel {
     setBusy(true);
     try {
       String? link = await _api.uploadMedia(image);
-      LoginResponse? user = AppCache.getUser();
+      LoginModel? user = AppCache.getUser();
       user?.user?.image = link;
       AppCache.setUser(user!);
       setBusy(false);
       return link;
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
@@ -231,7 +236,7 @@ class AuthViewModel extends BaseModel {
       setBusy(false);
       print(e);
       showVMSnackbar(e.message!, err: true);
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       showVMSnackbar(e.message, err: true);
       setBusy(false);
@@ -241,17 +246,73 @@ class AuthViewModel extends BaseModel {
     }
   }
 
+  Future signInApple() async {
+    if (!await TheAppleSignIn.isAvailable()) {
+      return null;
+    }
+
+    final res = await TheAppleSignIn.performRequests([
+      AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
+    ]);
+
+    switch (res.status) {
+      case AuthorizationStatus.authorized:
+        //Get Token
+        final AppleIdCredential? appleIdCredential = res.credential;
+
+        dynamic decoded = JwtDecoder.tryDecode(
+            String.fromCharCodes(appleIdCredential?.identityToken ?? []));
+        Logger().d(decoded);
+
+        final prefs = await SharedPreferences.getInstance();
+        String? username = appleIdCredential?.fullName?.givenName;
+        String? googleId = appleIdCredential?.fullName?.familyName;
+        String? email = decoded['email'] ?? appleIdCredential?.email;
+        if (email != null) {
+          await prefs.setString('username', username ?? 'John');
+          await prefs.setString('googleId', googleId ?? 'Doe');
+          await prefs.setString('email', email);
+        }
+
+        Map<String, dynamic> data = {
+          "username": username ?? prefs.getString('username') ?? '',
+          "googleId": googleId ?? prefs.getString('googleId') ?? '',
+          "email": email ?? prefs.getString('email') ?? '',
+          "picture": '',
+        };
+
+        if (data['email'] == '' || data['email'] == null) {
+          setBusy(false);
+          showVMSnackbar('The operation could not be completed', err: true);
+          break;
+        }
+        socialSignup(data);
+        setBusy(false);
+
+        break;
+      case AuthorizationStatus.error:
+        setBusy(false);
+        showVMSnackbar(res.error?.localizedDescription ?? '', err: true);
+        break;
+      case AuthorizationStatus.cancelled:
+        setBusy(false);
+        showVMSnackbar('The operation could not be completed', err: true);
+
+        break;
+    }
+  }
+
   Future<void> socialSignup(Map<String, dynamic> a) async {
     setBusy(true);
     try {
-      LoginResponse res = await _api.social(a);
+      LoginModel res = await _api.social(a);
 
       AppCache.setUser(res);
       pushAndRemoveUntil(vmContext, const MainLayout());
       if (res.user!.categories!.isEmpty) {
         push(vmContext, const FollowTopicsScreen());
       }
-    } on ZoperException catch (e) {
+    } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);

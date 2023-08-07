@@ -2,6 +2,7 @@ import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:hexcelon/views/widgets/user_image.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../core/models/login_model.dart';
 import '../../core/vms/auth_vm.dart';
 import '../auth/follow_topics_view.dart';
 import '../widgets/hex_text.dart';

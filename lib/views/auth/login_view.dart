@@ -156,7 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           textColor: AppColors.white,
                           borderColor: AppColors.black,
                           borderRadius: 10.h,
-                          onPressed: () {},
+                          onPressed: () {
+                            model.signInApple();
+                          },
                         ),
                       ),
                     ),

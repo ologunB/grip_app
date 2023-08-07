@@ -1,6 +1,6 @@
-import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:hexcelon/views/auth/change_pass_view.dart';
 
+import '../../core/models/login_model.dart';
 import '../../core/models/navigator.dart';
 import '../../core/vms/auth_vm.dart';
 import '../widgets/hex_text.dart';
@@ -20,7 +20,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   Widget build(BuildContext context) {
-    LoginResponse? login =
+    LoginModel? login =
         AppNavigator.navKey.currentContext!.read<AuthViewModel>().loginResponse;
 
     return AuthScaffold(

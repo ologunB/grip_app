@@ -1,8 +1,9 @@
 import '../models/category_model.dart';
+import '../models/login_model.dart';
 import 'base_api.dart';
 
 class AuthApi extends BaseAPI {
-  Future<LoginResponse> signup(Map<String, dynamic> data) async {
+  Future<LoginModel> signup(Map<String, dynamic> data) async {
     String url = 'user/signup';
     log(data);
     try {
@@ -10,17 +11,17 @@ class AuthApi extends BaseAPI {
       log(res.data);
       switch (res.statusCode) {
         case 201:
-          return LoginResponse.fromJson(res.data['data']);
+          return LoginModel.fromJson(res.data['data']);
         default:
           throw error(res.data);
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
-  Future<LoginResponse> social(Map<String, dynamic> data) async {
+  Future<LoginModel> social(Map<String, dynamic> data) async {
     String url = 'user/social';
     log(data);
     try {
@@ -28,15 +29,15 @@ class AuthApi extends BaseAPI {
       log(res.data);
       switch (res.statusCode) {
         case 201:
-          return LoginResponse.fromJson(res.data['data']);
+          return LoginModel.fromJson(res.data['data']);
         case 200:
-          return LoginResponse.fromJson(res.data['data']);
+          return LoginModel.fromJson(res.data['data']);
         default:
           throw error(res.data);
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -57,7 +58,7 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -78,7 +79,7 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -95,7 +96,7 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -112,7 +113,7 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -129,7 +130,7 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -146,41 +147,41 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
-  Future<LoginResponse> login(Map<String, dynamic> data) async {
+  Future<LoginModel> login(Map<String, dynamic> data) async {
     String url = 'user/login';
     try {
       final Response res = await dio().post(url, data: data);
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return LoginResponse.fromJson(res.data['data']);
+          return LoginModel.fromJson(res.data['data']);
         default:
           throw error(res.data);
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
-  Future<LoginResponse> getUser() async {
+  Future<LoginModel> getUser() async {
     String url = 'user';
     try {
       final Response res = await dio().get(url);
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return LoginResponse.fromJson(res.data);
+          return LoginModel.fromJson(res.data);
         default:
           throw error(res.data);
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -198,7 +199,7 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -217,7 +218,7 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -236,7 +237,7 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 
@@ -264,7 +265,7 @@ class AuthApi extends BaseAPI {
       }
     } catch (e) {
       log(e);
-      throw ZoperException(DioErrorUtil.handleError(e));
+      throw GripException(DioErrorUtil.handleError(e));
     }
   }
 }

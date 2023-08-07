@@ -27,6 +27,7 @@ dependencies:
   image_editor_plus: ^0.2.5
   image_picker: ^1.0.1
   intl: ^0.18.1
+  jwt_decoder: ^2.0.1
   keyboard_attachable: ^2.1.0
   logger: 1.1.0
   path_provider: ^2.0.15
@@ -34,6 +35,7 @@ dependencies:
   pinput: ^2.3.0
   provider: ^6.0.5
   share_plus: ^7.0.2
+  shared_preferences: ^2.2.0
   the_apple_sign_in: ^1.1.1
   url_launcher: ^6.1.11
 

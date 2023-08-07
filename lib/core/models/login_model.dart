@@ -1,11 +1,11 @@
 import 'category_model.dart';
 
-class LoginResponse {
+class LoginModel {
   UserModel? user;
   String? token;
 
-  LoginResponse({token, tokens, user});
-  LoginResponse.fromJson(dynamic json) {
+  LoginModel({token, tokens, user});
+  LoginModel.fromJson(dynamic json) {
     token = json['token'];
     user = UserModel.fromJson(json['user'] ?? json['userData'] ?? {});
   }

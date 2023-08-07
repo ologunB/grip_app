@@ -1,9 +1,11 @@
 import 'package:hexcelon/views/profile/password.dart';
 import 'package:hexcelon/views/profile/profile.dart';
 
+import '../../core/storage/local_storage.dart';
 import '../bible/all_versions.dart';
 import '../profile/post_details.dart';
 import '../widgets/hex_text.dart';
+import '../widgets/user_image.dart';
 import 'edit.dart';
 import 'history.dart';
 
@@ -29,8 +31,8 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
               child: Column(
                 children: [
                   InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
+                    onTap: () async {
+                      await showModalBottomSheet(
                         backgroundColor: Colors.white,
                         context: context,
                         isScrollControlled: true,
@@ -44,6 +46,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                           return const SettingsDialog();
                         },
                       );
+                      setState(() {});
                     },
                     child: Image.asset(
                       'category'.png,
@@ -72,13 +75,10 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                         padding: EdgeInsets.symmetric(horizontal: 25.h),
                         child: Row(
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(60.h),
-                              child: Image.asset(
-                                'placeholder'.png,
-                                height: 73.h,
-                                width: 73.h,
-                              ),
+                            UserImage(
+                              size: 73.h,
+                              radius: 73.h,
+                              imageUrl: AppCache.getUser()?.user?.image,
                             ),
                             SizedBox(width: 18.h),
                             Expanded(
@@ -86,19 +86,21 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   HexText(
-                                    'Roger Korsgaard',
+                                    '@${AppCache.getUser()?.user?.username}',
                                     fontSize: 18.sp,
                                     align: TextAlign.center,
                                     color: AppColors.black,
                                     fontWeight: FontWeight.w800,
                                   ),
                                   SizedBox(height: 4.h),
-                                  HexText(
-                                    '#prayer #fasting #purpose\n#self-control #relationship',
-                                    fontSize: 16.sp,
-                                    align: TextAlign.center,
-                                    color: AppColors.black,
-                                    fontWeight: FontWeight.w500,
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 38.0),
+                                    child: HexText(
+                                      '#${AppCache.getUser()?.user?.categories?.map((e) => e.name).join(', #')}',
+                                      fontSize: 16.sp,
+                                      color: AppColors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -116,7 +118,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                                 Row(
                                   children: [
                                     HexText(
-                                      '5',
+                                      '${AppCache.getUser()?.user?.followersCount}',
                                       fontSize: 16.sp,
                                       color: AppColors.black,
                                       fontWeight: FontWeight.bold,
@@ -151,7 +153,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                                 Row(
                                   children: [
                                     HexText(
-                                      '5',
+                                      '${AppCache.getUser()?.user?.categories?.length}',
                                       fontSize: 16.sp,
                                       color: AppColors.black,
                                       fontWeight: FontWeight.bold,

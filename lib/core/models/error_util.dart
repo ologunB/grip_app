@@ -42,3 +42,9 @@ class DioErrorUtil {
     return errorDescription;
   }
 }
+
+class GripException implements Exception {
+  GripException(this.message);
+
+  String message;
+}

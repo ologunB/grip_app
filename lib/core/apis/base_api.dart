@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:logger/logger.dart';
 
-import '../models/login_response.dart';
+import '../models/login_model.dart';
 import '../storage/local_storage.dart';
 
 export 'dart:io';
@@ -10,8 +10,6 @@ export 'dart:io';
 export 'package:dio/dio.dart';
 
 export '../models/error_util.dart';
-export '../models/login_response.dart';
-export '../models/zoper_exception.dart';
 export '../storage/local_storage.dart';
 
 class BaseAPI {
@@ -64,7 +62,7 @@ class BaseAPI {
       log(res.statusCode);
       switch (res.statusCode) {
         case 200:
-          AppCache.setUser(LoginResponse.fromJson(res.data));
+          AppCache.setUser(LoginModel.fromJson(res.data));
           break;
         default:
           throw 'Please login again';
