@@ -29,8 +29,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     phone = TextEditingController(text: user?.phone);
     email = TextEditingController(text: user?.email);
     name = TextEditingController(text: user?.username);
-    category = TextEditingController(
-        text: user?.categories?.map((e) => e.name).join(', '));
+    selected = user?.categories?.map((e) => e.name!).toList() ?? [];
+    category = TextEditingController(text: selected.join(', '));
     imageUrl = user?.image;
     super.initState();
   }

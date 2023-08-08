@@ -1,15 +1,29 @@
+import 'package:scroll_to_index/scroll_to_index.dart';
+
 import '../widgets/hex_text.dart';
 import 'one_version.dart';
 import 'search.dart';
 
 class VersesScreen extends StatefulWidget {
-  const VersesScreen({super.key});
+  const VersesScreen({super.key, required this.chapter, required this.book});
 
+  final int chapter;
+  final String book;
   @override
   State<VersesScreen> createState() => _VersesScreenState();
 }
 
 class _VersesScreenState extends State<VersesScreen> {
+  late String book;
+  late int chapter;
+
+  @override
+  void initState() {
+    book = widget.book;
+    chapter = widget.chapter;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,8 +42,8 @@ class _VersesScreenState extends State<VersesScreen> {
                     child: Row(
                       children: [
                         InkWell(
-                          onTap: () {
-                            showModalBottomSheet(
+                          onTap: () async {
+                            dynamic a = await showModalBottomSheet(
                               backgroundColor: Colors.white,
                               context: context,
                               isScrollControlled: true,
@@ -40,17 +54,26 @@ class _VersesScreenState extends State<VersesScreen> {
                                 ),
                               ),
                               builder: (c) {
-                                return const ChapterDialog();
+                                return SelectChapterDialog(name: book);
                               },
                             );
+                            if (a != null) {
+                              book = a.first;
+                              chapter = a.last;
+                              setState(() {});
+                            }
                           },
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30.h),
+                            bottomLeft: Radius.circular(30.h),
+                          ),
                           child: Padding(
                             padding: EdgeInsets.all(10.h),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 HexText(
-                                  'Romans',
+                                  book,
                                   fontSize: 16.sp,
                                   color: Colors.black,
                                   fontWeight: FontWeight.normal,
@@ -68,6 +91,10 @@ class _VersesScreenState extends State<VersesScreen> {
                         const VerticalDivider(width: 0, thickness: 0),
                         InkWell(
                           onTap: () {},
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30.h),
+                            bottomLeft: Radius.circular(30.h),
+                          ),
                           child: Padding(
                             padding: EdgeInsets.all(10.h),
                             child: HexText(
@@ -141,8 +168,32 @@ Vel eu amet volutpat posuere tempor urna accumsan. Ultrices ac amet urna vel neq
   }
 }
 
-class ChapterDialog extends StatelessWidget {
-  const ChapterDialog({super.key});
+class SelectChapterDialog extends StatefulWidget {
+  const SelectChapterDialog({super.key, required this.name});
+
+  final String name;
+  @override
+  State<SelectChapterDialog> createState() => _SelectChapterDialogState();
+}
+
+class _SelectChapterDialogState extends State<SelectChapterDialog> {
+  late AutoScrollController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AutoScrollController(
+      viewportBoundaryGetter: () =>
+          Rect.fromLTRB(0, 60, 0, MediaQuery.of(context).padding.bottom),
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.scrollToIndex(
+        Utils.allBooks().keys.toList().indexOf(widget.name),
+        preferPosition: AutoScrollPosition.begin,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,6 +233,7 @@ class ChapterDialog extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               shrinkWrap: true,
+              controller: controller,
               padding: EdgeInsets.zero,
               physics: const ClampingScrollPhysics(),
               separatorBuilder: (_, __) => Padding(
@@ -192,9 +244,20 @@ class ChapterDialog extends StatelessWidget {
                   color: const Color(0xffE6E6E6),
                 ),
               ),
-              itemCount: 15,
+              itemCount: 66,
               itemBuilder: (c, i) {
-                return const ChapterItem(a: 'Genesis');
+                Map d = Utils.allBooks();
+                return AutoScrollTag(
+                  key: ValueKey(i),
+                  controller: controller,
+                  index: i,
+                  child: ChapterItem(
+                    name: d.keys.toList()[i],
+                    value: d.values.toList()[i],
+                    popWhenDone: true,
+                    presentValue: d.keys.toList().indexOf(widget.name) == i,
+                  ),
+                );
               },
             ),
           ),

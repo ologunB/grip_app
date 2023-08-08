@@ -2,7 +2,7 @@ import 'package:hexcelon/views/profile/password.dart';
 import 'package:hexcelon/views/profile/profile.dart';
 
 import '../../core/storage/local_storage.dart';
-import '../bible/all_versions.dart';
+import '../profile/all_versions.dart';
 import '../profile/post_details.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';

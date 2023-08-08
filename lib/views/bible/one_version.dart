@@ -104,9 +104,13 @@ class _OneVersionScreenState extends State<OneVersionScreen> {
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
                   padding: EdgeInsets.zero,
-                  itemCount: 5,
+                  itemCount: Utils.splitBooks().first.length,
                   itemBuilder: (c, i) {
-                    return const ChapterItem(a: 'Genesis');
+                    Map d = Utils.splitBooks().first;
+                    return ChapterItem(
+                      name: d.keys.toList()[i],
+                      value: d.values.toList()[i],
+                    );
                   },
                 ),
                 ListView.separated(
@@ -121,9 +125,13 @@ class _OneVersionScreenState extends State<OneVersionScreen> {
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
                   padding: EdgeInsets.zero,
-                  itemCount: 7,
+                  itemCount: Utils.splitBooks().last.length,
                   itemBuilder: (c, i) {
-                    return const ChapterItem(a: 'Matthew');
+                    Map d = Utils.splitBooks().last;
+                    return ChapterItem(
+                      name: d.keys.toList()[i],
+                      value: d.values.toList()[i],
+                    );
                   },
                 ),
               ],
@@ -136,31 +144,48 @@ class _OneVersionScreenState extends State<OneVersionScreen> {
 }
 
 class ChapterItem extends StatelessWidget {
-  const ChapterItem({super.key, required this.a});
-  final String a;
+  const ChapterItem({
+    super.key,
+    required this.name,
+    required this.value,
+    this.popWhenDone = false,
+    this.presentValue = false,
+  });
+  final String name;
+  final List<int> value;
+  final bool popWhenDone;
+  final bool presentValue;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        push(context, const PassageScreen());
+        push(
+          context,
+          PassageScreen(
+            value: value.length,
+            name: name,
+            popWhenDone: popWhenDone,
+          ),
+        );
       },
-      child: Padding(
+      child: Container(
         padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 25.h),
+        color: presentValue ? AppColors.primary.withOpacity(.2) : null,
         child: Row(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 HexText(
-                  a,
+                  name,
                   fontSize: 16.sp,
                   color: AppColors.black,
                   fontWeight: FontWeight.bold,
                 ),
                 SizedBox(height: 8.h),
                 HexText(
-                  '50 Chapters',
+                  '${value.length} Chapters',
                   fontSize: 14.sp,
                   color: AppColors.black,
                 ),

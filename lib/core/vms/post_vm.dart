@@ -13,6 +13,7 @@ class PostViewModel extends BaseModel {
     try {
       Post res = await _api.create(a);
 
+      print(res);
       setBusy(false);
     } on GripException catch (e) {
       error = e.message;

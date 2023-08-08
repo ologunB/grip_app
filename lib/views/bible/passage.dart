@@ -1,14 +1,18 @@
 import '../widgets/hex_text.dart';
 import 'verses.dart';
 
-class PassageScreen extends StatefulWidget {
-  const PassageScreen({super.key});
+class PassageScreen extends StatelessWidget {
+  const PassageScreen({
+    super.key,
+    required this.value,
+    required this.name,
+    this.popWhenDone = false,
+  });
 
-  @override
-  State<PassageScreen> createState() => _PassageScreenState();
-}
+  final int value;
+  final String name;
+  final bool popWhenDone;
 
-class _PassageScreenState extends State<PassageScreen> {
   @override
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width - 147.h) / 5;
@@ -19,7 +23,7 @@ class _PassageScreenState extends State<PassageScreen> {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
         title: HexText(
-          'Romans',
+          name,
           fontSize: 20.sp,
           color: AppColors.black,
           fontWeight: FontWeight.w600,
@@ -33,11 +37,16 @@ class _PassageScreenState extends State<PassageScreen> {
             child: Wrap(
               spacing: 24.h,
               runSpacing: 24.h,
-              children: List.generate(150, (i) => i + 1)
+              children: List.generate(value, (i) => i + 1)
                   .map(
                     (e) => InkWell(
                       onTap: () {
-                        push(context, const VersesScreen());
+                        if (popWhenDone) {
+                          Navigator.pop(context);
+                          Navigator.pop(context, [name, e]);
+                        } else {
+                          push(context, VersesScreen(book: name, chapter: e));
+                        }
                       },
                       borderRadius: BorderRadius.circular(20.h),
                       child: Container(

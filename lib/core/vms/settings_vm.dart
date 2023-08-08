@@ -1,17 +1,31 @@
 import 'dart:async';
 
+import 'package:hexcelon/core/apis/base_api.dart';
+
 class SettingsVM {
-  final StreamController<int> _mainIndexController =
-      StreamController<int>.broadcast();
-  Sink<int> get _inMainIndex => _mainIndexController.sink;
-  Stream<int> get outMainIndex => _mainIndexController.stream;
-  int _currentIndex = 0;
-  set currentIndex(int i) {
-    _currentIndex = i;
-    _inMainIndex.add(i);
+  final StreamController<Map<String, int>> _downloadsController =
+      StreamController<Map<String, int>>.broadcast();
+  Sink<Map<String, int>> get _inMainDownloads => _downloadsController.sink;
+  Stream<Map<String, int>> get outMainDownloads => _downloadsController.stream;
+  Map<String, int> _currentDownloads = {};
+  Map<String, int> get currentDownloads => _currentDownloads;
+
+  set currentDownloads(Map<String, int> i) {
+    _currentDownloads = i;
+    _inMainDownloads.add(i);
   }
 
-  int get currentIndex => _currentIndex;
+  final StreamController<String?> _bibleController =
+      StreamController<String?>.broadcast();
+  Sink<String?> get _inMainBible => _bibleController.sink;
+  Stream<String?> get outMainBible => _bibleController.stream;
+  String? _currentBible = AppCache.getDefaultBible();
+  String? get currentBible => _currentBible;
+
+  set currentBible(String? i) {
+    _currentBible = i;
+    _inMainBible.add(i);
+  }
 }
 
 SettingsVM settingsVM = SettingsVM();

@@ -1,7 +1,7 @@
+import 'package:hexcelon/views/bible/bible_home.dart';
 import 'package:hexcelon/views/profile/creator_profile.dart';
 
 import '../../core/storage/local_storage.dart';
-import '../bible/all_versions.dart';
 import '../create/media.dart';
 import '../profile/profile.dart';
 import '../widgets/hex_text.dart';
@@ -18,7 +18,7 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   List<Widget> get screens => [
         const HomeScreen(),
-        const AllVersionScreen(),
+        const BibleHome(),
         const SizedBox(),
         const ExploreScreen(),
         AppCache.getUser()?.user?.role == 'user'

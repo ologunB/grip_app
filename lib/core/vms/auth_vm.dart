@@ -2,7 +2,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcelon/views/home/main_layout.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logger/logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 
 import '../../views/auth/follow_topics_view.dart';
@@ -234,7 +233,6 @@ class AuthViewModel extends BaseModel {
       }
     } on PlatformException catch (e) {
       setBusy(false);
-      print(e);
       showVMSnackbar(e.message!, err: true);
     } on GripException catch (e) {
       error = e.message;
@@ -252,7 +250,7 @@ class AuthViewModel extends BaseModel {
     }
 
     final res = await TheAppleSignIn.performRequests([
-      AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
+      const AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
     ]);
 
     switch (res.status) {
@@ -264,20 +262,19 @@ class AuthViewModel extends BaseModel {
             String.fromCharCodes(appleIdCredential?.identityToken ?? []));
         Logger().d(decoded);
 
-        final prefs = await SharedPreferences.getInstance();
         String? username = appleIdCredential?.fullName?.givenName;
         String? googleId = appleIdCredential?.fullName?.familyName;
         String? email = decoded['email'] ?? appleIdCredential?.email;
         if (email != null) {
-          await prefs.setString('username', username ?? 'John');
-          await prefs.setString('googleId', googleId ?? 'Doe');
-          await prefs.setString('email', email);
+          await AppCache.put('username', username ?? 'John');
+          await AppCache.put('googleId', googleId ?? 'Doe');
+          await AppCache.put('email', email);
         }
 
         Map<String, dynamic> data = {
-          "username": username ?? prefs.getString('username') ?? '',
-          "googleId": googleId ?? prefs.getString('googleId') ?? '',
-          "email": email ?? prefs.getString('email') ?? '',
+          "username": username ?? AppCache.get('username'),
+          "googleId": googleId ?? AppCache.get('googleId'),
+          "email": email ?? AppCache.get('email'),
           "picture": '',
         };
 
@@ -316,7 +313,7 @@ class AuthViewModel extends BaseModel {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
-      return null;
+      return;
     }
   }
 }

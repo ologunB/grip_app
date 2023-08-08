@@ -1,5 +1,8 @@
 import 'package:hexcelon/core/apis/base_api.dart';
 
+import '../../core/models/bible_model.dart';
+import '../../core/vms/bible_vm.dart';
+import '../../core/vms/settings_vm.dart';
 import '../widgets/hex_text.dart';
 
 class AllVersionScreen extends StatefulWidget {
@@ -12,111 +15,175 @@ class AllVersionScreen extends StatefulWidget {
 class _AllVersionScreenState extends State<AllVersionScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 15.h),
-            Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 15.h),
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const BackButtonIcon(),
-                    ),
-                    SizedBox(width: 12.h),
-                    HexText(
-                      'Bible',
-                      fontSize: 28.sp,
-                      color: AppColors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ],
-                )),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (_, __) => Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                  child: Divider(
-                    height: 0.h,
-                    thickness: 1.h,
-                    color: const Color(0xffE6E6E6),
-                  ),
-                ),
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 15.h),
-                itemCount: 10,
-                itemBuilder: (c, i) {
-                  return Row(
+    return BaseView<BibleViewModel>(
+      onModelReady: (a) => a.watchBibles(),
+      dispose: (a) => a.dispose(),
+      builder: (_, BibleViewModel model, __) => Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 15.h),
+              Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 25.h, vertical: 15.h),
+                  child: Row(
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          HexText(
-                            'KJV',
-                            fontSize: 16.sp,
-                            color: AppColors.black,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          SizedBox(height: 8.h),
-                          HexText(
-                            'King James Version',
-                            fontSize: 14.sp,
-                            color: AppColors.black,
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      SizedBox(width: 8.h),
                       InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const BackButtonIcon(),
+                      ),
+                      SizedBox(width: 12.h),
+                      HexText(
+                        'Bible',
+                        fontSize: 28.sp,
+                        color: AppColors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ],
+                  )),
+              Expanded(
+                child: ListView.separated(
+                  separatorBuilder: (_, __) => Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15.h),
+                    child: Divider(
+                      height: 0.h,
+                      thickness: 1.h,
+                      color: const Color(0xffE6E6E6),
+                    ),
+                  ),
+                  shrinkWrap: true,
+                  physics: const ClampingScrollPhysics(),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 25.h, vertical: 15.h),
+                  itemCount: Utils.allVersions().length,
+                  itemBuilder: (c, i) {
+                    Version v = Utils.allVersions()[i];
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              HexText(
+                                v.abbr!.toUpperCase(),
+                                fontSize: 16.sp,
+                                color: AppColors.black,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              SizedBox(height: 8.h),
+                              HexText(
+                                v.name!.toUpperCase(),
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 14.sp,
+                                color: AppColors.black,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 12.h),
+                        DownloadButton(
+                          v: v,
+                          model: model,
                           onTap: () {
-                            if (!selected.contains(i)) {
-                              selected.add(i);
+                            if (!model.downloaded.contains(v.abbr)) {
+                              Map<String, int> present =
+                                  settingsVM.currentDownloads;
+                              present.update(v.abbr!, (a) => 0,
+                                  ifAbsent: () => 0);
+                              model.downloadBible(v);
                             } else {
-                              AppCache.setDefaultBible(i);
+                              AppCache.setDefaultBible(v.abbr);
                             }
                             setState(() {});
                           },
-                          child: Row(
-                            children: [
-                              if (AppCache.getDefaultBible() == i)
-                                Icon(
-                                  Icons.check_rounded,
-                                  color: Colors.green,
-                                  size: 24.h,
-                                ),
-                              SizedBox(width: 8.h),
-                              HexText(
-                                AppCache.getDefaultBible() == i
-                                    ? 'Chosen'
-                                    : selected.contains(i)
-                                        ? 'Choose'
-                                        : 'Download',
-                                fontSize: 16.sp,
-                                color: AppCache.getDefaultBible() == i
-                                    ? Colors.green
-                                    : AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                                align: TextAlign.center,
-                              ),
-                            ],
-                          )),
-                    ],
-                  );
-                },
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+}
 
-  List<int> selected = [];
+class DownloadButton extends StatefulWidget {
+  const DownloadButton(
+      {super.key, required this.v, required this.model, required this.onTap});
+
+  final Version v;
+  final BibleViewModel model;
+  final Function() onTap;
+  @override
+  State<DownloadButton> createState() => _DownloadButtonState();
+}
+
+class _DownloadButtonState extends State<DownloadButton> {
+  late Version v;
+  @override
+  void initState() {
+    v = widget.v;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Map<String, int>>(
+        stream: settingsVM.outMainDownloads,
+        initialData: settingsVM.currentDownloads,
+        builder: (context, snapshot) {
+          bool isDownload = widget.model.downloaded.contains(v.abbr);
+          bool isDownloading = snapshot.data?.keys.contains(v.abbr) ?? false;
+          bool isChosen = AppCache.getDefaultBible() == v.abbr;
+          return isDownloading
+              ? Padding(
+                  padding: EdgeInsets.only(right: 8.h),
+                  child: SizedBox(
+                    width: 20.h,
+                    height: 20.h,
+                    child: CircularProgressIndicator(
+                      value: snapshot.data![v.abbr]! / 100,
+                      strokeWidth: 2.h,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.primary),
+                    ),
+                  ),
+                )
+              : TextButton(
+                  onPressed: widget.onTap,
+                  child: Row(
+                    children: [
+                      if (isChosen && isDownload)
+                        Icon(
+                          Icons.check_rounded,
+                          color: Colors.green,
+                          size: 24.h,
+                        ),
+                      SizedBox(width: 8.h),
+                      HexText(
+                        !isDownload
+                            ? 'Download'
+                            : !isChosen
+                                ? 'Chose'
+                                : 'Chosen',
+                        fontSize: 16.sp,
+                        color: isChosen && isDownload
+                            ? Colors.green
+                            : AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        align: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
+        });
+  }
 }
