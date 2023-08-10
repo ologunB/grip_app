@@ -85,6 +85,7 @@ class _VersesScreenState extends State<VersesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -198,8 +199,12 @@ class _VersesScreenState extends State<VersesScreen> {
                 elements: verses,
                 padding: EdgeInsets.symmetric(horizontal: 25.h),
                 groupBy: (element) => element.absoluteChapter,
-                groupHeaderBuilder: (group) => Padding(
-                  padding: EdgeInsets.only(bottom: 16.h),
+                groupHeaderBuilder: (group) => Container(
+                  padding: EdgeInsets.all(8.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.h),
+                  ),
                   child: HexText(
                     group.chapterName,
                     fontSize: 16.sp,
