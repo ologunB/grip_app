@@ -4,51 +4,56 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:2939151225815527483",
-      "lastPropertyId": "7:770563235454783380",
+      "id": "1:4210672082496197455",
+      "lastPropertyId": "10:7052861434321538641",
       "name": "Verse",
       "properties": [
         {
-          "id": "1:4066432161977738204",
+          "id": "1:4325021986769420740",
           "name": "absoluteVerse",
           "type": 6,
           "flags": 129
         },
         {
-          "id": "2:3740921999658744990",
+          "id": "2:6166330913813128382",
           "name": "absoluteChapter",
           "type": 6
         },
         {
-          "id": "3:2775647540020797728",
+          "id": "3:1548443867149465420",
           "name": "chapter",
           "type": 6
         },
         {
-          "id": "4:8043472127271521663",
+          "id": "4:8775366538885111026",
           "name": "verse",
           "type": 6
         },
         {
-          "id": "5:4572114395200530711",
-          "name": "name",
-          "type": 9
-        },
-        {
-          "id": "6:3735502159031304413",
-          "name": "book",
-          "type": 9
-        },
-        {
-          "id": "7:770563235454783380",
+          "id": "7:8770924812709889793",
           "name": "text",
+          "type": 9
+        },
+        {
+          "id": "8:565230062301925155",
+          "name": "chapterName",
+          "type": 9
+        },
+        {
+          "id": "9:5384897652273162778",
+          "name": "verseName",
+          "type": 9
+        },
+        {
+          "id": "10:7052861434321538641",
+          "name": "bookName",
           "type": 9
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "1:2939151225815527483",
+  "lastEntityId": "1:4210672082496197455",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
@@ -56,7 +61,10 @@
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    6395845017023476428,
+    8080686510324043848
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

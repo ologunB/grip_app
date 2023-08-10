@@ -52,9 +52,10 @@ class ObjectBox {
         for (dynamic v in c['verses']) {
           verses.add(
             Verse(
-              v['text'],
               b['name'],
+              c['name'],
               v['name'],
+              v['text'],
               v['chapter'],
               v['verse'],
               chapter,
@@ -76,8 +77,12 @@ class ObjectBox {
   List<Verse> get2ChaptersBeforeAfter(int absoluteChapter) {
     Query<Verse> query = _verseBox
         .query(Verse_.absoluteChapter
-            .greaterOrEqual(2)
-            .or(Verse_.absoluteChapter.lessOrEqual(2)))
+            .equals(absoluteChapter - 2)
+            .or(Verse_.absoluteChapter.equals(absoluteChapter - 1))
+            .or(Verse_.absoluteChapter.equals(absoluteChapter))
+            .or(Verse_.absoluteChapter.equals(absoluteChapter + 1))
+            .or(Verse_.absoluteChapter.equals(absoluteChapter + 2)))
+        .order(Verse_.absoluteVerse)
         .build();
     List<Verse> all = query.find();
     query.close();
@@ -85,9 +90,23 @@ class ObjectBox {
     return all;
   }
 
-  List<Verse> getOneChapter(String book, int chapter) {
+  List<Verse> get2After(int absoluteChapter) {
     Query<Verse> query = _verseBox
-        .query(Verse_.chapter.equals(chapter).and(Verse_.book.equals(book)))
+        .query(Verse_.absoluteChapter
+            .equals(absoluteChapter + 1)
+            .or(Verse_.absoluteChapter.equals(absoluteChapter + 2)))
+        .build();
+    List<Verse> all = query.find();
+    query.close();
+
+    return all;
+  }
+
+  List<Verse> get2Before(int absoluteChapter) {
+    Query<Verse> query = _verseBox
+        .query(Verse_.absoluteChapter
+            .equals(absoluteChapter - 1)
+            .or(Verse_.absoluteChapter.equals(absoluteChapter - 2)))
         .build();
     List<Verse> all = query.find();
     query.close();
@@ -99,7 +118,7 @@ class ObjectBox {
     Query<Verse> query = _verseBox
         .query(Verse_.chapter
             .equals(chapter)
-            .and(Verse_.book.equals(book))
+            .and(Verse_.bookName.equals(book))
             .and(Verse_.verse.equals(verse)))
         .build();
     List<Verse> all = query.find();

@@ -1,5 +1,8 @@
+import 'package:grouped_list/grouped_list.dart';
+import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
+import '../../core/storage/model.dart';
 import '../widgets/hex_text.dart';
 import 'one_version.dart';
 import 'search.dart';
@@ -15,13 +18,68 @@ class VersesScreen extends StatefulWidget {
 
 class _VersesScreenState extends State<VersesScreen> {
   late String book;
-  late int chapter;
+  late int chapter, prevChapter, nextChapter;
+  List<Verse> verses = [];
+  final double endReachedThreshold = 300.0;
+
+  late AutoScrollController controller;
 
   @override
   void initState() {
+    super.initState();
+    controller = AutoScrollController(
+      viewportBoundaryGetter: () =>
+          Rect.fromLTRB(0, 36.h, 0, MediaQuery.of(context).padding.bottom),
+    );
     book = widget.book;
     chapter = widget.chapter;
-    super.initState();
+    getVerses();
+    controller.addListener(_onScroll);
+  }
+
+  getVerses() {
+    Verse firstVerse = objectbox.getOneVerse(book, chapter);
+    prevChapter = firstVerse.absoluteChapter - 2;
+    nextChapter = firstVerse.absoluteChapter + 2;
+    verses = objectbox.get2ChaptersBeforeAfter(firstVerse.absoluteChapter);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.scrollToIndex(
+        firstVerse.absoluteVerse,
+        preferPosition: AutoScrollPosition.begin,
+        duration: const Duration(milliseconds: 1),
+      );
+    });
+  }
+
+  _onScroll() {
+    if (!controller.hasClients) {
+      return;
+    }
+    if (controller.offset >=
+            controller.position.maxScrollExtent - endReachedThreshold &&
+        !controller.position.outOfRange) {
+      print("Close to bottom");
+      List<Verse> data = objectbox.get2After(nextChapter);
+      if (data.isNotEmpty) {
+        nextChapter = nextChapter + 2;
+        verses.addAll(data);
+        verses = verses.toSet().toList();
+        setState(() {});
+      }
+    }
+    if (controller.offset <= endReachedThreshold &&
+        !controller.position.outOfRange) {
+      print("Close to top");
+      List<Verse> data = objectbox.get2Before(prevChapter);
+      if (data.isNotEmpty) {
+        prevChapter = prevChapter - 2;
+        verses.addAll(data);
+        verses = verses.toSet().toList();
+        setState(() {});
+        controller.jumpTo(controller.offset + 1000);
+      }
+    }
   }
 
   @override
@@ -61,6 +119,7 @@ class _VersesScreenState extends State<VersesScreen> {
                               book = a.first;
                               chapter = a.last;
                               setState(() {});
+                              getVerses();
                             }
                           },
                           borderRadius: BorderRadius.only(
@@ -133,32 +192,42 @@ class _VersesScreenState extends State<VersesScreen> {
             ),
             SizedBox(height: 15.h),
             Expanded(
-              child: ListView(
+              child: GroupedListView<Verse, int>(
+                key: const ValueKey('ListViewKey'),
+                controller: controller,
+                elements: verses,
                 padding: EdgeInsets.symmetric(horizontal: 25.h),
-                children: [
-                  HexText(
-                    'Chapter 1',
+                groupBy: (element) => element.absoluteChapter,
+                groupHeaderBuilder: (group) => Padding(
+                  padding: EdgeInsets.only(bottom: 16.h),
+                  child: HexText(
+                    group.chapterName,
                     fontSize: 16.sp,
                     color: Colors.black,
                     align: TextAlign.center,
                     fontWeight: FontWeight.bold,
                   ),
-                  SizedBox(height: 16.h),
-                  HexText(
-                    '''   1. Lorem ipsum dolor sit amet consectetur. Cras mauris enim vulputate sapien vitae. Viverra nulla scelerisque consectetur sed quam massa non eget. Orci faucibus viverra tristique pellentesque feugiat lorem. 
-
-   2. Mauris odio scelerisque lacus nunc malesuada.
-Nullam sapien neque in habitasse ante eget. Consequat massa consequat faucibus nulla in amet vel. Suscipit feugiat montes pellentesque cras turpis. 
-
-   3. Pellentesque et quisque lacus justo tortor sapien. Eu platea a faucibus vivamus eu nulla metus diam.
-Vel eu amet volutpat posuere tempor urna accumsan. Ultrices ac amet urna vel neque faucibus rutrum viverra ipsum. 
-
-   4. Mi eu est varius commodo gravida iaculis nunc. Adipiscing lacus mauris facilisis facilisi eget quisque eu. Risus amet amet tortor sed leo facilisis. Eu netus eu sed risus tortor. Neque posuere a porttitor viverra.''',
-                    fontSize: 16.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ],
+                ),
+                itemBuilder: (context, Verse element) {
+                  return AutoScrollTag(
+                    key: ValueKey(element.absoluteVerse),
+                    controller: controller,
+                    index: element.absoluteVerse,
+                    child: HexText(
+                      '${element.verse}. ${element.text}\n',
+                      fontSize: 16.sp,
+                      color: Colors.black,
+                      key: ValueKey(element.absoluteVerse),
+                      fontWeight: FontWeight.w400,
+                    ),
+                  );
+                },
+                itemComparator: (a, b) =>
+                    a.absoluteVerse.compareTo(b.absoluteVerse),
+                groupComparator: (a, b) => a.compareTo(b),
+                useStickyGroupSeparators: true,
+                floatingHeader: true,
+                order: GroupedListOrder.ASC,
               ),
             )
           ],
@@ -191,6 +260,7 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
       controller.scrollToIndex(
         Utils.allBooks.keys.toList().indexOf(widget.name),
         preferPosition: AutoScrollPosition.begin,
+        duration: const Duration(milliseconds: 1),
       );
     });
   }
