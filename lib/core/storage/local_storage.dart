@@ -7,9 +7,9 @@ import 'objectbox.dart';
 late ObjectBox objectbox;
 
 class AppCache {
-  static const String kUserBox = 'userBoxx';
-  static const String kDefaultBox = 'defaultBoxx';
-  static const String userKey = 'userKeyccrgddewr';
+  static const String kUserBox = 'userBox';
+  static const String kDefaultBox = 'defaultBox';
+  static const String userKey = 'userKey';
   static const String bibleKey = 'bibleKey';
 
   static Future<void> init() async {

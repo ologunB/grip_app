@@ -16,9 +16,10 @@ class _OneVersionScreenState extends State<OneVersionScreen> {
 
   @override
   void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
       while (Utils.splitBooks().first.isEmpty) {
         setState(() {});
+        await Future.delayed(const Duration(milliseconds: 500));
       }
     });
 

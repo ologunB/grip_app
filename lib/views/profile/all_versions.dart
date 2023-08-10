@@ -1,4 +1,5 @@
 import 'package:hexcelon/core/apis/base_api.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../core/models/bible_model.dart';
 import '../../core/vms/bible_vm.dart';
@@ -27,16 +28,10 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
               SizedBox(height: 15.h),
               Padding(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 25.h, vertical: 15.h),
+                      EdgeInsets.symmetric(horizontal: 15.h, vertical: 5.h),
                   child: Row(
                     children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const BackButtonIcon(),
-                      ),
-                      SizedBox(width: 12.h),
+                      const BackButton(),
                       HexText(
                         'Bible',
                         fontSize: 28.sp,
@@ -146,15 +141,19 @@ class _DownloadButtonState extends State<DownloadButton> {
           return isDownloading
               ? Padding(
                   padding: EdgeInsets.only(right: 8.h),
-                  child: SizedBox(
-                    width: 20.h,
-                    height: 20.h,
-                    child: CircularProgressIndicator(
-                      value: snapshot.data![v.abbr]! / 100,
-                      strokeWidth: 2.h,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                          AppColors.primary),
+                  child: CircularPercentIndicator(
+                    radius: 15.h,
+                    lineWidth: 2.h,
+                    percent: snapshot.data![v.abbr]! / 100,
+                    circularStrokeCap: CircularStrokeCap.round,
+                    center: HexText(
+                      '${snapshot.data?[v.abbr]}%',
+                      fontSize: 12.sp,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      align: TextAlign.center,
                     ),
+                    progressColor: AppColors.primary,
                   ),
                 )
               : TextButton(
