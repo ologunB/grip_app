@@ -54,14 +54,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               borderColor: Colors.transparent,
               borderRadius: 10.h,
               onPressed: () async {
-                bool a = await model.changePassword({
-                  'oldPassword': oldPassword.text,
-                  'newPassword': password.text,
-                });
-                if (a) {
-                  Navigator.pop(context);
-                  successSnackBar(
-                      context, '"Password has been successfully changed');
+                autoValidate = true;
+                setState(() {});
+
+                if (formKey.currentState!.validate()) {
+                  Utils.offKeyboard();
+                  bool a = await model.changePassword({
+                    'oldPassword': oldPassword.text,
+                    'newPassword': password.text,
+                  });
+                  if (a) {
+                    Navigator.pop(context);
+                    successSnackBar(
+                        context, '"Password has been successfully changed');
+                  }
                 }
               },
             ),

@@ -1,0 +1,62 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:2939151225815527483",
+      "lastPropertyId": "7:770563235454783380",
+      "name": "Verse",
+      "properties": [
+        {
+          "id": "1:4066432161977738204",
+          "name": "absoluteVerse",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:3740921999658744990",
+          "name": "absoluteChapter",
+          "type": 6
+        },
+        {
+          "id": "3:2775647540020797728",
+          "name": "chapter",
+          "type": 6
+        },
+        {
+          "id": "4:8043472127271521663",
+          "name": "verse",
+          "type": 6
+        },
+        {
+          "id": "5:4572114395200530711",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "6:3735502159031304413",
+          "name": "book",
+          "type": 9
+        },
+        {
+          "id": "7:770563235454783380",
+          "name": "text",
+          "type": 9
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:2939151225815527483",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

@@ -189,7 +189,7 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.scrollToIndex(
-        Utils.allBooks().keys.toList().indexOf(widget.name),
+        Utils.allBooks.keys.toList().indexOf(widget.name),
         preferPosition: AutoScrollPosition.begin,
       );
     });
@@ -246,7 +246,7 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
               ),
               itemCount: 66,
               itemBuilder: (c, i) {
-                Map d = Utils.allBooks();
+                Map d = Utils.allBooks;
                 return AutoScrollTag(
                   key: ValueKey(i),
                   controller: controller,

@@ -1,6 +1,7 @@
-import 'package:hexcelon/views/bible/passage.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../widgets/hex_text.dart';
+import 'passage.dart';
 
 class OneVersionScreen extends StatefulWidget {
   const OneVersionScreen({super.key});
@@ -12,6 +13,18 @@ class OneVersionScreen extends StatefulWidget {
 class _OneVersionScreenState extends State<OneVersionScreen> {
   PageController controller = PageController();
   int index = 0;
+
+  @override
+  void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      while (Utils.splitBooks().first.isEmpty) {
+        setState(() {});
+      }
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

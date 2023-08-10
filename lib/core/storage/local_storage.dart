@@ -2,6 +2,9 @@ import 'package:hexcelon/core/models/login_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../vms/settings_vm.dart';
+import 'objectbox.dart';
+
+late ObjectBox objectbox;
 
 class AppCache {
   static const String kUserBox = 'userBoxx';
@@ -13,6 +16,7 @@ class AppCache {
     await Hive.initFlutter();
     await Hive.openBox<dynamic>(kUserBox);
     await Hive.openBox<dynamic>(kDefaultBox);
+    objectbox = await ObjectBox.create();
   }
 
   static Box<dynamic> get _userBox => Hive.box<dynamic>(kUserBox);
@@ -22,9 +26,10 @@ class AppCache {
     return _defaultBox.get(bibleKey);
   }
 
-  static void setDefaultBible(String? a) {
-    _defaultBox.put(bibleKey, a);
+  static Future<void> setDefaultBible(String? a) async {
+    await _defaultBox.put(bibleKey, a);
     settingsVM.currentBible = a;
+    objectbox.putAllData();
   }
 
   static void setUser(LoginModel a) {
