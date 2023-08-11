@@ -1,8 +1,8 @@
-import 'package:grouped_list/grouped_list.dart';
 import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../core/storage/model.dart';
+import '../widgets/grouped_list.dart';
 import '../widgets/hex_text.dart';
 import 'one_version.dart';
 import 'search.dart';
@@ -41,7 +41,7 @@ class _VersesScreenState extends State<VersesScreen> {
     Verse firstVerse = objectbox.getOneVerse(book, chapter);
     prevChapter = firstVerse.absoluteChapter - 2;
     nextChapter = firstVerse.absoluteChapter + 2;
-    verses = objectbox.get2ChaptersBeforeAfter(firstVerse.absoluteChapter);
+    verses = objectbox.get2ChaptersBeforeAndAfter(firstVerse.absoluteChapter);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.scrollToIndex(
@@ -57,7 +57,7 @@ class _VersesScreenState extends State<VersesScreen> {
             controller.position.maxScrollExtent - endReachedThreshold &&
         !controller.position.outOfRange) {
       print("Close to bottom");
-      List<Verse> data = objectbox.get2After(nextChapter);
+      List<Verse> data = objectbox.get2ChaptersAfter(nextChapter);
       if (data.isNotEmpty) {
         nextChapter = nextChapter + 2;
         verses.addAll(data);
@@ -70,7 +70,7 @@ class _VersesScreenState extends State<VersesScreen> {
     if (controller.offset <= endReachedThreshold &&
         !controller.position.outOfRange) {
       print("Close to top");
-      List<Verse> data = objectbox.get2Before(prevChapter);
+      List<Verse> data = objectbox.get2ChaptersBefore(prevChapter);
       if (data.isNotEmpty) {
         prevChapter = prevChapter - 2;
         verses.addAll(data);
@@ -79,9 +79,9 @@ class _VersesScreenState extends State<VersesScreen> {
         double totalHeight = 0;
 
         for (var item in data) {
-          totalHeight += estimateTextHeight(item.text); // adjust textStyle as
+          totalHeight += estimateTextHeight(item.text);
         }
-        controller.jumpTo(controller.offset + totalHeight + 80.h);
+        controller.jumpTo(controller.offset + totalHeight);
         controller.animateTo(
           controller.offset + 1,
           duration: const Duration(milliseconds: 1),
@@ -92,8 +92,6 @@ class _VersesScreenState extends State<VersesScreen> {
   }
 
   double estimateTextHeight(String text) {
-    final double textSpacing = 10.h; // spacing between texts
-
     final TextPainter textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -107,7 +105,7 @@ class _VersesScreenState extends State<VersesScreen> {
       textDirection: TextDirection.ltr,
     )..layout(minWidth: 0, maxWidth: MediaQuery.of(context).size.width - 50.h);
 
-    return textPainter.size.height + textSpacing;
+    return textPainter.size.height + 10.h + 70.h;
   }
 
   @override

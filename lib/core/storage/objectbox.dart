@@ -74,7 +74,7 @@ class ObjectBox {
         'Run time is ${DateTime.now().difference(now).inMilliseconds} for ${books.length} books');
   }
 
-  List<Verse> get2ChaptersBeforeAfter(int absoluteChapter) {
+  List<Verse> get2ChaptersBeforeAndAfter(int absoluteChapter) {
     Query<Verse> query = _verseBox
         .query(Verse_.absoluteChapter
             .equals(absoluteChapter - 2)
@@ -90,7 +90,7 @@ class ObjectBox {
     return all;
   }
 
-  List<Verse> get2After(int absoluteChapter) {
+  List<Verse> get2ChaptersAfter(int absoluteChapter) {
     Query<Verse> query = _verseBox
         .query(Verse_.absoluteChapter
             .equals(absoluteChapter + 1)
@@ -102,7 +102,7 @@ class ObjectBox {
     return all;
   }
 
-  List<Verse> get2Before(int absoluteChapter) {
+  List<Verse> get2ChaptersBefore(int absoluteChapter) {
     Query<Verse> query = _verseBox
         .query(Verse_.absoluteChapter
             .equals(absoluteChapter - 1)
