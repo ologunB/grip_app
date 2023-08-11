@@ -34,7 +34,7 @@ class ObjectBox {
     DateTime now = DateTime.now();
     String? version = AppCache.getDefaultBible();
     if (version == null) return;
-    _verseBox.removeAllAsync();
+    await _verseBox.removeAllAsync();
     int chapter = 1;
     int verse = 1;
     final verses = <Verse>[];
