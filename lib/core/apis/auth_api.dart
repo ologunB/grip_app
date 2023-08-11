@@ -45,7 +45,6 @@ class AuthApi extends BaseAPI {
     String url = 'category';
     try {
       final Response res = await dio().get(url);
-      log(res.data);
       switch (res.statusCode) {
         case 200:
           List<Category> dirs = [];

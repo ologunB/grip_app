@@ -1,4 +1,3 @@
-import '../../core/storage/local_storage.dart';
 import '../widgets/hex_text.dart';
 import 'verses.dart';
 
@@ -26,7 +25,6 @@ class _PassageScreenState extends State<PassageScreen> {
     value = widget.value;
     name = widget.name;
     popWhenDone = widget.popWhenDone;
-    if (objectbox.verseBox.count() == 0) objectbox.putAllData();
     super.initState();
   }
 

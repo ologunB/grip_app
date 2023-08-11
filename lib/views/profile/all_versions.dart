@@ -132,57 +132,58 @@ class _DownloadButtonState extends State<DownloadButton> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Map<String, int>>(
-        stream: settingsVM.outMainDownloads,
-        initialData: settingsVM.currentDownloads,
-        builder: (context, snapshot) {
-          bool isDownload = widget.model.downloaded.contains(v.abbr);
-          bool isDownloading = snapshot.data?.keys.contains(v.abbr) ?? false;
-          bool isChosen = AppCache.getDefaultBible() == v.abbr;
-          return isDownloading
-              ? Padding(
-                  padding: EdgeInsets.only(right: 8.h),
-                  child: CircularPercentIndicator(
-                    radius: 15.h,
-                    lineWidth: 2.h,
-                    percent: snapshot.data![v.abbr]! / 100,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    center: HexText(
-                      '${snapshot.data?[v.abbr]}%',
-                      fontSize: 12.sp,
-                      color: AppColors.primary,
+      stream: settingsVM.outMainDownloads,
+      initialData: settingsVM.currentDownloads,
+      builder: (context, snapshot) {
+        bool isDownload = widget.model.downloaded.contains(v.abbr);
+        bool isDownloading = snapshot.data?.keys.contains(v.abbr) ?? false;
+        bool isChosen = AppCache.getDefaultBible() == v.abbr;
+        return isDownloading
+            ? Padding(
+                padding: EdgeInsets.only(right: 8.h),
+                child: CircularPercentIndicator(
+                  radius: 15.h,
+                  lineWidth: 2.h,
+                  percent: snapshot.data![v.abbr]! / 100,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  center: HexText(
+                    '${snapshot.data?[v.abbr]}%',
+                    fontSize: 12.sp,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                    align: TextAlign.center,
+                  ),
+                  progressColor: AppColors.primary,
+                ),
+              )
+            : TextButton(
+                onPressed: isChosen && isDownload ? null : widget.onTap,
+                child: Row(
+                  children: [
+                    if (isChosen && isDownload)
+                      Icon(
+                        Icons.check_rounded,
+                        color: Colors.green,
+                        size: 24.h,
+                      ),
+                    SizedBox(width: 8.h),
+                    HexText(
+                      !isDownload
+                          ? 'Download'
+                          : !isChosen
+                              ? 'Chose'
+                              : 'Chosen',
+                      fontSize: 16.sp,
+                      color: isChosen && isDownload
+                          ? Colors.green
+                          : AppColors.primary,
                       fontWeight: FontWeight.bold,
                       align: TextAlign.center,
                     ),
-                    progressColor: AppColors.primary,
-                  ),
-                )
-              : TextButton(
-                  onPressed: widget.onTap,
-                  child: Row(
-                    children: [
-                      if (isChosen && isDownload)
-                        Icon(
-                          Icons.check_rounded,
-                          color: Colors.green,
-                          size: 24.h,
-                        ),
-                      SizedBox(width: 8.h),
-                      HexText(
-                        !isDownload
-                            ? 'Download'
-                            : !isChosen
-                                ? 'Chose'
-                                : 'Chosen',
-                        fontSize: 16.sp,
-                        color: isChosen && isDownload
-                            ? Colors.green
-                            : AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        align: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                );
-        });
+                  ],
+                ),
+              );
+      },
+    );
   }
 }

@@ -53,9 +53,6 @@ class _VersesScreenState extends State<VersesScreen> {
   }
 
   _onScroll() {
-    if (!controller.hasClients) {
-      return;
-    }
     if (controller.offset >=
             controller.position.maxScrollExtent - endReachedThreshold &&
         !controller.position.outOfRange) {
@@ -68,6 +65,8 @@ class _VersesScreenState extends State<VersesScreen> {
         setState(() {});
       }
     }
+    print(controller.offset);
+
     if (controller.offset <= endReachedThreshold &&
         !controller.position.outOfRange) {
       print("Close to top");
@@ -77,9 +76,38 @@ class _VersesScreenState extends State<VersesScreen> {
         verses.addAll(data);
         verses = verses.toSet().toList();
         setState(() {});
-        controller.jumpTo(controller.offset + 1000);
+        double totalHeight = 0;
+
+        for (var item in data) {
+          totalHeight += estimateTextHeight(item.text); // adjust textStyle as
+        }
+        controller.jumpTo(controller.offset + totalHeight + 80.h);
+        controller.animateTo(
+          controller.offset + 1,
+          duration: const Duration(milliseconds: 1),
+          curve: Curves.linear,
+        );
       }
     }
+  }
+
+  double estimateTextHeight(String text) {
+    final double textSpacing = 10.h; // spacing between texts
+
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontSize: 16.sp,
+          fontFamily: 'Nova',
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      maxLines: null,
+      textDirection: TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: MediaQuery.of(context).size.width - 50.h);
+
+    return textPainter.size.height + textSpacing;
   }
 
   @override
@@ -199,27 +227,35 @@ class _VersesScreenState extends State<VersesScreen> {
                 elements: verses,
                 padding: EdgeInsets.symmetric(horizontal: 25.h),
                 groupBy: (element) => element.absoluteChapter,
-                groupHeaderBuilder: (group) => Container(
-                  padding: EdgeInsets.all(8.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.h),
-                  ),
-                  child: HexText(
-                    group.chapterName,
-                    fontSize: 16.sp,
-                    color: Colors.black,
-                    align: TextAlign.center,
-                    fontWeight: FontWeight.bold,
-                  ),
+                groupHeaderBuilder: (group) => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 40.h,
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.symmetric(horizontal: 8.h),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.h),
+                      ),
+                      child: HexText(
+                        group.chapterName,
+                        fontSize: 16.sp,
+                        color: Colors.black,
+                        align: TextAlign.center,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
+                separator: SizedBox(height: 10.h),
                 itemBuilder: (context, Verse element) {
                   return AutoScrollTag(
                     key: ValueKey(element.absoluteVerse),
                     controller: controller,
                     index: element.absoluteVerse,
                     child: HexText(
-                      '${element.verse}. ${element.text}\n',
+                      '${element.verse}. ${element.text}',
                       fontSize: 16.sp,
                       color: Colors.black,
                       key: ValueKey(element.absoluteVerse),
