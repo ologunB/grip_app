@@ -1,38 +1,53 @@
 import 'package:hexcelon/views/bible/bible_home.dart';
 import 'package:hexcelon/views/profile/creator_profile.dart';
 
-import '../../core/storage/local_storage.dart';
 import '../create/media.dart';
-import '../profile/profile.dart';
 import '../widgets/hex_text.dart';
 import 'explore.dart';
 import 'home.dart';
 
-class MainLayout extends StatefulWidget {
-  const MainLayout({super.key});
+class CreatorLayout extends StatefulWidget {
+  const CreatorLayout({super.key});
 
   @override
-  State<MainLayout> createState() => _MainLayoutState();
+  State<CreatorLayout> createState() => _CreatorLayoutState();
 }
 
-class _MainLayoutState extends State<MainLayout> {
-  List<Widget> get screens => [
-        const HomeScreen(),
-        const BibleHome(),
-        const SizedBox(),
-        const ExploreScreen(),
-        AppCache.getUser()?.user?.role == 'user'
-            ? const ProfileScreen()
-            : const CreatorProfileScreen(),
+class _CreatorLayoutState extends State<CreatorLayout> {
+  List<Widget> get screens => const [
+        HomeScreen(),
+        BibleHome(),
+        SizedBox(),
+        ExploreScreen(),
+        CreatorProfileScreen(),
       ];
 
   int currentIndex = 0;
 
+  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    bool user = AppCache.getUser()?.user?.role == 'user';
     return Scaffold(
-      body: screens[(user ? [0, 1, 3, 4] : [0, 1, 2, 3, 4])[currentIndex]],
+      body: IndexedStack(
+        index: currentIndex,
+        children: screens
+            .map(
+              (e) => Navigator(
+                key: _navigatorKeys[screens.indexOf(e)],
+                onGenerateRoute: (settings) => MaterialPageRoute(
+                  builder: (context) => e,
+                ),
+              ),
+            )
+            .toList(),
+      ),
       backgroundColor: AppColors.white,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.white,
@@ -55,14 +70,14 @@ class _MainLayoutState extends State<MainLayout> {
         elevation: 0,
         currentIndex: currentIndex,
         onTap: (i) {
-          if (!user && i == 2) {
+          if (i == 2) {
             push(context, const ChooseMediaScreen(), true);
             return;
           }
           currentIndex = i;
           setState(() {});
         },
-        items: (user ? [0, 1, 3, 4] : [0, 1, 2, 3, 4])
+        items: [0, 1, 2, 3, 4]
             .map(
               (a) => a == 2
                   ? BottomNavigationBarItem(

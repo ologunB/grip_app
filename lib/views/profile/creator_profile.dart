@@ -309,6 +309,7 @@ class SettingsDialog extends StatelessWidget {
                   showModalBottomSheet(
                     backgroundColor: Colors.white,
                     context: context,
+                    useRootNavigator: true,
                     isScrollControlled: true,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(

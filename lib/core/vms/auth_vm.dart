@@ -1,5 +1,5 @@
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:hexcelon/views/home/main_layout.dart';
+import 'package:hexcelon/views/home/user_layout.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logger/logger.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
@@ -44,7 +44,7 @@ class AuthViewModel extends BaseModel {
       LoginModel? user = vmContext.read<AuthViewModel>().loginResponse;
       user?.user?.verificationStatus = true;
       AppCache.setUser(user!);
-      pushAndRemoveUntil(vmContext, const MainLayout());
+      pushAndRemoveUntil(vmContext, const UserLayout());
       push(vmContext, const FollowTopicsScreen());
       showVMSnackbar('Account has been verified successfully');
       setBusy(false);
@@ -105,7 +105,7 @@ class AuthViewModel extends BaseModel {
         push(vmContext, const OTPScreen());
       } else {
         AppCache.setUser(res);
-        pushAndRemoveUntil(vmContext, const MainLayout());
+        pushAndRemoveUntil(vmContext, const UserLayout());
       }
       setBusy(false);
     } on GripException catch (e) {
@@ -305,7 +305,7 @@ class AuthViewModel extends BaseModel {
       LoginModel res = await _api.social(a);
 
       AppCache.setUser(res);
-      pushAndRemoveUntil(vmContext, const MainLayout());
+      pushAndRemoveUntil(vmContext, const UserLayout());
       if (res.user!.categories!.isEmpty) {
         push(vmContext, const FollowTopicsScreen());
       }

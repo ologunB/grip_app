@@ -4,6 +4,7 @@ import 'package:hexcelon/views/profile/all_versions.dart';
 
 import '../widgets/hex_text.dart';
 import 'passage.dart';
+import 'verses.dart';
 
 class OneVersionScreen extends StatefulWidget {
   const OneVersionScreen({super.key});
@@ -192,14 +193,23 @@ class ChapterItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        push(
-          context,
-          PassageScreen(
-            value: value.length,
-            name: name,
-            popWhenDone: popWhenDone,
-          ),
-        );
+        if (value.length == 1) {
+          // just one chapter so just go to verses
+          if (popWhenDone) {
+            Navigator.pop(context, [name, 1]);
+          } else {
+            push(context, VersesScreen(book: name, chapter: 1));
+          }
+        } else {
+          push(
+            context,
+            PassageScreen(
+              value: value.length,
+              name: name,
+              popWhenDone: popWhenDone,
+            ),
+          );
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 25.h),
