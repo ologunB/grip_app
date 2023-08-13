@@ -89,7 +89,7 @@ class _SearchPageState extends State<SearchPage> {
       body: controller.text.isEmpty
           ? empty('Search through the scriptures')
           : filtered.isEmpty
-              ? empty('No verse fits "${controller.text}"')
+              ? empty('No verse mentions "${controller.text}"')
               : ListView.separated(
                   itemCount: filtered.length,
                   shrinkWrap: true,

@@ -60,7 +60,8 @@ class _PassageScreenState extends State<PassageScreen> {
                           Navigator.pop(context);
                           Navigator.pop(context, [name, e]);
                         } else {
-                          push(context, VersesScreen(book: name, chapter: e));
+                          pushReplacement(
+                              context, VersesScreen(book: name, chapter: e));
                         }
                       },
                       borderRadius: BorderRadius.circular(20.h),

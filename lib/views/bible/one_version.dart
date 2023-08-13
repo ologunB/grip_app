@@ -1,4 +1,6 @@
 import 'package:flutter/scheduler.dart';
+import 'package:hexcelon/core/apis/base_api.dart';
+import 'package:hexcelon/views/profile/all_versions.dart';
 
 import '../widgets/hex_text.dart';
 import 'passage.dart';
@@ -34,11 +36,27 @@ class _OneVersionScreenState extends State<OneVersionScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        title: HexText(
-          'Bible',
-          fontSize: 20.sp,
-          color: AppColors.black,
-          fontWeight: FontWeight.w600,
+        title: InkWell(
+          onTap: () async {
+            await push(context, const AllVersionScreen(), true);
+            setState(() {});
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              HexText(
+                'Bible (${AppCache.getDefaultBible()?.toUpperCase()})',
+                fontSize: 20.sp,
+                color: AppColors.black,
+                fontWeight: FontWeight.w600,
+              ),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: Colors.black,
+                size: 26.h,
+              )
+            ],
+          ),
         ),
         iconTheme: const IconThemeData(color: Colors.black),
       ),
