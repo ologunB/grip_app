@@ -1,8 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:hexcelon/core/apis/base_api.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../core/storage/model.dart';
-import '../widgets/grouped_list.dart';
 import '../widgets/hex_text.dart';
 import 'one_version.dart';
 import 'search.dart';
@@ -21,20 +21,51 @@ class _VersesScreenState extends State<VersesScreen> {
   late int chapter, prevChapter, nextChapter;
   List<Verse> verses = [];
   final double endReachedThreshold = 300.0;
-
-  late AutoScrollController controller;
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ScrollOffsetController scrollOffsetController =
+      ScrollOffsetController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
+  final ScrollOffsetListener scrollOffsetListener =
+      ScrollOffsetListener.create();
+  ScrollController controller = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    controller = AutoScrollController(
-      viewportBoundaryGetter: () =>
-          Rect.fromLTRB(0, 36.h, 0, MediaQuery.of(context).padding.bottom),
-    );
     book = widget.book;
     chapter = widget.chapter;
     getVerses();
-    controller.addListener(_onScroll);
+    itemPositionsListener.itemPositions.addListener(_positionListener);
+  }
+
+  _positionListener() {
+    List<ItemPosition> li = itemPositionsListener.itemPositions.value.toList();
+    if (li.firstWhereOrNull((e) => e.index == 10) != null) {
+      print("Close to top");
+      List<Verse> data = objectbox.get2ChaptersBefore(prevChapter);
+      if (data.isNotEmpty) {
+        prevChapter = prevChapter - 2;
+        verses.addAll(data);
+        verses = verses.toSet().toList();
+        setState(() {});
+        verses.sort((a, b) => a.absoluteVerse.compareTo(b.absoluteVerse));
+        itemScrollController.jumpTo(index: data.length + 11, alignment: .5);
+      }
+    }
+
+    if (li.firstWhereOrNull((e) => e.index == verses.length - 10) != null) {
+      print("Close to bottom");
+      List<Verse> data = objectbox.get2ChaptersAfter(nextChapter);
+      if (data.isNotEmpty) {
+        nextChapter = nextChapter + 2;
+        verses.addAll(data);
+        verses = verses.toSet().toList();
+        verses.sort((a, b) => a.absoluteVerse.compareTo(b.absoluteVerse));
+
+        setState(() {});
+      }
+    }
   }
 
   getVerses() {
@@ -44,72 +75,25 @@ class _VersesScreenState extends State<VersesScreen> {
     verses = objectbox.get2ChaptersBeforeAndAfter(firstVerse.absoluteChapter);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.scrollToIndex(
-        firstVerse.absoluteVerse,
-        preferPosition: AutoScrollPosition.begin,
-        duration: const Duration(milliseconds: 1),
+      itemScrollController.jumpTo(
+        index: verses
+            .indexWhere((e) => e.absoluteVerse == firstVerse.absoluteVerse),
       );
     });
   }
 
-  _onScroll() {
-    if (controller.offset >=
-            controller.position.maxScrollExtent - endReachedThreshold &&
-        !controller.position.outOfRange) {
-      print("Close to bottom");
-      List<Verse> data = objectbox.get2ChaptersAfter(nextChapter);
-      if (data.isNotEmpty) {
-        nextChapter = nextChapter + 2;
-        verses.addAll(data);
-        verses = verses.toSet().toList();
-        setState(() {});
-      }
-    }
-    print(controller.offset);
-
-    if (controller.offset <= endReachedThreshold &&
-        !controller.position.outOfRange) {
-      print("Close to top");
-      List<Verse> data = objectbox.get2ChaptersBefore(prevChapter);
-      if (data.isNotEmpty) {
-        prevChapter = prevChapter - 2;
-        verses.addAll(data);
-        verses = verses.toSet().toList();
-        setState(() {});
-        double totalHeight = 0;
-
-        for (var item in data) {
-          totalHeight += estimateTextHeight(item.text);
-        }
-        controller.jumpTo(controller.offset + totalHeight);
-        controller.animateTo(
-          controller.offset + 1,
-          duration: const Duration(milliseconds: 1),
-          curve: Curves.linear,
-        );
-      }
-    }
-  }
-
-  double estimateTextHeight(String text) {
-    final TextPainter textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(
-          fontSize: 16.sp,
-          fontFamily: 'Nova',
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-      maxLines: null,
-      textDirection: TextDirection.ltr,
-    )..layout(minWidth: 0, maxWidth: MediaQuery.of(context).size.width - 50.h);
-
-    return textPainter.size.height + 10.h + 70.h;
-  }
-
   @override
   Widget build(BuildContext context) {
+    var groupedEntities = groupBy(verses, (Verse e) => e.chapter);
+
+    groupedEntities = Map.fromEntries(
+      groupedEntities.entries.toList()
+        ..sort((e1, e2) => e1.key.compareTo(e2.key)),
+    );
+    List<String> a = [];
+    groupedEntities.forEach((chapterId, entities) {
+      a.add('${entities.first.chapterName} len: ${entities.length}');
+    });
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -217,56 +201,61 @@ class _VersesScreenState extends State<VersesScreen> {
                 SizedBox(width: 25.h),
               ],
             ),
+            HexText(
+              '${a.join(' || ')}... total: ${a.length}',
+              fontSize: 16.sp,
+              color: Colors.black,
+              align: TextAlign.center,
+              fontWeight: FontWeight.bold,
+            ),
             SizedBox(height: 15.h),
             Expanded(
-              child: GroupedListView<Verse, int>(
-                key: const ValueKey('ListViewKey'),
-                controller: controller,
-                elements: verses,
+              child: ScrollablePositionedList.separated(
+                itemCount: verses.length,
+                shrinkWrap: true,
+                separatorBuilder: (_, __) => SizedBox(height: 10.h),
                 padding: EdgeInsets.symmetric(horizontal: 25.h),
-                groupBy: (element) => element.absoluteChapter,
-                groupHeaderBuilder: (group) => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 40.h,
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(horizontal: 8.h),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.h),
-                      ),
-                      child: HexText(
-                        group.chapterName,
+                itemBuilder: (context, index) {
+                  Verse element = verses[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (element.verse == 1)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 40.h,
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.symmetric(horizontal: 8.h),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8.h),
+                              ),
+                              child: HexText(
+                                element.chapterName,
+                                fontSize: 16.sp,
+                                color: Colors.black,
+                                align: TextAlign.center,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      HexText(
+                        '${element.verse}. ${element.text}',
                         fontSize: 16.sp,
                         color: Colors.black,
-                        align: TextAlign.center,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                separator: SizedBox(height: 10.h),
-                itemBuilder: (context, Verse element) {
-                  return AutoScrollTag(
-                    key: ValueKey(element.absoluteVerse),
-                    controller: controller,
-                    index: element.absoluteVerse,
-                    child: HexText(
-                      '${element.verse}. ${element.text}',
-                      fontSize: 16.sp,
-                      color: Colors.black,
-                      key: ValueKey(element.absoluteVerse),
-                      fontWeight: FontWeight.w400,
-                    ),
+                        key: ValueKey(element.absoluteVerse),
+                        fontWeight: FontWeight.w400,
+                      )
+                    ],
                   );
                 },
-                itemComparator: (a, b) =>
-                    a.absoluteVerse.compareTo(b.absoluteVerse),
-                groupComparator: (a, b) => a.compareTo(b),
-                useStickyGroupSeparators: true,
-                floatingHeader: true,
-                order: GroupedListOrder.ASC,
+                itemScrollController: itemScrollController,
+                scrollOffsetController: scrollOffsetController,
+                itemPositionsListener: itemPositionsListener,
+                scrollOffsetListener: scrollOffsetListener,
               ),
             )
           ],
@@ -285,19 +274,6 @@ class SelectChapterDialog extends StatefulWidget {
 }
 
 class _SelectChapterDialogState extends State<SelectChapterDialog> {
-  final ItemScrollController itemScrollController = ItemScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      itemScrollController.jumpTo(
-        index: Utils.allBooks.keys.toList().indexOf(widget.name),
-        alignment: 0.1
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -336,7 +312,9 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
           Expanded(
             child: ScrollablePositionedList.separated(
               shrinkWrap: true,
-              itemScrollController: itemScrollController,
+              initialScrollIndex:
+                  Utils.allBooks.keys.toList().indexOf(widget.name),
+              initialAlignment: 0.1,
               padding: EdgeInsets.zero,
               physics: const ClampingScrollPhysics(),
               separatorBuilder: (_, __) => Padding(
