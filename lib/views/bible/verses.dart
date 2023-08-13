@@ -20,6 +20,7 @@ class _VersesScreenState extends State<VersesScreen> {
   late String book;
   late int chapter, prevChapter, nextChapter;
   List<Verse> verses = [];
+  int? verse;
   final ItemScrollController itemScrollController = ItemScrollController();
 
   final ItemPositionsListener itemPositionsListener =
@@ -77,35 +78,28 @@ class _VersesScreenState extends State<VersesScreen> {
   }
 
   getVerses() {
-    Verse firstVerse = objectbox.getOneVerse(book, chapter);
+    Verse firstVerse = objectbox.getOneVerse(book, chapter, verse: verse);
     prevChapter = firstVerse.absoluteChapter - 2;
     nextChapter = firstVerse.absoluteChapter + 2;
     verses = objectbox.get2ChaptersBeforeAndAfter(firstVerse.absoluteChapter);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      itemScrollController.jumpTo(
-        index: verses
-            .indexWhere((e) => e.absoluteVerse == firstVerse.absoluteVerse),
-      );
+      int index =
+          verses.indexWhere((e) => e.absoluteVerse == firstVerse.absoluteVerse);
+      if (verse != null) {
+        // if you select verse scroll up a little
+        index = (index - 2).isNegative ? index : index - 2;
+      }
+      itemScrollController.jumpTo(index: index);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var groupedEntities = groupBy(verses, (Verse e) => e.chapter);
-
-    groupedEntities = Map.fromEntries(
-      groupedEntities.entries.toList()
-        ..sort((e1, e2) => e1.key.compareTo(e2.key)),
-    );
-    List<String> a = [];
-    groupedEntities.forEach((chapterId, entities) {
-      a.add('${entities.first.chapterName} len: ${entities.length}');
-    });
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size(0, 50.h),
+        preferredSize: Size(0, 55.h),
         child: SafeArea(
           child: Row(
             children: [
@@ -137,6 +131,7 @@ class _VersesScreenState extends State<VersesScreen> {
                           if (a != null) {
                             book = a.first;
                             chapter = a.last;
+                            verse = null;
                             setState(() {});
                             getVerses();
                           }
@@ -197,8 +192,15 @@ class _VersesScreenState extends State<VersesScreen> {
               ),
               SizedBox(width: 24.h),
               InkWell(
-                onTap: () {
-                  push(context, const SearchPage(), true);
+                onTap: () async {
+                  dynamic a = await push(context, const SearchPage(), true);
+                  if (a != null) {
+                    book = a.first;
+                    verse = a[1];
+                    chapter = a.last;
+                    setState(() {});
+                    getVerses();
+                  }
                 },
                 child: Image.asset(
                   'search'.png,
@@ -214,23 +216,35 @@ class _VersesScreenState extends State<VersesScreen> {
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
-          ScrollablePositionedList.separated(
+          ScrollablePositionedList.builder(
             itemCount: verses.length,
             shrinkWrap: true,
-            separatorBuilder: (_, __) => SizedBox(height: 10.h),
-            padding: EdgeInsets.symmetric(horizontal: 25.h),
+            padding: EdgeInsets.zero,
             itemBuilder: (context, index) {
-              Verse element = verses[index];
+              Verse v = verses[index];
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (element.verse == 1) header(element.chapterName),
-                  HexText(
-                    ' ${element.verse}. ${element.text}',
-                    fontSize: 16.sp,
-                    color: Colors.black,
-                    key: ValueKey(element.absoluteVerse),
-                    fontWeight: FontWeight.w400,
+                  SizedBox(height: 5.h),
+                  if (v.verse == 1) header(v.chapterName),
+                  AnimatedContainer(
+                    padding: EdgeInsets.only(
+                      top: v.verse == 1 ? 5.h : 0.h,
+                      bottom: 5.h,
+                      right: 25.h,
+                      left: 25.h,
+                    ),
+                    duration: const Duration(seconds: 1),
+                    color: (v.verse == verse && v.chapter == chapter)
+                        ? AppColors.primary.withOpacity(.2)
+                        : null,
+                    child: HexText(
+                      '${v.verse}. ${v.text}',
+                      fontSize: 16.sp,
+                      color: Colors.black,
+                      key: ValueKey(v.absoluteVerse),
+                      fontWeight: FontWeight.w400,
+                    ),
                   )
                 ],
               );
@@ -251,7 +265,7 @@ class _VersesScreenState extends State<VersesScreen> {
         Container(
           height: 40.h,
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(horizontal: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 10.h),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.h),

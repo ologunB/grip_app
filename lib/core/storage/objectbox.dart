@@ -90,11 +90,25 @@ class ObjectBox {
     return all;
   }
 
+  List<Verse> searchText(String q) {
+    Query<Verse> query = _verseBox
+        .query(Verse_.text
+            .contains(q, caseSensitive: false)
+            .or(Verse_.verseName.contains(q, caseSensitive: false)))
+        .order(Verse_.absoluteVerse)
+        .build();
+    List<Verse> all = query.find();
+    query.close();
+
+    return all;
+  }
+
   List<Verse> get2ChaptersAfter(int absoluteChapter) {
     Query<Verse> query = _verseBox
         .query(Verse_.absoluteChapter
             .equals(absoluteChapter + 1)
             .or(Verse_.absoluteChapter.equals(absoluteChapter + 2)))
+        .order(Verse_.absoluteVerse)
         .build();
     List<Verse> all = query.find();
     query.close();
@@ -107,6 +121,7 @@ class ObjectBox {
         .query(Verse_.absoluteChapter
             .equals(absoluteChapter - 1)
             .or(Verse_.absoluteChapter.equals(absoluteChapter - 2)))
+        .order(Verse_.absoluteVerse)
         .build();
     List<Verse> all = query.find();
     query.close();
@@ -114,12 +129,12 @@ class ObjectBox {
     return all;
   }
 
-  Verse getOneVerse(String book, int chapter, {int verse = 1}) {
+  Verse getOneVerse(String book, int chapter, {int? verse}) {
     Query<Verse> query = _verseBox
         .query(Verse_.chapter
             .equals(chapter)
             .and(Verse_.bookName.equals(book))
-            .and(Verse_.verse.equals(verse)))
+            .and(Verse_.verse.equals(verse ?? 1)))
         .build();
     List<Verse> all = query.find();
     query.close();
