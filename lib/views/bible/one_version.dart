@@ -16,11 +16,13 @@ class OneVersionScreen extends StatefulWidget {
 class _OneVersionScreenState extends State<OneVersionScreen> {
   PageController controller = PageController();
   int index = 0;
+  int checker = 0;
 
   @override
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      while (Utils.splitBooks().first.isEmpty) {
+      while (checker < 5) {
+        checker++;
         setState(() {});
         await Future.delayed(const Duration(milliseconds: 500));
       }

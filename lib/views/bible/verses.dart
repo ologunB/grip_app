@@ -117,6 +117,7 @@ class _VersesScreenState extends State<VersesScreen> {
                           dynamic a = await showModalBottomSheet(
                             backgroundColor: Colors.white,
                             context: context,
+                            useRootNavigator: true,
                             isScrollControlled: true,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
@@ -393,7 +394,7 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
                   color: const Color(0xffE6E6E6),
                 ),
               ),
-              itemCount: 66,
+              itemCount: Utils.allBooks.length,
               itemBuilder: (c, i) {
                 Map d = Utils.allBooks;
                 return ChapterItem(

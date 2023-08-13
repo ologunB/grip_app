@@ -91,7 +91,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               onTap: () async {
                                 dynamic a = await showModalBottomSheet(
                                   backgroundColor: Colors.white,
-                                  context: context,
+                                  context: context, useRootNavigator: true,
                                   isScrollControlled: true,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.only(

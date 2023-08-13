@@ -34,7 +34,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                     onTap: () async {
                       await showModalBottomSheet(
                         backgroundColor: Colors.white,
-                        context: context,
+                        context: context, useRootNavigator: true,
                         isScrollControlled: true,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(

@@ -104,7 +104,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             onTap: () {
                               showModalBottomSheet(
                                 backgroundColor: Colors.white,
-                                context: context,
+                                context: context, useRootNavigator: true,
                                 isScrollControlled: true,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
@@ -131,7 +131,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       } else if (e == 2) {
                                         showModalBottomSheet(
                                           backgroundColor: Colors.white,
-                                          context: context,
+                                          context: context, useRootNavigator: true,
                                           isScrollControlled: true,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.only(
@@ -149,7 +149,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       } else if (e == 4) {
                                         showModalBottomSheet(
                                           backgroundColor: Colors.white,
-                                          context: context,
+                                          context: context, useRootNavigator: true,
                                           isScrollControlled: true,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.only(

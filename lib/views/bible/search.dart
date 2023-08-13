@@ -40,6 +40,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   autofocus: true,
                   placeholder: 'Search',
+                  textInputAction: TextInputAction.search,
                   controller: controller,
                   placeholderStyle: TextStyle(
                     fontFamily: 'Nova',
