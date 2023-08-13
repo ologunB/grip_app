@@ -293,6 +293,7 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       itemScrollController.jumpTo(
         index: Utils.allBooks.keys.toList().indexOf(widget.name),
+        alignment: 0.1
       );
     });
   }
