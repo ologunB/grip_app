@@ -285,21 +285,14 @@ class SelectChapterDialog extends StatefulWidget {
 }
 
 class _SelectChapterDialogState extends State<SelectChapterDialog> {
-  late AutoScrollController controller;
+  final ItemScrollController itemScrollController = ItemScrollController();
 
   @override
   void initState() {
     super.initState();
-    controller = AutoScrollController(
-      viewportBoundaryGetter: () =>
-          Rect.fromLTRB(0, 60, 0, MediaQuery.of(context).padding.bottom),
-    );
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.scrollToIndex(
-        Utils.allBooks.keys.toList().indexOf(widget.name),
-        preferPosition: AutoScrollPosition.begin,
-        duration: const Duration(milliseconds: 1),
+      itemScrollController.jumpTo(
+        index: Utils.allBooks.keys.toList().indexOf(widget.name),
       );
     });
   }
@@ -340,9 +333,9 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
           ),
           SizedBox(height: 25.h),
           Expanded(
-            child: ListView.separated(
+            child: ScrollablePositionedList.separated(
               shrinkWrap: true,
-              controller: controller,
+              itemScrollController: itemScrollController,
               padding: EdgeInsets.zero,
               physics: const ClampingScrollPhysics(),
               separatorBuilder: (_, __) => Padding(
@@ -356,16 +349,12 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
               itemCount: 66,
               itemBuilder: (c, i) {
                 Map d = Utils.allBooks;
-                return AutoScrollTag(
+                return ChapterItem(
                   key: ValueKey(i),
-                  controller: controller,
-                  index: i,
-                  child: ChapterItem(
-                    name: d.keys.toList()[i],
-                    value: d.values.toList()[i],
-                    popWhenDone: true,
-                    presentValue: d.keys.toList().indexOf(widget.name) == i,
-                  ),
+                  name: d.keys.toList()[i],
+                  value: d.values.toList()[i],
+                  popWhenDone: true,
+                  presentValue: d.keys.toList().indexOf(widget.name) == i,
                 );
               },
             ),

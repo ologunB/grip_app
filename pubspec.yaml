@@ -41,6 +41,8 @@ dependencies:
   the_apple_sign_in: ^1.1.1
   url_launcher: ^6.1.11
   watcher: ^1.0.2
+  positioned_scroll_observer: ^2.2.1
+  scrollable_positioned_list: ^0.3.8
 
 dev_dependencies:
   flutter_native_splash: ^2.3.1
