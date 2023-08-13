@@ -11,6 +11,7 @@ class AppCache {
   static const String kDefaultBox = 'defaultBox';
   static const String userKey = 'userKey';
   static const String bibleKey = 'bibleKey';
+  static const String bibleFontKey = 'bibleFontKey';
 
   static Future<void> init() async {
     await Hive.initFlutter();
@@ -21,6 +22,14 @@ class AppCache {
 
   static Box<dynamic> get _userBox => Hive.box<dynamic>(kUserBox);
   static Box<dynamic> get _defaultBox => Hive.box<dynamic>(kDefaultBox);
+
+  static double getBibleFont() {
+    return _defaultBox.get(bibleFontKey, defaultValue: 0.4);
+  }
+
+  static Future<void> setBibleFont(double a) async {
+    _defaultBox.put(bibleFontKey, a);
+  }
 
   static String? getDefaultBible() {
     return _defaultBox.get(bibleKey);

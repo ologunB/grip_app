@@ -1,5 +1,4 @@
 import 'package:hexcelon/core/apis/base_api.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../core/storage/model.dart';
 import '../widgets/hex_text.dart';
@@ -39,6 +38,7 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ],
                   ),
+                  autofocus: true,
                   placeholder: 'Search',
                   controller: controller,
                   placeholderStyle: TextStyle(
@@ -90,7 +90,7 @@ class _SearchPageState extends State<SearchPage> {
           ? empty('Search through the scriptures')
           : filtered.isEmpty
               ? empty('No verse fits "${controller.text}"')
-              : ScrollablePositionedList.separated(
+              : ListView.separated(
                   itemCount: filtered.length,
                   shrinkWrap: true,
                   separatorBuilder: (_, __) =>
@@ -154,7 +154,7 @@ class _SearchPageState extends State<SearchPage> {
           TextSpan(
             text: parts.first,
             style: style.copyWith(
-              backgroundColor: Colors.yellow,
+              backgroundColor: AppColors.primary.withOpacity(.2),
               color: AppColors.primary,
             ),
           ),

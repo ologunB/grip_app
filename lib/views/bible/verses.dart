@@ -184,7 +184,10 @@ class _VersesScreenState extends State<VersesScreen> {
               ),
               const Spacer(),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  openFont = true;
+                  setState(() {});
+                },
                 child: Image.asset(
                   'aa'.png,
                   height: 32.h,
@@ -216,46 +219,95 @@ class _VersesScreenState extends State<VersesScreen> {
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
-          ScrollablePositionedList.builder(
-            itemCount: verses.length,
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, index) {
-              Verse v = verses[index];
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          GestureDetector(
+            onTap: () {
+              openFont = false;
+              setState(() {});
+            },
+            child: ScrollablePositionedList.builder(
+              itemCount: verses.length,
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                Verse v = verses[index];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 5.h),
+                    if (v.verse == 1) header(v.chapterName),
+                    AnimatedContainer(
+                      padding: EdgeInsets.only(
+                        top: v.verse == 1 ? 5.h : 0.h,
+                        bottom: 5.h,
+                        right: 25.h,
+                        left: 25.h,
+                      ),
+                      duration: const Duration(seconds: 1),
+                      color: (v.verse == verse && v.chapter == chapter)
+                          ? AppColors.primary.withOpacity(.2)
+                          : null,
+                      child: HexText(
+                        '${v.verse}. ${v.text}',
+                        fontSize: bibleFontSize().sp,
+                        color: Colors.black,
+                        key: ValueKey(v.absoluteVerse),
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                  ],
+                );
+              },
+              itemScrollController: itemScrollController,
+              itemPositionsListener: itemPositionsListener,
+            ),
+          ),
+          if (currentChapter != null) header(currentChapter!),
+          if (openFont)
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 10.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 5.h),
-                  if (v.verse == 1) header(v.chapterName),
-                  AnimatedContainer(
-                    padding: EdgeInsets.only(
-                      top: v.verse == 1 ? 5.h : 0.h,
-                      bottom: 5.h,
-                      right: 25.h,
-                      left: 25.h,
-                    ),
-                    duration: const Duration(seconds: 1),
-                    color: (v.verse == verse && v.chapter == chapter)
-                        ? AppColors.primary.withOpacity(.2)
-                        : null,
-                    child: HexText(
-                      '${v.verse}. ${v.text}',
-                      fontSize: 16.sp,
-                      color: Colors.black,
-                      key: ValueKey(v.absoluteVerse),
-                      fontWeight: FontWeight.w400,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Slider(
+                          value: AppCache.getBibleFont(),
+                          activeColor: AppColors.primary,
+                          onChanged: (double value) {
+                            setState(() {
+                              AppCache.setBibleFont(value);
+                            });
+                          },
+                        ),
+                      ),
+                      CloseButton(
+                        color: Colors.red,
+                        onPressed: () {
+                          openFont = false;
+                          setState(() {});
+                        },
+                      )
+                    ],
                   )
                 ],
-              );
-            },
-            itemScrollController: itemScrollController,
-            itemPositionsListener: itemPositionsListener,
-          ),
-          if (currentChapter != null) header(currentChapter!)
+              ),
+            ),
         ],
       ),
     );
+  }
+
+  bool openFont = false;
+
+  double bibleFontSize() {
+    double sliderValue = AppCache.getBibleFont();
+    if (sliderValue <= 0.4) {
+      return 10 + (sliderValue / 0.4) * 6;
+    } else {
+      return 16 + ((sliderValue - 0.4) / 0.6) * 8;
+    }
   }
 
   Widget header(String a) {
@@ -263,8 +315,6 @@ class _VersesScreenState extends State<VersesScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          height: 40.h,
-          alignment: Alignment.center,
           padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 10.h),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -272,7 +322,7 @@ class _VersesScreenState extends State<VersesScreen> {
           ),
           child: HexText(
             a,
-            fontSize: 16.sp,
+            fontSize: bibleFontSize().sp,
             color: Colors.black,
             align: TextAlign.center,
             fontWeight: FontWeight.bold,
