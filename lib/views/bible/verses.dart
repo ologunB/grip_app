@@ -22,11 +22,10 @@ class _VersesScreenState extends State<VersesScreen> {
   List<Verse> verses = [];
   int? verse;
   final ItemScrollController itemScrollController = ItemScrollController();
-
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
+  String? oldChapter, currentChapter;
 
-  ScrollController controller = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -38,8 +37,6 @@ class _VersesScreenState extends State<VersesScreen> {
       itemPositionsListener.itemPositions.addListener(_positionListener);
     });
   }
-
-  String? oldChapter, currentChapter;
 
   _positionListener() {
     List<ItemPosition> li = itemPositionsListener.itemPositions.value.toList();
