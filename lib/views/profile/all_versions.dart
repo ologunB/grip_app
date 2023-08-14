@@ -14,6 +14,21 @@ class AllVersionScreen extends StatefulWidget {
 }
 
 class _AllVersionScreenState extends State<AllVersionScreen> {
+  StreamSubscription? bib;
+  @override
+  void initState() {
+    bib = settingsVM.outMainBible.listen((event) {
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    bib?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseView<BibleViewModel>(
@@ -31,7 +46,9 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
                       EdgeInsets.symmetric(horizontal: 15.h, vertical: 5.h),
                   child: Row(
                     children: [
-                      const BackButton(),
+                      ModalRoute.of(context)?.settings.arguments == true
+                          ? const CloseButton()
+                          : const BackButton(),
                       HexText(
                         'Bible',
                         fontSize: 28.sp,

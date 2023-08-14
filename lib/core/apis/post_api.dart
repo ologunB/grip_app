@@ -2,11 +2,23 @@ import '../models/post_model.dart';
 import 'base_api.dart';
 
 class PostApi extends BaseAPI {
-  Future<Post> create(Map<String, dynamic> data) async {
+  Future<Post> create(Map<String, dynamic> data, List<File>? files) async {
     String url = 'post';
     log(data);
+    files = files ?? [];
+    FormData forms = FormData.fromMap(data);
+    for (var file in files) {
+      forms.files.add(
+        MapEntry<String, MultipartFile>(
+          'files',
+          MultipartFile.fromFileSync(file.path,
+              filename: file.path.split('/').last),
+        ),
+      );
+    }
+
     try {
-      final Response res = await dio().post(url, data: data);
+      final Response res = await dio().post(url, data: forms);
       log(res.data);
       switch (res.statusCode) {
         case 200:

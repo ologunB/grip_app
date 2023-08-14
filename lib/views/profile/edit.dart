@@ -92,7 +92,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         } else {
                           dynamic a = await showModalBottomSheet(
                               backgroundColor: Colors.white,
-                              context: context, useRootNavigator: true,
+                              context: context,
+                              useRootNavigator: true,
                               isScrollControlled: true,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
@@ -210,7 +211,8 @@ class SelectPhoto extends StatelessWidget {
               alignment: Alignment.center,
               child: HexText(
                 title ?? 'Select a Photo',
-                fontSize: 14.sp,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
                 align: TextAlign.center,
                 color: AppColors.black,
               ),
@@ -240,9 +242,7 @@ class SelectPhoto extends StatelessWidget {
           onTap: () async {
             final XFile? image =
                 await picker.pickImage(source: ImageSource.camera);
-            if (image != null) {
-              Navigator.pop(context, image.path);
-            }
+            if (image != null) Navigator.pop(context, image.path);
           },
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 20.h),

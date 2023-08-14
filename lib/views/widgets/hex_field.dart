@@ -88,6 +88,7 @@ class HexField extends StatelessWidget {
           cursorColor: AppColors.black,
           cursorWidth: 1.h,
           focusNode: focusNode,
+          textCapitalization: TextCapitalization.sentences,
           maxLines: obscureText ? 1 : maxLines,
           autofocus: autoFocus!,
           enabled: enabled ?? true,

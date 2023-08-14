@@ -4,9 +4,12 @@ import 'hex_text.dart';
 Future<dynamic> push(BuildContext context, Widget page,
     [bool dialog = false]) async {
   FocusScope.of(context).unfocus();
-  return await Navigator.push(
-    context,
-    CupertinoPageRoute(builder: (context) => page, fullscreenDialog: dialog),
+  return await Navigator.of(context, rootNavigator: dialog).push(
+    CupertinoPageRoute(
+      builder: (context) => page,
+      fullscreenDialog: dialog,
+      settings: RouteSettings(arguments: dialog),
+    ),
   );
 }
 

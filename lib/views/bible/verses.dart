@@ -313,6 +313,7 @@ class _VersesScreenState extends State<VersesScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
+          margin: EdgeInsets.only(top: 3.h),
           padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 10.h),
           decoration: BoxDecoration(
             color: Colors.white,

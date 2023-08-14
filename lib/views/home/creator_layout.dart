@@ -24,14 +24,8 @@ class _CreatorLayoutState extends State<CreatorLayout> {
 
   int currentIndex = 0;
 
-  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-  ];
-
+  final List<GlobalKey<NavigatorState>> _navigatorKeys =
+      List.generate(5, (index) => GlobalKey<NavigatorState>());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,8 +68,11 @@ class _CreatorLayoutState extends State<CreatorLayout> {
             push(context, const ChooseMediaScreen(), true);
             return;
           }
-          currentIndex = i;
-          setState(() {});
+          if (i == currentIndex) {
+            _navigatorKeys[i].currentState!.popUntil((route) => route.isFirst);
+          } else {
+            setState(() => currentIndex = i);
+          }
         },
         items: [0, 1, 2, 3, 4]
             .map(

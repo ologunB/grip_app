@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:hexcelon/core/apis/post_api.dart';
 
 import '../models/error_util.dart';
@@ -8,10 +10,10 @@ class PostViewModel extends BaseModel {
   final PostApi _api = locator<PostApi>();
   String? error;
 
-  Future<void> create(Map<String, dynamic> a) async {
+  Future<void> create(Map<String, dynamic> a, List<File> files) async {
     setBusy(true);
     try {
-      Post res = await _api.create(a);
+      Post res = await _api.create(a, files);
 
       print(res);
       setBusy(false);

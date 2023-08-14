@@ -1,7 +1,7 @@
 import '../widgets/hex_text.dart';
 import 'verses.dart';
 
-class PassageScreen extends StatefulWidget {
+class PassageScreen extends StatelessWidget {
   const PassageScreen({
     super.key,
     required this.value,
@@ -12,21 +12,6 @@ class PassageScreen extends StatefulWidget {
   final int value;
   final String name;
   final bool popWhenDone;
-  @override
-  State<PassageScreen> createState() => _PassageScreenState();
-}
-
-class _PassageScreenState extends State<PassageScreen> {
-  late int value;
-  late String name;
-  late bool popWhenDone;
-  @override
-  void initState() {
-    value = widget.value;
-    name = widget.name;
-    popWhenDone = widget.popWhenDone;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

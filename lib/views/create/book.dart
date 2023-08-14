@@ -1,5 +1,7 @@
 import 'package:hexcelon/views/create/verses.dart';
 
+import '../bible/one_version.dart';
+import '../widgets/grip_divider.dart';
 import '../widgets/hex_text.dart';
 
 class ChooseBookScreen extends StatefulWidget {
@@ -93,81 +95,59 @@ class _ChooseBookScreenState extends State<ChooseBookScreen> {
               controller: controller,
               children: [
                 ListView.separated(
-                  separatorBuilder: (_, __) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.h),
-                    child: Divider(
-                      height: 0.h,
-                      thickness: 1.h,
-                      color: const Color(0xffE6E6E6),
-                    ),
-                  ),
+                  separatorBuilder: (_, __) => const GripDivider(),
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
                   padding: EdgeInsets.zero,
-                  itemCount: 5,
+                  itemCount: Utils.splitBooks().first.length,
                   itemBuilder: (c, i) {
-                    return item('Genesis');
+                    Map d = Utils.splitBooks().first;
+                    String name = d.keys.toList()[i];
+                    return ChapterItem(
+                      name: name,
+                      value: d.values.toList()[i],
+                      onTap: () {
+                        push(
+                          context,
+                          VersesScreen(
+                            type: 'chapter',
+                            data: [name],
+                            popNumber: 3,
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
                 ListView.separated(
-                  separatorBuilder: (_, __) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.h),
-                    child: Divider(
-                      height: 0.h,
-                      thickness: 1.h,
-                      color: const Color(0xffE6E6E6),
-                    ),
-                  ),
+                  separatorBuilder: (_, __) => const GripDivider(),
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
                   padding: EdgeInsets.zero,
-                  itemCount: 7,
+                  itemCount: Utils.splitBooks().last.length,
                   itemBuilder: (c, i) {
-                    return item('Matthew');
+                    Map d = Utils.splitBooks().last;
+                    String name = d.keys.toList()[i];
+                    return ChapterItem(
+                      name: name,
+                      value: d.values.toList()[i],
+                      onTap: () {
+                        push(
+                          context,
+                          VersesScreen(
+                            type: 'chapter',
+                            data: [name],
+                            popNumber: 3,
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
               ],
             ),
           )
         ],
-      ),
-    );
-  }
-
-  Widget item(String a) {
-    return InkWell(
-      onTap: () {
-        push(context, VersesScreen(type: 'chapter', data: [a], popNumber: 3));
-      },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 20.h),
-        child: Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                HexText(
-                  a,
-                  fontSize: 16.sp,
-                  color: AppColors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-                SizedBox(height: 8.h),
-                HexText(
-                  '50 Chapters',
-                  fontSize: 14.sp,
-                  color: AppColors.black,
-                ),
-              ],
-            ),
-            const Spacer(),
-            Image.asset(
-              'go'.png,
-              height: 24.h,
-              color: Colors.grey,
-            )
-          ],
-        ),
       ),
     );
   }

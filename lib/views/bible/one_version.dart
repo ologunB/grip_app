@@ -2,6 +2,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:hexcelon/views/profile/all_versions.dart';
 
+import '../widgets/grip_divider.dart';
 import '../widgets/hex_text.dart';
 import 'passage.dart';
 import 'verses.dart';
@@ -16,14 +17,14 @@ class OneVersionScreen extends StatefulWidget {
 class _OneVersionScreenState extends State<OneVersionScreen> {
   PageController controller = PageController();
   int index = 0;
-  int checker = 0;
 
   @override
   void initState() {
+    int checker = 0;
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       while (checker < 5) {
         checker++;
-        setState(() {});
+        if (mounted) setState(() {});
         await Future.delayed(const Duration(milliseconds: 500));
       }
     });
@@ -128,14 +129,7 @@ class _OneVersionScreenState extends State<OneVersionScreen> {
               controller: controller,
               children: [
                 ListView.separated(
-                  separatorBuilder: (_, __) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.h),
-                    child: Divider(
-                      height: 0.h,
-                      thickness: 1.h,
-                      color: const Color(0xffE6E6E6),
-                    ),
-                  ),
+                  separatorBuilder: (_, __) => const GripDivider(),
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
                   padding: EdgeInsets.zero,
@@ -149,14 +143,7 @@ class _OneVersionScreenState extends State<OneVersionScreen> {
                   },
                 ),
                 ListView.separated(
-                  separatorBuilder: (_, __) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.h),
-                    child: Divider(
-                      height: 0.h,
-                      thickness: 1.h,
-                      color: const Color(0xffE6E6E6),
-                    ),
-                  ),
+                  separatorBuilder: (_, __) => const GripDivider(),
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
                   padding: EdgeInsets.zero,
@@ -185,17 +172,21 @@ class ChapterItem extends StatelessWidget {
     required this.value,
     this.popWhenDone = false,
     this.presentValue = false,
+    this.onTap,
   });
   final String name;
   final List<int> value;
   final bool popWhenDone;
   final bool presentValue;
+  final Function? onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if (value.length == 1) {
+        if (onTap != null) {
+          onTap!();
+        } else if (value.length == 1) {
           // just one chapter so just go to verses
           if (popWhenDone) {
             Navigator.pop(context, [name, 1]);

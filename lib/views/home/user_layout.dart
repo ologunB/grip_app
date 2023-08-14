@@ -63,7 +63,6 @@ class _UserLayoutState extends State<UserLayout> {
           } else {
             setState(() => currentIndex = i);
           }
-          currentIndex = i;
         },
         items: [0, 1, 3, 4]
             .map(

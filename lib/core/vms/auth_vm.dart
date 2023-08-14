@@ -6,6 +6,7 @@ import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 
 import '../../views/auth/follow_topics_view.dart';
 import '../../views/auth/otp_view.dart';
+import '../../views/home/creator_layout.dart';
 import '../../views/widgets/hex_text.dart';
 import '../apis/auth_api.dart';
 import '../models/category_model.dart';
@@ -44,7 +45,10 @@ class AuthViewModel extends BaseModel {
       LoginModel? user = vmContext.read<AuthViewModel>().loginResponse;
       user?.user?.verificationStatus = true;
       AppCache.setUser(user!);
-      pushAndRemoveUntil(vmContext, const UserLayout());
+      pushAndRemoveUntil(
+        vmContext,
+        user.user?.role == 'user' ? const UserLayout() : const CreatorLayout(),
+      );
       push(vmContext, const FollowTopicsScreen());
       showVMSnackbar('Account has been verified successfully');
       setBusy(false);
@@ -105,7 +109,10 @@ class AuthViewModel extends BaseModel {
         push(vmContext, const OTPScreen());
       } else {
         AppCache.setUser(res);
-        pushAndRemoveUntil(vmContext, const UserLayout());
+        pushAndRemoveUntil(
+          vmContext,
+          res.user?.role == 'user' ? const UserLayout() : const CreatorLayout(),
+        );
       }
       setBusy(false);
     } on GripException catch (e) {
@@ -305,7 +312,10 @@ class AuthViewModel extends BaseModel {
       LoginModel res = await _api.social(a);
 
       AppCache.setUser(res);
-      pushAndRemoveUntil(vmContext, const UserLayout());
+      pushAndRemoveUntil(
+        vmContext,
+        res.user?.role == 'user' ? const UserLayout() : const CreatorLayout(),
+      );
       if (res.user!.categories!.isEmpty) {
         push(vmContext, const FollowTopicsScreen());
       }
