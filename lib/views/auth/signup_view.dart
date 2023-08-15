@@ -44,7 +44,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 textInputAction: TextInputAction.next,
                 controller: name,
                 validator: (a) {
-                  return Utils.isValidName(a, type: 'Username', length: 3);
+                  return Utils.isValidName(a, type: 'Username', length: 4);
                 },
               ),
               SizedBox(height: 20.h),
@@ -123,9 +123,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   if (formKey.currentState!.validate()) {
                     Utils.offKeyboard();
                     Map<String, dynamic> userData = {
-                      "email": email.text,
-                      "username": name.text,
-                      "password": password.text,
+                      "email": email.text.trim(),
+                      "username": name.text.trim(),
+                      "password": password.text.trim(),
                     };
 
                     model.signup(userData);
@@ -157,7 +157,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       textColor: AppColors.black,
                       borderColor: AppColors.grey,
                       borderRadius: 10.h,
-                      onPressed: () {},
+                      onPressed: () {
+                        model.signInWithGoogle();
+                      },
                     ),
                   ),
                   if (Platform.isIOS)
@@ -183,7 +185,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           textColor: AppColors.white,
                           borderColor: AppColors.black,
                           borderRadius: 10.h,
-                          onPressed: () {},
+                          onPressed: () {
+                            model.signInApple();
+                          },
                         ),
                       ),
                     ),

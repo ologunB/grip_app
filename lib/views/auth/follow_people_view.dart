@@ -78,34 +78,38 @@ class _FollowPeopleScreenState extends State<FollowPeopleScreen> {
                                       imageUrl: user.image,
                                     ),
                                     SizedBox(width: 17.h),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        HexText(
-                                          '${user.username}',
-                                          fontSize: 16.sp,
-                                          color: AppColors.black,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        SizedBox(height: 8.h),
-                                        HexText(
-                                          '${user.categories?.join(', ')}',
-                                          fontSize: 12.sp,
-                                          color: AppColors.black,
-                                        ),
-                                      ],
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          HexText(
+                                            '${user.username}',
+                                            fontSize: 16.sp,
+                                            color: AppColors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          SizedBox(height: 4.h),
+                                          HexText(
+                                            '${user.categories?.map((e) => e.name).join(', ')}',
+                                            fontSize: 12.sp,
+                                            color: AppColors.black,
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const Spacer(),
                                     SizedBox(width: 8.h),
                                     BaseView<AuthViewModel>(
                                       builder: (_, AuthViewModel fModel, __) =>
                                           InkWell(
                                         onTap: () {
-                                          fModel.follow(user.id.toString());
                                           if (contains) {
+                                            fModel.unfollow(user.id);
                                             selected.remove(i);
                                           } else {
+                                            fModel.follow(user.id);
                                             selected.add(i);
                                           }
                                           setState(() {});

@@ -91,14 +91,10 @@ class BaseAPI {
   }
 
   String error(dynamic data) {
-    if (data['errors'] == null) {
+    if (data['data'] == null) {
       return data['message'] ?? 'An error occurred';
     } else {
-      return data['errors']
-          .values
-          .join('\n')
-          .replaceAll('[', '')
-          .replaceAll(']', '');
+      return data['data'].map((map) => map.values.join(', ')).join('\n');
     }
   }
 }

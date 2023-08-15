@@ -170,23 +170,23 @@ class _SearchPageState extends State<SearchPage> {
 
     return RichText(text: TextSpan(children: spans));
   }
+}
 
-  Widget empty(String a) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset('empty'.png, height: 100.h, color: Colors.black),
-          HexText(
-            a,
-            fontSize: 18.sp,
-            color: AppColors.black,
-            fontWeight: FontWeight.w700,
-            align: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+Widget empty(String a) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset('empty'.png, height: 100.h, color: Colors.black),
+        HexText(
+          a,
+          fontSize: 18.sp,
+          color: AppColors.black,
+          fontWeight: FontWeight.w700,
+          align: TextAlign.center,
+        ),
+      ],
+    ),
+  );
 }

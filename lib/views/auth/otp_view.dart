@@ -74,12 +74,12 @@ class _OTPScreenState extends State<OTPScreen> {
                     Utils.offKeyboard();
 
                     if (widget.email == null) {
-                      model.verify({"id": login?.user?.id, "code": code.text});
+                      model.verify({"id": login?.user?.id, "code": code.text.trim()});
                     } else {
                       push(
                         context,
                         ChangePassScreen(
-                          data: {'email': widget.email, 'code': code.text},
+                          data: {'email': widget.email, 'code': code.text.trim()},
                         ),
                       );
                     }

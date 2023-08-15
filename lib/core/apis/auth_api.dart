@@ -150,6 +150,23 @@ class AuthApi extends BaseAPI {
     }
   }
 
+  Future<bool> unfollow(String? id) async {
+    String url = 'follow/remove';
+    try {
+      final Response res = await dio().post(url, data: {'creatorId': id});
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          return true;
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw GripException(DioErrorUtil.handleError(e));
+    }
+  }
+
   Future<LoginModel> login(Map<String, dynamic> data) async {
     String url = 'user/login';
     try {

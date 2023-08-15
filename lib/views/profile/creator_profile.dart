@@ -1,13 +1,16 @@
-import 'package:hexcelon/views/profile/password.dart';
-import 'package:hexcelon/views/profile/profile.dart';
-
+import '../../core/models/post_model.dart';
 import '../../core/storage/local_storage.dart';
+import '../../core/vms/post_vm.dart';
+import '../bible/search.dart';
+import '../home/post_details.dart';
 import '../profile/all_versions.dart';
 import '../profile/post_details.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
 import 'edit.dart';
 import 'history.dart';
+import 'password.dart';
+import 'profile.dart';
 
 class CreatorProfileScreen extends StatefulWidget {
   const CreatorProfileScreen({super.key});
@@ -17,201 +20,224 @@ class CreatorProfileScreen extends StatefulWidget {
 }
 
 class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
+  int index = 0;
+  PageController controller = PageController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: const IconThemeData(color: AppColors.primary),
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 25.h, top: 10.h),
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      await showModalBottomSheet(
-                        backgroundColor: Colors.white,
-                        context: context, useRootNavigator: true,
-                        isScrollControlled: true,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(50.h),
-                            topLeft: Radius.circular(50.h),
-                          ),
-                        ),
-                        builder: (c) {
-                          return const SettingsDialog();
-                        },
-                      );
-                      setState(() {});
-                    },
-                    child: Image.asset(
-                      'category'.png,
-                      height: 24.h,
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-        backgroundColor: Colors.white,
-        body: LayoutBuilder(
-          builder: (context, viewportConstraints) {
-            return CustomScrollView(
-              slivers: <Widget>[
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 36.h +
-                            MediaQuery.of(context).padding.top -
-                            kToolbarHeight,
+    return BaseView<PostViewModel>(
+      onModelReady: (a) {
+        a.getPosts();
+      },
+      builder: (_, PostViewModel model, __) => Scaffold(
+          extendBodyBehindAppBar: true,
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  iconTheme: const IconThemeData(color: AppColors.primary),
+                  actions: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 25.h, top: 10.h),
+                      child: Column(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              await showModalBottomSheet(
+                                backgroundColor: Colors.white,
+                                context: context,
+                                useRootNavigator: true,
+                                isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(50.h),
+                                    topLeft: Radius.circular(50.h),
+                                  ),
+                                ),
+                                builder: (c) {
+                                  return const SettingsDialog();
+                                },
+                              );
+                              setState(() {});
+                            },
+                            child: Image.asset('category'.png, height: 24.h),
+                          )
+                        ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 25.h),
-                        child: Row(
-                          children: [
-                            UserImage(
-                              size: 73.h,
-                              radius: 73.h,
-                              imageUrl: AppCache.getUser()?.user?.image,
+                    )
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    SizedBox(height: 30.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25.h),
+                      child: Row(
+                        children: [
+                          UserImage(
+                            size: 73.h,
+                            radius: 73.h,
+                            imageUrl: AppCache.getUser()?.user?.image,
+                          ),
+                          SizedBox(width: 18.h),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                HexText(
+                                  '@${AppCache.getUser()?.user?.username}',
+                                  fontSize: 18.sp,
+                                  align: TextAlign.center,
+                                  color: AppColors.black,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                                SizedBox(height: 4.h),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 38.0),
+                                  child: HexText(
+                                    '#${AppCache.getUser()?.user?.categories?.map((e) => e.name).join(', #')}',
+                                    fontSize: 16.sp,
+                                    color: AppColors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 18.h),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 34.h),
+                    IntrinsicHeight(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              Row(
                                 children: [
                                   HexText(
-                                    '@${AppCache.getUser()?.user?.username}',
-                                    fontSize: 18.sp,
-                                    align: TextAlign.center,
+                                    '${AppCache.getUser()?.user?.followersCount}',
+                                    fontSize: 16.sp,
                                     color: AppColors.black,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  SizedBox(height: 4.h),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 38.0),
-                                    child: HexText(
-                                      '#${AppCache.getUser()?.user?.categories?.map((e) => e.name).join(', #')}',
-                                      fontSize: 16.sp,
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                  HexText(
+                                    ' Creators',
+                                    fontSize: 16.sp,
+                                    color: AppColors.black,
+                                    fontWeight: FontWeight.normal,
                                   ),
                                 ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 34.h),
-                      IntrinsicHeight(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    HexText(
-                                      '${AppCache.getUser()?.user?.followersCount}',
-                                      fontSize: 16.sp,
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    HexText(
-                                      ' Creators',
-                                      fontSize: 16.sp,
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8.h),
-                                HexText(
-                                  'Follow',
-                                  fontSize: 16.sp,
-                                  color: AppColors.grey200,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 60.h),
-                              child: VerticalDivider(
-                                color: const Color(0xffA0A0A0),
-                                width: 0,
-                                thickness: 1.h,
+                              SizedBox(height: 8.h),
+                              HexText(
+                                'Follow',
+                                fontSize: 16.sp,
+                                color: AppColors.grey200,
+                                fontWeight: FontWeight.w600,
                               ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 60.h),
+                            child: VerticalDivider(
+                              color: const Color(0xffA0A0A0),
+                              width: 0,
+                              thickness: 1.h,
                             ),
-                            Column(
-                              children: [
-                                Row(
+                          ),
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  HexText(
+                                    '${AppCache.getUser()?.user?.categories?.length}',
+                                    fontSize: 16.sp,
+                                    color: AppColors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  HexText(
+                                    ' Topics',
+                                    fontSize: 16.sp,
+                                    color: AppColors.black,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8.h),
+                              HexText(
+                                'Following',
+                                fontSize: 16.sp,
+                                color: AppColors.grey200,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 40.h),
+                    Row(children: [item(0), item(1), item(2)]),
+                    Expanded(
+                      child: model.busy
+                          ? Container(
+                              height: 200.h,
+                              alignment: Alignment.center,
+                              child: const HexProgress(),
+                            )
+                          : model.posts == null
+                              ? Container(
+                                  height: 200.h,
+                                  alignment: Alignment.center,
+                                  child: HexText(
+                                    'Error occurred getting posts',
+                                    color: AppColors.red,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                )
+                              : PageView(
+                                  controller: controller,
+                                  onPageChanged: (a) {
+                                    index = a;
+                                    setState(() {});
+                                  },
                                   children: [
-                                    HexText(
-                                      '${AppCache.getUser()?.user?.categories?.length}',
-                                      fontSize: 16.sp,
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.bold,
+                                    ImageVideoAudioPV(
+                                      userPosts: model.posts,
+                                      index: index,
                                     ),
-                                    HexText(
-                                      ' Topics',
-                                      fontSize: 16.sp,
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.normal,
+                                    ImageVideoAudioPV(
+                                      userPosts: model.posts,
+                                      index: index,
+                                    ),
+                                    ImageVideoAudioPV(
+                                      userPosts: model.posts,
+                                      index: index,
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 8.h),
-                                HexText(
-                                  'Following',
-                                  fontSize: 16.sp,
-                                  color: AppColors.grey200,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 40.h),
-                      Row(children: [item(0), item(1), item(2)]),
-                    ],
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: viewportConstraints.maxHeight,
-                    child: PageView(
-                      controller: controller,
-                      onPageChanged: (a) {
-                        currentIndex = a;
-                        setState(() {});
-                      },
-                      children: [body(), body(), body()],
                     ),
-                  ),
+                  ],
                 ),
               ],
-            );
-          },
-        ));
+            ),
+          )),
+    );
   }
 
   Widget item(int i) {
     return Expanded(
       child: InkWell(
-        onTap: () {
-          controller.jumpToPage(i);
-        },
+        onTap: () => controller.jumpToPage(i),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 8.h),
           child: Image.asset(
-            'm$i${i == currentIndex ? 1 : 0}'.png,
+            'm$i${i == index ? 1 : 0}'.png,
             height: 24.h,
             width: 24.h,
           ),
@@ -219,31 +245,61 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
       ),
     );
   }
+}
 
-  int currentIndex = 0;
-  PageController controller = PageController();
-  Widget body() {
+class ImageVideoAudioPV extends StatelessWidget {
+  const ImageVideoAudioPV({super.key, this.userPosts, required this.index});
+  final List<Post>? userPosts;
+  final int index;
+  @override
+  Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width - 55.h) / 3;
+    List<Post> posts = userPosts ?? [];
+    String type = index == 0
+        ? 'image'
+        : index == 1
+            ? 'video'
+            : 'audio';
+    posts = posts.where((e) => e.fileType == type).toList();
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 8.h),
-      child: Wrap(
-        spacing: 2.h,
-        runSpacing: 2.h,
-        children: List.filled(40, 0)
-            .map(
-              (e) => InkWell(
-                onTap: () {
-                  push(context, const PostDetailScreen());
-                },
-                child: Image.asset(
-                  'placeholder'.png,
-                  height: width,
-                  width: width,
-                ),
-              ),
-            )
-            .toList(),
-      ),
+      child: posts.isEmpty
+          ? empty('${(type).toTitleCase()}s are Empty')
+          : Wrap(
+              spacing: 2.h,
+              runSpacing: 2.h,
+              children: posts
+                  .map(
+                    (e) => InkWell(
+                      onTap: () {
+                        if (AppCache.getUser()?.user?.id == e.userId) {
+                          push(context, MyPostDetailScreen(post: e));
+                        } else {
+                          push(context, PostDetailScreen(post: e));
+                        }
+                      },
+                      child: CachedNetworkImage(
+                        imageUrl: e.coverImage ?? 'm',
+                        height: width,
+                        width: width,
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) => Image.asset(
+                          'placeholder'.png,
+                          height: width,
+                          width: width,
+                          fit: BoxFit.cover,
+                        ),
+                        errorWidget: (_, __, ___) => Image.asset(
+                          'placeholder'.png,
+                          height: width,
+                          width: width,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
     );
   }
 }

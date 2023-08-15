@@ -71,7 +71,7 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
                 validator: (a) {
                   if (a!.isEmpty) {
                     return 'Password cannot be empty';
-                  } else if (a != password.text) {
+                  } else if (a != password.text.trim()) {
                     return 'Passwords doesnt match';
                   }
                   return null;
@@ -95,8 +95,8 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
                   if (formKey.currentState!.validate()) {
                     Utils.offKeyboard();
                     Map<String, dynamic> userData = {
-                      "password": password.text,
-                      "confirmPassword": password.text,
+                      "password": password.text.trim(),
+                      "confirmPassword": password.text.trim(),
                     };
                     userData.addAll(widget.data);
 

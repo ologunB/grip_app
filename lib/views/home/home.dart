@@ -1,4 +1,9 @@
+import 'package:timeago/timeago.dart' as timeago;
+
+import '../../core/models/post_model.dart';
+import '../../core/vms/post_vm.dart';
 import '../widgets/hex_text.dart';
+import '../widgets/user_image.dart';
 import 'notification.dart';
 import 'post_details.dart';
 
@@ -10,112 +15,152 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int index = 0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: false,
-        backgroundColor: AppColors.white,
-        titleSpacing: 25.h,
-        title: CupertinoTextField(
-          prefix: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.h),
-                child: Image.asset(
-                  'search'.png,
-                  height: 24.h,
-                  color: const Color(0xffE0E0E0),
-                ),
-              ),
-            ],
-          ),
-          placeholder: 'Search',
-          placeholderStyle: TextStyle(
-            fontFamily: 'Nova',
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xffE0E0E0),
-          ),
-          padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(20.h),
-            border: Border.all(color: const Color(0xffE0E0E0)),
-          ),
-          maxLines: 3,
-          minLines: 1,
-        ),
-        actions: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
+    return BaseView<PostViewModel>(
+      onModelReady: (a) => a.getPosts(),
+      builder: (_, PostViewModel model, __) => RefreshIndicator(
+        onRefresh: () async {
+          return model.getPosts();
+        },
+        color: AppColors.primary,
+        child: Scaffold(
+          backgroundColor: AppColors.white,
+          appBar: AppBar(
+            elevation: 0,
+            centerTitle: false,
+            backgroundColor: AppColors.white,
+            titleSpacing: 25.h,
+            title: CupertinoTextField(
+              prefix: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  InkWell(
-                    onTap: () {
-                      push(context, const NotificationScreen());
-                    },
-                    borderRadius: BorderRadius.circular(50.h),
-                    child: Image.asset('h1'.png, height: 44.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.h),
+                    child: Image.asset(
+                      'search'.png,
+                      height: 24.h,
+                      color: const Color(0xffE0E0E0),
+                    ),
                   ),
-                  SizedBox(width: 25.h),
+                ],
+              ),
+              placeholder: 'Search',
+              placeholderStyle: TextStyle(
+                fontFamily: 'Nova',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xffE0E0E0),
+              ),
+              padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(20.h),
+                border: Border.all(color: const Color(0xffE0E0E0)),
+              ),
+              maxLines: 3,
+              minLines: 1,
+            ),
+            actions: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          push(context, const NotificationScreen());
+                        },
+                        borderRadius: BorderRadius.circular(50.h),
+                        child: Image.asset('h1'.png, height: 44.h),
+                      ),
+                      SizedBox(width: 25.h),
+                    ],
+                  )
                 ],
               )
             ],
-          )
-        ],
-      ),
-      body: ListView(
-        children: [
-          SizedBox(height: 5.h),
-          Row(
+          ),
+          body: ListView(
             children: [
-              SizedBox(width: 25.h),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h),
-                child: HexText(
-                  'Recent Posts',
-                  fontSize: 20.sp,
-                  color: AppColors.black,
-                  fontWeight: FontWeight.w800,
-                ),
+              SizedBox(height: 5.h),
+              Row(
+                children: [
+                  SizedBox(width: 15.h),
+                  TextButton(
+                    onPressed: () {
+                      setState(() => index = 0);
+                    },
+                    child: HexText(
+                      'Recent Posts',
+                      fontSize: 20.sp,
+                      color: index == 0 ? Colors.black : AppColors.grey,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  SizedBox(width: 10.h),
+                  TextButton(
+                    onPressed: () {
+                      setState(() => index = 1);
+                    },
+                    child: HexText(
+                      'Recommended',
+                      fontSize: 20.sp,
+                      color: index == 1 ? Colors.black : AppColors.grey,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(width: 30.h),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h),
-                child: HexText(
-                  'Recommended',
-                  fontSize: 20.sp,
-                  color: AppColors.grey,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+              model.busy
+                  ? model.posts != null
+                      ? StaggeredGrid.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 4.h,
+                          crossAxisSpacing: 4.h,
+                          children: model.posts!
+                              .map((e) => HomeItem(post: e))
+                              .toList(),
+                        )
+                      : Container(
+                          height: 200.h,
+                          alignment: Alignment.center,
+                          child: const HexProgress(text: 'Getting posts'),
+                        )
+                  : model.posts == null
+                      ? Container(
+                          height: 200.h,
+                          alignment: Alignment.center,
+                          child: const HexError(
+                              text: 'Error occurred getting posts'),
+                        )
+                      : StaggeredGrid.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 4.h,
+                          crossAxisSpacing: 4.h,
+                          children: model.posts!
+                              .map((e) => HomeItem(post: e))
+                              .toList(),
+                        ),
             ],
           ),
-          StaggeredGrid.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 4.h,
-            crossAxisSpacing: 4.h,
-            children: [1, 1, 1, 1, 1, 1].map((e) => const HomeItem()).toList(),
-          ),
-        ],
+        ),
       ),
     );
   }
 }
 
 class HomeItem extends StatelessWidget {
-  const HomeItem({super.key});
+  const HomeItem({super.key, required this.post});
+
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        push(context, const PostDetailScreen());
+        push(context, PostDetailScreen(post: post));
       },
       child: IntrinsicHeight(
         child: Stack(
@@ -128,7 +173,21 @@ class HomeItem extends StatelessWidget {
                 stops: [0.0, 1.0],
               ).createShader(bounds),
               blendMode: BlendMode.srcATop,
-              child: Image.asset('video'.png),
+              child: CachedNetworkImage(
+                imageUrl: post.coverImage ?? 'm',
+                width: 400,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => Image.asset(
+                  'placeholder'.png,
+                  width: 400,
+                  fit: BoxFit.cover,
+                ),
+                errorWidget: (_, __, ___) => Image.asset(
+                  'placeholder'.png,
+                  width: 400,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 20.h),
@@ -136,8 +195,9 @@ class HomeItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 100.h),
                   HexText(
-                    'In the beginning',
+                    '${post.title}',
                     fontSize: 12.sp,
                     color: AppColors.white,
                     fontWeight: FontWeight.w800,
@@ -150,10 +210,10 @@ class HomeItem extends StatelessWidget {
                         backgroundColor: Colors.white,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(40.h),
-                          child: Image.asset(
-                            'placeholder'.png,
-                            height: 10.h,
-                            width: 10.h,
+                          child: UserImage(
+                            imageUrl: post.user?.image,
+                            size: 10.h,
+                            radius: 39.h,
                           ),
                         ),
                       ),
@@ -162,14 +222,14 @@ class HomeItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           HexText(
-                            'Anna Devine',
+                            '${post.user?.username}',
                             fontSize: 10.sp,
                             color: AppColors.white,
                             fontWeight: FontWeight.bold,
                           ),
                           SizedBox(height: 1.h),
                           HexText(
-                            '12 Hours Ago',
+                            timeago.format(DateTime.parse(post.createdAt!)),
                             fontSize: 8.sp,
                             color: AppColors.white,
                           ),

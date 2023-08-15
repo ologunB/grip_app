@@ -15,6 +15,7 @@ class HexButton extends StatelessWidget {
     this.borderRadius,
     this.safeArea,
     this.fontWeight,
+    this.rightIcon,
   }) : super(key: key);
 
   final String text;
@@ -29,6 +30,7 @@ class HexButton extends StatelessWidget {
   final double? fontSize;
   final FontWeight? fontWeight;
   final Widget? icon;
+  final Widget? rightIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -38,36 +40,37 @@ class HexButton extends StatelessWidget {
       child: SizedBox(
         height: height.h,
         child: TextButton(
-            onPressed: (busy || onPressed == null) ? null : onPressed,
-            style: TextButton.styleFrom(
-              disabledBackgroundColor:
-                  Color.lerp(buttonColor, Colors.white, .5),
-              backgroundColor: buttonColor,
-              shape: RoundedRectangleBorder(
-                side: BorderSide.none,
-                borderRadius: BorderRadius.circular(borderRadius ?? 16.r),
-              ),
-              side: (busy || onPressed == null)
-                  ? null
-                  : BorderSide(color: borderColor ?? buttonColor),
+          onPressed: (busy || onPressed == null) ? null : onPressed,
+          style: TextButton.styleFrom(
+            disabledBackgroundColor: Color.lerp(buttonColor, Colors.white, .5),
+            backgroundColor: buttonColor,
+            shape: RoundedRectangleBorder(
+              side: BorderSide.none,
+              borderRadius: BorderRadius.circular(borderRadius ?? 16.r),
             ),
-            child: busy
-                ? const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [HexProgress()],
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (icon != null) icon!,
-                      HexText(
-                        text,
-                        color: textColor,
-                        fontSize: fontSize ?? 16.sp,
-                        fontWeight: fontWeight ?? FontWeight.w400,
-                      ),
-                    ],
-                  )),
+            side: (busy || onPressed == null)
+                ? null
+                : BorderSide(color: borderColor ?? buttonColor),
+          ),
+          child: busy
+              ? const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [HexProgress()],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (icon != null) icon!,
+                    HexText(
+                      text,
+                      color: textColor,
+                      fontSize: fontSize ?? 16.sp,
+                      fontWeight: fontWeight ?? FontWeight.w400,
+                    ),
+                    if (rightIcon != null) rightIcon!,
+                  ],
+                ),
+        ),
       ),
     );
   }

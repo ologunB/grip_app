@@ -1,11 +1,11 @@
-import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:hexcelon/views/create/create.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_editor_plus/image_editor_plus.dart';
+import 'package:image_editor_plus/utils.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../widgets/hex_text.dart';
+import 'audio.dart';
 
 class ChooseMediaScreen extends StatefulWidget {
   const ChooseMediaScreen({super.key});
@@ -22,211 +22,222 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      backgroundColor: const Color(0xff191919),
+      body: Column(
         children: [
-          currentIndex == 0 ? const AudioRecorder() : const PhotoCamera(),
-          Column(
-            children: [
-              Container(
-                color: const Color(0xff191919),
-                padding: EdgeInsets.all(25.h),
-                child: SafeArea(
-                  bottom: false,
-                  child: Column(
+          Container(
+            color: const Color(0xff191919),
+            padding: EdgeInsets.all(25.h),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Image.asset(
-                              'close'.png,
-                              height: 24.h,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const Spacer(),
-                          InkWell(
-                            onTap: () {
-                              _cameraController?.setFlashMode(FlashMode.always);
-                            },
-                            child: Image.asset(
-                              'flash'.png,
-                              height: 24.h,
-                            ),
-                          ),
-                          SizedBox(width: 30.h),
-                          InkWell(
-                            onTap: () {
-                              if (_cameraController?.description ==
-                                  cameras[0]) {
-                                _cameraController?.setDescription(cameras[1]);
-                              } else {
-                                _cameraController?.setDescription(cameras[0]);
-                              }
-                            },
-                            child: Image.asset(
-                              'turn'.png,
-                              height: 24.h,
-                            ),
-                          ),
-                        ],
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Image.asset(
+                          'close'.png,
+                          height: 24.h,
+                          color: Colors.white,
+                        ),
                       ),
-                      SizedBox(height: 12.h),
+                      const Spacer(),
+                      InkWell(
+                        onTap: () {
+                          _cameraController?.setFlashMode(FlashMode.always);
+                        },
+                        child: Image.asset(
+                          'flash'.png,
+                          height: 24.h,
+                        ),
+                      ),
+                      SizedBox(width: 30.h),
+                      InkWell(
+                        onTap: () {
+                          if (_cameraController?.description == cameras[0]) {
+                            _cameraController?.setDescription(cameras[1]);
+                          } else {
+                            _cameraController?.setDescription(cameras[0]);
+                          }
+                        },
+                        child: Image.asset(
+                          'turn'.png,
+                          height: 24.h,
+                        ),
+                      ),
                     ],
                   ),
-                ),
+                  SizedBox(height: 12.h),
+                ],
               ),
-              const Spacer(),
-              Container(
-                color: const Color(0xff191919),
-                padding: EdgeInsets.symmetric(horizontal: 25.h),
-                child: SafeArea(
-                  top: false,
-                  child: Column(
+            ),
+          ),
+          Expanded(
+              child: currentIndex == 0
+                  ? const AudioRecorder()
+                  : const PhotoCamera()),
+          Container(
+            color: const Color(0xff191919),
+            padding: EdgeInsets.symmetric(horizontal: 25.h),
+            child: SafeArea(
+              top: false,
+              child: Column(
+                children: [
+                  SizedBox(height: 20.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 20.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              currentIndex = 0;
-                              setState(() {});
-                            },
-                            child: HexText(
-                              'Audio',
-                              fontSize: 16.sp,
-                              color: currentIndex == 0
-                                  ? Colors.white
-                                  : Colors.grey,
-                              align: TextAlign.center,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(width: 35.h),
-                          InkWell(
-                            onTap: () {
-                              currentIndex = 1;
-                              setState(() {});
-                            },
-                            child: HexText(
-                              'Photo',
-                              fontSize: 16.sp,
-                              color: currentIndex == 1
-                                  ? Colors.white
-                                  : Colors.grey,
-                              align: TextAlign.center,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(width: 35.h),
-                          InkWell(
-                            onTap: () {
-                              currentIndex = 2;
-                              setState(() {});
-                            },
-                            child: HexText(
-                              'Video',
-                              fontSize: 16.sp,
-                              color: currentIndex == 2
-                                  ? Colors.white
-                                  : Colors.grey,
-                              align: TextAlign.center,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                      InkWell(
+                        onTap: () {
+                          currentIndex = 0;
+                          setState(() {});
+                        },
+                        child: HexText(
+                          'Audio',
+                          fontSize: 16.sp,
+                          color: currentIndex == 0 ? Colors.white : Colors.grey,
+                          align: TextAlign.center,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      SizedBox(height: 20.h),
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          GestureDetector(
-                            onTapUp: (a) {
-                              _childColor = null;
-                              setState(() {});
-                              takePicture().then((File? file) async {
-                                if (mounted) {
-                                  final editedImage = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ImageEditor(
-                                        image: file!.readAsBytesSync(),
-                                      ),
-                                    ),
-                                  );
-                                  if (editedImage != null) {
-                                    push(context, const CreatePostScreen());
-                                  }
-                                }
-                              });
-                            },
-                            onTapDown: (a) {
-                              _childColor = Colors.grey;
-                              setState(() {});
-                            },
-                            child: Image.asset(
-                              'take'.png,
-                              height: 65.h,
-                              color: _childColor,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              const Expanded(child: SizedBox()),
-                              Expanded(
-                                child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.only(left: 58.h),
-                                  child: InkWell(
-                                    onTap: () async {
-                                      final XFile? file = await ImagePicker()
-                                          .pickImage(
-                                              source: ImageSource.gallery);
-                                      if (file != null) {
-                                        final editedImage =
-                                            await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => ImageEditor(
-                                              image: File(file.path)
-                                                  .readAsBytesSync(),
-                                            ),
-                                          ),
-                                        );
-                                        if (editedImage != null) {
-                                          push(context,
-                                              const CreatePostScreen());
-                                        }
-                                      }
-                                    },
-                                    child: Image.asset(
-                                      'pick'.png,
-                                      height: 33.h,
+                      SizedBox(width: 35.h),
+                      InkWell(
+                        onTap: () {
+                          currentIndex = 1;
+                          setState(() {});
+                        },
+                        child: HexText(
+                          'Photo',
+                          fontSize: 16.sp,
+                          color: currentIndex == 1 ? Colors.white : Colors.grey,
+                          align: TextAlign.center,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 35.h),
+                      InkWell(
+                        onTap: () {
+                          currentIndex = 2;
+                          setState(() {});
+                        },
+                        child: HexText(
+                          'Video',
+                          fontSize: 16.sp,
+                          color: currentIndex == 2 ? Colors.white : Colors.grey,
+                          align: TextAlign.center,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      GestureDetector(
+                        onTapUp: (a) {
+                          _childColor = null;
+                          setState(() {});
+                          takePicture().then((File? file) async {
+                            if (mounted) {
+                              Uint8List? editedImage = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ImageEditor(
+                                    image: flipAndConvertToBytes(file!),
+                                    features: const ImageEditorFeatures(
+                                      captureFromCamera: false,
+                                      crop: true,
+                                      pickFromGallery: true,
+                                      blur: true,
+                                      brush: true,
+                                      emoji: true,
+                                      filters: true,
+                                      flip: true,
+                                      rotate: true,
+                                      text: true,
                                     ),
                                   ),
                                 ),
+                              );
+                              if (editedImage != null) {
+                                push(
+                                  context,
+                                  CreatePostScreen(
+                                    file: editedImage,
+                                  ),
+                                );
+                              }
+                            }
+                          });
+                        },
+                        onTapDown: (a) {
+                          _childColor = Colors.grey;
+                          setState(() {});
+                        },
+                        child: Image.asset(
+                          'take'.png,
+                          height: 65.h,
+                          color: _childColor,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Expanded(child: SizedBox()),
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.only(left: 58.h),
+                              child: InkWell(
+                                onTap: () async {
+                                  final XFile? file = await ImagePicker()
+                                      .pickImage(source: ImageSource.gallery);
+                                  if (file != null) {
+                                    final editedImage = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ImageEditor(
+                                          image:
+                                              File(file.path).readAsBytesSync(),
+                                        ),
+                                      ),
+                                    );
+                                    if (editedImage != null) {
+                                      push(
+                                        context,
+                                        CreatePostScreen(
+                                          file: editedImage,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                                child: Image.asset(
+                                  'pick'.png,
+                                  height: 33.h,
+                                ),
                               ),
-                            ],
-                          )
+                            ),
+                          ),
                         ],
-                      ),
-                      SizedBox(height: 20.h),
-                      HexText(
-                        'Post\n●',
-                        fontSize: 16.sp,
-                        color: Colors.white,
-                        align: TextAlign.center,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      )
                     ],
                   ),
-                ),
-              )
-            ],
-          ),
+                  SizedBox(height: 20.h),
+                  HexText(
+                    'Post\n●',
+                    fontSize: 16.sp,
+                    color: Colors.white,
+                    align: TextAlign.center,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -253,6 +264,18 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
       // showInSnackBar('Error: ${e.code}\n${e.description}');
       return null;
     }
+  }
+
+  Uint8List flipAndConvertToBytes(File originalImageFile) {
+    final originalBytes = originalImageFile.readAsBytesSync();
+    final originalImage = img.decodeImage(Uint8List.fromList(originalBytes))!;
+
+    final flippedImage = img.copyFlip(
+      originalImage,
+      direction: img.FlipDirection.horizontal,
+    ); // Flip the image
+
+    return Uint8List.fromList(img.encodePng(flippedImage)); // Convert to bytes
   }
 }
 
@@ -312,27 +335,18 @@ class _PhotoCameraState extends State<PhotoCamera>
     if (cameraController == null || !cameraController.value.isInitialized) {
       return const Center(child: HexProgress());
     }
-    final scale = 1 /
-        (cameraController.value.aspectRatio *
-            MediaQuery.of(context).size.aspectRatio);
 
     return Stack(
+      alignment: Alignment.center,
       children: [
         Transform.scale(
-          scale: scale,
+          scale: 1,
           alignment: Alignment.topCenter,
-          child: imageFile != null
-              ? Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.rotationY(pi),
-                  child: Image.file(
-                    imageFile!,
-                    fit: BoxFit.fill,
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                  ),
-                )
-              : CameraPreview(cameraController),
+          child: Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.rotationY(0),
+            child: CameraPreview(cameraController),
+          ),
         ),
         Listener(
           onPointerDown: (_) => _pointers++,
@@ -446,120 +460,5 @@ class _PhotoCameraState extends State<PhotoCamera>
   @override
   Widget build(BuildContext context) {
     return _cameraPreviewWidget();
-  }
-}
-
-class AudioRecorder extends StatefulWidget {
-  const AudioRecorder({super.key});
-
-  @override
-  State<AudioRecorder> createState() => _AudioRecorderState();
-}
-
-class _AudioRecorderState extends State<AudioRecorder> {
-  FlutterSoundRecorder? _audioRecorder;
-  bool _isRecording = false;
-  String? _localPath;
-
-  @override
-  void initState() {
-    _prepareSaveDir();
-
-    super.initState();
-    _initAudioRecorder();
-  }
-
-  void _initAudioRecorder() {
-    _audioRecorder = FlutterSoundRecorder();
-    _audioRecorder!.openRecorder().then((value) {});
-  }
-
-  void _startRecording() async {
-    if (!_isRecording) {
-      await _audioRecorder!.startRecorder(
-        toFile: _localPath,
-      );
-      setState(() {
-        _isRecording = true;
-      });
-    }
-  }
-
-  void _stopRecording() async {
-    if (_isRecording) {
-      await _audioRecorder!.stopRecorder();
-      setState(() {
-        _isRecording = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(_isRecording ? Icons.stop : Icons.mic),
-              onPressed: () {
-                _checkPermission();
-                if (_isRecording) {
-                  _stopRecording();
-                } else {
-                  _startRecording();
-                }
-              },
-              iconSize: 48.0,
-              color: Colors.red, // Change the icon color here
-            ),
-            Text(
-              _isRecording ? 'Recording...' : 'Tap to Record',
-              style: const TextStyle(fontSize: 24),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _audioRecorder?.closeRecorder();
-    super.dispose();
-  }
-
-  Future<bool> _checkPermission() async {
-    if (Platform.isAndroid) {
-      final PermissionStatus status = await Permission.storage.status;
-      if (status != PermissionStatus.granted) {
-        final PermissionStatus result = await Permission.storage.request();
-        if (result == PermissionStatus.granted) {
-          return true;
-        }
-      } else {
-        return true;
-      }
-    } else {
-      return true;
-    }
-    return false;
-  }
-
-  Future<void> _prepareSaveDir() async {
-    final String path = await _findLocalPath();
-    _localPath = '$path${Platform.pathSeparator}Grip';
-
-    final Directory savedDir = Directory(_localPath!);
-    final bool hasExisted = await savedDir.exists();
-    if (!hasExisted) {
-      savedDir.create();
-    }
-  }
-
-  Future<String> _findLocalPath() async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    return directory.path;
   }
 }

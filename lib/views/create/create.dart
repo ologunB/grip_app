@@ -7,8 +7,9 @@ import 'book.dart';
 import 'verses.dart';
 
 class CreatePostScreen extends StatefulWidget {
-  const CreatePostScreen({super.key, this.file});
-  final File? file;
+  const CreatePostScreen({super.key, this.file, this.type = 'image'});
+  final Uint8List? file;
+  final String type;
 
   @override
   State<CreatePostScreen> createState() => _CreatePostScreenState();
@@ -21,7 +22,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   TextEditingController verse = TextEditingController();
   TextEditingController desc = TextEditingController();
   List<String> categories = [];
-  List<File> files = [];
   File? coverPic;
   bool hideCategories = false;
 
@@ -42,15 +42,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 10.h),
             child: HexButton(
               'Publish Post',
-              buttonColor: AppColors.primary,
-              height: 55,
-              fontSize: 14.sp,
+              buttonColor: AppColors.black,
+              height: 60,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w400,
               textColor: AppColors.white,
-              borderColor: AppColors.primary,
-              borderRadius: 20.h,
+              borderColor: AppColors.black,
+              borderRadius: 10.h,
               busy: model.busy,
-              onPressed: () {
+              onPressed: () async {
                 if (title.text.isEmpty) {
                   errorSnackBar(context, 'Title cannot be empty');
                   return;
@@ -87,15 +87,20 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   }
                 }
                 Map<String, dynamic> data = {
-                  'file_type': 'image',
+                  'file_type': widget.type,
                   'title': title.text,
                   'description': desc.text,
-                  'category': categories,
+                  'category': categories.map((e) => e.toLowerCase()),
                   if (book.text.isNotEmpty) 'bible_book': book.text,
                   if (chapter.text.isNotEmpty) 'bible_chapter': chapter.text,
                   if (verse.text.isNotEmpty) 'bible_verse': verse.text,
                 };
-                model.create(data, [coverPic!, widget.file!]);
+                bool a = await model.create(data, [widget.file!, coverPic!]);
+                if (a) {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  successSnackBar(context, 'Post created successfully');
+                }
               },
             ),
           ),

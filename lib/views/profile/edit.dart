@@ -58,8 +58,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               busy: model.busy,
               onPressed: () {
                 model.update({
-                  "username": name.text,
-                  "phone": phone.text,
+                  "username": name.text.trim(),
+                  "phone": phone.text.trim(),
                   "category": selected
                 });
               },

@@ -13,11 +13,21 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+bool get creator => false;
+
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController password =
-      TextEditingController(text: kDebugMode ? 'Topetope@17' : null);
-  TextEditingController email =
-      TextEditingController(text: kDebugMode ? 'dan@gmail.com' : null);
+  TextEditingController password = TextEditingController(
+      text: !kDebugMode
+          ? null
+          : creator
+              ? 'johnDoe20!@'
+              : 'Topetope@17');
+  TextEditingController email = TextEditingController(
+      text: !kDebugMode
+          ? null
+          : creator
+              ? 'johndoe1@mail.com'
+              : 'dan@gmail.com');
 
   bool hideText = true;
   bool autoValidate = false;
@@ -95,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (formKey.currentState!.validate()) {
                     Utils.offKeyboard();
                     Map<String, dynamic> userData = {
-                      "email": email.text,
-                      "password": password.text,
+                      "email": email.text.trim(),
+                      "password": password.text.trim(),
                     };
 
                     model.login(userData);

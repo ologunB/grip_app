@@ -1,30 +1,44 @@
-import '../profile/post_details.dart';
+import '../../core/models/login_model.dart';
+import '../../core/vms/auth_vm.dart';
+import '../../core/vms/post_vm.dart';
+import '../profile/creator_profile.dart';
 import '../widgets/hex_text.dart';
+import '../widgets/user_image.dart';
 
 class OtherProfileScreen extends StatefulWidget {
-  const OtherProfileScreen({super.key});
+  const OtherProfileScreen({super.key, required this.user});
 
+  final UserModel user;
   @override
   State<OtherProfileScreen> createState() => _OtherProfileScreenState();
 }
 
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
+  late UserModel user;
+  @override
+  void initState() {
+    user = widget.user;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: const IconThemeData(color: AppColors.primary),
-        ),
-        backgroundColor: Colors.white,
-        body: LayoutBuilder(
-          builder: (context, viewportConstraints) {
-            return CustomScrollView(
-              slivers: <Widget>[
-                SliverToBoxAdapter(
-                  child: Column(
+    return BaseView<AuthViewModel>(
+      builder: (_, AuthViewModel aModel, __) => BaseView<PostViewModel>(
+        onModelReady: (a) => a.getPosts(),
+        builder: (_, PostViewModel pModel, __) => Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: const IconThemeData(color: AppColors.primary),
+          ),
+          backgroundColor: Colors.white,
+          body: LayoutBuilder(
+            builder: (context, viewportConstraints) {
+              return Column(
+                children: <Widget>[
+                  Column(
                     children: [
                       SizedBox(
                         height: 36.h +
@@ -33,27 +47,30 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                       ),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(60.h),
-                        child: Image.asset(
-                          'placeholder'.png,
-                          height: 107.h,
-                          width: 107.h,
+                        child: UserImage(
+                          imageUrl: user.image,
+                          size: 107.h,
+                          radius: 107.h,
                         ),
                       ),
                       SizedBox(height: 18.h),
                       HexText(
-                        'Roger Korsgaard',
+                        '${user.username}',
                         fontSize: 18.sp,
                         align: TextAlign.center,
                         color: AppColors.black,
                         fontWeight: FontWeight.w800,
                       ),
                       SizedBox(height: 4.h),
-                      HexText(
-                        '#prayer #fasting #purpose\n#self-control #relationship',
-                        fontSize: 16.sp,
-                        align: TextAlign.center,
-                        color: AppColors.black,
-                        fontWeight: FontWeight.w500,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 38.h),
+                        child: HexText(
+                          '${user.categories?.map((e) => e.name).toList().join(', ')}',
+                          fontSize: 16.sp,
+                          align: TextAlign.center,
+                          color: AppColors.black,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       SizedBox(height: 18.h),
                       IntrinsicHeight(
@@ -69,11 +86,16 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                                   fontWeight: FontWeight.w600,
                                 ),
                                 SizedBox(height: 8.h),
-                                HexText(
-                                  '100',
-                                  fontSize: 16.sp,
-                                  color: AppColors.black,
-                                  fontWeight: FontWeight.w800,
+                                SizedBox(
+                                  height: 25.h,
+                                  child: pModel.busy
+                                      ? HexProgress(size: 16.sp)
+                                      : HexText(
+                                          '${pModel.posts?.length ?? 0}',
+                                          fontSize: 16.sp,
+                                          color: AppColors.black,
+                                          fontWeight: FontWeight.w800,
+                                        ),
                                 ),
                               ],
                             ),
@@ -95,7 +117,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                                 ),
                                 SizedBox(height: 8.h),
                                 HexText(
-                                  '200k',
+                                  '${user.followersCount ?? 0}',
                                   fontSize: 16.sp,
                                   color: AppColors.black,
                                   fontWeight: FontWeight.w800,
@@ -120,7 +142,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                                 ),
                                 SizedBox(height: 8.h),
                                 HexText(
-                                  '200',
+                                  '${user.followingCount ?? 0}',
                                   fontSize: 16.sp,
                                   color: AppColors.black,
                                   fontWeight: FontWeight.w800,
@@ -136,6 +158,11 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                         children: [
                           InkWell(
                             onTap: () {
+                              if (selected) {
+                                aModel.unfollow(user.id);
+                              } else {
+                                aModel.follow(user.id);
+                              }
                               selected = !selected;
                               setState(() {});
                             },
@@ -162,55 +189,59 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                               ),
                             ),
                           ),
-                          /* SizedBox(width: 20.h),
-                          InkWell(
-                            onTap: () {
-                              push(context, const ChatRoomScreen());
-                            },
-                            borderRadius: BorderRadius.circular(15.h),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 50.h, vertical: 13.h),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.h),
-                                border: Border.all(
-                                  width: 1.h,
-                                  color: AppColors.black,
-                                ),
-                                color: Colors.transparent,
-                              ),
-                              child: HexText(
-                                'Message',
-                                fontSize: 12.sp,
-                                color: AppColors.black,
-                                align: TextAlign.center,
-                              ),
-                            ),
-                      )*/
                         ],
                       ),
                       SizedBox(height: 36.h),
                       Row(children: [item(0), item(1), item(2)]),
                     ],
                   ),
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: viewportConstraints.maxHeight,
-                    child: PageView(
-                      controller: controller,
-                      onPageChanged: (a) {
-                        currentIndex = a;
-                        setState(() {});
-                      },
-                      children: [body(), body(), body()],
-                    ),
+                  Expanded(
+                    child: pModel.busy
+                        ? Container(
+                            height: 200.h,
+                            alignment: Alignment.center,
+                            child: const HexProgress(),
+                          )
+                        : pModel.posts == null
+                            ? Container(
+                                height: 200.h,
+                                alignment: Alignment.center,
+                                child: HexText(
+                                  'Error occurred getting posts',
+                                  color: AppColors.red,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              )
+                            : PageView(
+                                controller: controller,
+                                onPageChanged: (a) {
+                                  currentIndex = a;
+                                  setState(() {});
+                                },
+                                children: [
+                                  ImageVideoAudioPV(
+                                    userPosts: pModel.posts,
+                                    index: currentIndex,
+                                  ),
+                                  ImageVideoAudioPV(
+                                    userPosts: pModel.posts,
+                                    index: currentIndex,
+                                  ),
+                                  ImageVideoAudioPV(
+                                    userPosts: pModel.posts,
+                                    index: currentIndex,
+                                  ),
+                                ],
+                              ),
                   ),
-                ),
-              ],
-            );
-          },
-        ));
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   Widget item(int i) {
@@ -234,28 +265,4 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
   int currentIndex = 0;
   bool selected = false;
   PageController controller = PageController();
-  Widget body() {
-    double width = (MediaQuery.of(context).size.width - 55.h) / 3;
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 8.h),
-      child: Wrap(
-        spacing: 2.h,
-        runSpacing: 2.h,
-        children: List.filled(40, 0)
-            .map(
-              (e) => InkWell(
-                onTap: () {
-                  push(context, const PostDetailScreen());
-                },
-                child: Image.asset(
-                  'placeholder'.png,
-                  height: width,
-                  width: width,
-                ),
-              ),
-            )
-            .toList(),
-      ),
-    );
-  }
 }

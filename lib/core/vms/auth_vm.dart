@@ -175,8 +175,6 @@ class AuthViewModel extends BaseModel {
       user?.user = m;
       AppCache.setUser(user!);
       setBusy(false);
-      showVMSnackbar('Profile has been updated');
-
       return true;
     } on GripException catch (e) {
       error = e.message;
@@ -186,10 +184,24 @@ class AuthViewModel extends BaseModel {
     }
   }
 
-  Future<bool> follow(String? a) async {
+  Future<bool> follow(int? a) async {
     setBusy(true);
     try {
-      await _api.follow(a);
+      await _api.follow(a.toString());
+      setBusy(false);
+      return true;
+    } on GripException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+      return false;
+    }
+  }
+
+  Future<bool> unfollow(int? a) async {
+    setBusy(true);
+    try {
+      await _api.unfollow(a.toString());
       setBusy(false);
       return true;
     } on GripException catch (e) {
@@ -231,7 +243,7 @@ class AuthViewModel extends BaseModel {
           "googleId": googleSignInAccount.id,
           "username": googleSignInAccount.displayName ?? '',
           "email": googleSignInAccount.email,
-          "picture": googleSignInAccount.photoUrl,
+          "image": googleSignInAccount.photoUrl,
         };
         socialSignup(data);
       } else {
@@ -282,7 +294,6 @@ class AuthViewModel extends BaseModel {
           "username": username ?? AppCache.get('username'),
           "googleId": googleId ?? AppCache.get('googleId'),
           "email": email ?? AppCache.get('email'),
-          "picture": '',
         };
 
         if (data['email'] == '' || data['email'] == null) {

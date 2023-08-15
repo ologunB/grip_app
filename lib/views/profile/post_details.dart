@@ -1,14 +1,18 @@
+import 'package:hexcelon/core/apis/base_api.dart';
+
+import '../../core/models/post_model.dart';
 import '../home/post_details.dart';
 import '../widgets/hex_text.dart';
 
-class PostDetailScreen extends StatefulWidget {
-  const PostDetailScreen({super.key});
+class MyPostDetailScreen extends StatefulWidget {
+  const MyPostDetailScreen({super.key, required this.post});
 
+  final Post post;
   @override
-  State<PostDetailScreen> createState() => _PostDetailScreenState();
+  State<MyPostDetailScreen> createState() => _MyPostDetailScreenState();
 }
 
-class _PostDetailScreenState extends State<PostDetailScreen> {
+class _MyPostDetailScreenState extends State<MyPostDetailScreen> {
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
         title: HexText(
-          '@Chinwo4Christ007',
+          '@${AppCache.getUser()?.user?.username}',
           fontSize: 16.sp,
           color: AppColors.primary,
           fontWeight: FontWeight.w700,
@@ -34,152 +38,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             color: AppColors.black,
           ),
           SizedBox(height: 20.h),
-          Expanded(
-            child: Stack(
-              children: [
-                Image.asset(
-                  'video'.png,
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 25.h, vertical: 50.h),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Spacer(),
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 30.h,
-                                  backgroundColor: Colors.white,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(40.h),
-                                    child: Image.asset(
-                                      'placeholder'.png,
-                                      height: 58.h,
-                                      width: 58.h,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 9.h),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    HexText(
-                                      'Anna Devine',
-                                      fontSize: 20.sp,
-                                      color: AppColors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    SizedBox(height: 1.h),
-                                    HexText(
-                                      '12 Hours Ago',
-                                      fontSize: 15.sp,
-                                      color: AppColors.white,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 27.h),
-                            HexText(
-                              'J.P at the dinner',
-                              fontSize: 15.sp,
-                              color: AppColors.white,
-                              fontWeight: FontWeight.w900,
-                            ),
-                            SizedBox(height: 22.h),
-                            Image.asset('slide'.png)
-                          ],
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              showModalBottomSheet(
-                                backgroundColor: Colors.white,
-                                context: context, useRootNavigator: true,
-                                isScrollControlled: true,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(50.h),
-                                    topLeft: Radius.circular(50.h),
-                                  ),
-                                ),
-                                builder: (c) {
-                                  return const EditPostDialog();
-                                },
-                              );
-                            },
-                            child: Image.asset('v0'.png, height: 32.h),
-                          ),
-                          const Spacer(),
-                          ...[1, 2, 3, 4, 5]
-                              .map(
-                                (e) => Padding(
-                                  padding: EdgeInsets.only(bottom: 20.h),
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (e == 1) {
-                                        Share.share('This is a post');
-                                      } else if (e == 2) {
-                                        showModalBottomSheet(
-                                          backgroundColor: Colors.white,
-                                          context: context, useRootNavigator: true,
-                                          isScrollControlled: true,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(50.h),
-                                              topLeft: Radius.circular(50.h),
-                                            ),
-                                          ),
-                                          builder: (c) {
-                                            return const CommentsDialog();
-                                          },
-                                        );
-                                      } else if (e == 3) {
-                                        liked = !liked;
-                                        setState(() {});
-                                      } else if (e == 4) {
-                                        showModalBottomSheet(
-                                          backgroundColor: Colors.white,
-                                          context: context, useRootNavigator: true,
-                                          isScrollControlled: true,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(50.h),
-                                              topLeft: Radius.circular(50.h),
-                                            ),
-                                          ),
-                                          builder: (c) {
-                                            return const DevotionalDialog();
-                                          },
-                                        );
-                                      } else {}
-                                    },
-                                    child: Image.asset(
-                                      e == 3 && liked ? 'like'.png : 'v$e'.png,
-                                      height: 32.h,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                          SizedBox(height: 20.h),
-                        ],
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          )
+          Expanded(child: PostDetailScreen(post: widget.post))
         ],
       ),
     );

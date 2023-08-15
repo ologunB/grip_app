@@ -58,15 +58,15 @@ class Utils {
       return "Password cannot be Empty";
     } else if (value.trim().length < 8) {
       return "Password is too short";
-    } /* else if (!value.trim().contains(RegExp(r'\d'))) {
+    } else if (!value.trim().contains(RegExp(r'\d'))) {
       return "Password must contain a number";
     } else if (!value.trim().contains(RegExp(r'[a-z]'))) {
       return "Password must contain a lowercase letter";
     } else if (!value.trim().contains(RegExp(r'[A-Z]'))) {
       return "Password must contain a uppercase letter";
-    } else if (!value.trim().contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return "Password must contain a special character";
-    }*/
+    } else if (!value.trim().contains(RegExp(r'[@$!%?&]'))) {
+      return "Password must contain a special character(@\$!%?&)";
+    }
     return null;
   }
 
@@ -82,6 +82,20 @@ class Utils {
     return null;
   }
 
+/*
+  static String? isValidPassword(String? value) {
+    value = value!.trim();
+    final RegExp regex = RegExp(
+        r'^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$');
+    if (value.isEmpty) {
+      return "Password cannot be Empty";
+    } else if (!regex.hasMatch(value)) {
+      return 'Enter valid password';
+    } else {
+      return null;
+    }
+  }
+*/
   static String? isValidEmail(String? value) {
     value = value!.trim();
     final RegExp regex = RegExp(
@@ -198,7 +212,7 @@ extension CustomStringExtension on String {
     var newWord = '';
     for (var word in words) {
       if (word.isNotEmpty) {
-        newWord += '${word[0].toUpperCase()}${word.substring(1)} ';
+        newWord += '${word[0].toUpperCase()}${word.substring(1)}';
       }
     }
 

@@ -60,8 +60,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 if (formKey.currentState!.validate()) {
                   Utils.offKeyboard();
                   bool a = await model.changePassword({
-                    'oldPassword': oldPassword.text,
-                    'newPassword': password.text,
+                    'oldPassword': oldPassword.text.trim(),
+                    'newPassword': password.text.trim(),
                   });
                   if (a) {
                     Navigator.pop(context);
@@ -126,7 +126,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
                 validator: (a) {
                   if (a!.isEmpty) {
-                    return 'Password cannot be empty';
+                    return 'Password cannot be Empty';
                   } else if (a != password.text) {
                     return 'Passwords doesn\'t match';
                   }
