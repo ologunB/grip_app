@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-bool get creator => false;
+bool get creator => true;
 
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController password = TextEditingController(

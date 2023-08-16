@@ -1,5 +1,5 @@
+import 'package:hexcelon/views/auth/onboard_view.dart';
 import 'package:hexcelon/views/home/creator_layout.dart';
-import 'package:hexcelon/views/profile/creator_profile.dart';
 
 import 'core/models/navigator.dart';
 import 'core/storage/local_storage.dart';
@@ -41,7 +41,7 @@ class App extends StatelessWidget {
           ),
           navigatorKey: AppNavigator.navKey,
           home: AppCache.getUser() == null
-              ? const CreatorProfileScreen()
+              ? const OnboardScreen()
               : AppCache.getUser()?.user?.role == 'user'
                   ? const UserLayout()
                   : const CreatorLayout(),
