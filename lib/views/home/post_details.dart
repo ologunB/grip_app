@@ -263,8 +263,8 @@ class _CommentsDialogState extends State<CommentsDialog> {
     return BaseView<PostViewModel>(
       onModelReady: (m) => m.getComments(post.id),
       builder: (_, PostViewModel model, __) => Container(
-        constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .8),
+        height: MediaQuery.of(context).size.height * .8,
+        padding: MediaQuery.of(context).viewInsets,
         child: model.busy
             ? Container(
                 height: 200.h,
@@ -275,24 +275,12 @@ class _CommentsDialogState extends State<CommentsDialog> {
                 ? Container(
                     height: 200.h,
                     alignment: Alignment.center,
-                    child: HexText(
-                      'Error occurred getting comments',
-                      color: AppColors.red,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    child: const HexError(
+                        text: 'Error occurred when getting\ncomments'),
                   )
-                : model.comments!.isEmpty
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20.h),
-                        child: HexText(
-                          'There are no comments at the moment. Be the\nfirst to comment',
-                          fontSize: 14.sp,
-                          align: TextAlign.center,
-                          color: AppColors.black,
-                        ),
-                      )
-                    : ListView(
+                : Stack(
+                    children: [
+                      ListView(
                         shrinkWrap: true,
                         padding: EdgeInsets.symmetric(
                             vertical: 16.h, horizontal: 25.h),
@@ -303,7 +291,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
                               Align(
                                 alignment: Alignment.center,
                                 child: HexText(
-                                  '${model.comments?.length} comments',
+                                  '${model.comments?.length ?? 'No'} comments',
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
                                   align: TextAlign.center,
@@ -323,153 +311,195 @@ class _CommentsDialogState extends State<CommentsDialog> {
                             ],
                           ),
                           SizedBox(height: 25.h),
-                          ListView.separated(
-                            separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                            itemCount: model.comments!.length,
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            physics: const ClampingScrollPhysics(),
-                            itemBuilder: (_, i) {
-                              Comment c = model.comments![i];
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 16.h,
-                                    backgroundColor: Colors.white,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(40.h),
-                                      child: Image.asset(
-                                        'placeholder'.png,
-                                        height: 31.h,
-                                        width: 31.h,
+                          model.comments!.isEmpty
+                              ? ListView(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.zero,
+                                  physics: const ClampingScrollPhysics(),
+                                  children: [
+                                    Container(
+                                      height: 200.h,
+                                      alignment: Alignment.center,
+                                      child: HexText(
+                                        'There are no comments at the moment. Be the\nfirst to comment',
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                        align: TextAlign.center,
+                                        color: AppColors.black,
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 9.h),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        HexText(
-                                          'martini_rond',
-                                          fontSize: 13.sp,
-                                          color: AppColors.grey,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        SizedBox(height: 5.h),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: HexText(
-                                                '${c.name}',
-                                                fontSize: 13.sp,
-                                                color: AppColors.black,
-                                                maxLines: 4,
-                                              ),
-                                            ),
-                                            SizedBox(width: 6.h),
-                                            HexText(
-                                              '22h',
-                                              fontSize: 15.sp,
-                                              color: AppColors.grey,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 11.h),
-                                        Row(
-                                          children: [
-                                            HexText(
-                                              'View replies (4)',
-                                              fontSize: 13.sp,
-                                              color: AppColors.grey,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            RotatedBox(
-                                              quarterTurns: 1,
-                                              child: Icon(
-                                                Icons.arrow_forward_ios_rounded,
-                                                size: 16.h,
-                                                color: AppColors.grey,
-                                              ),
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(width: 30.h),
-                                  Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          int id = post.id!;
-                                          if (selected.contains(id)) {
-                                            model.unlikeComment(id);
-                                            selected.remove(id);
-                                          } else {
-                                            model.likeComment(id);
-                                            selected.add(id);
-                                          }
-                                          setState(() {});
-                                        },
-                                        child: Image.asset('like'.png,
-                                            height: 18.h),
-                                      ),
-                                      SizedBox(height: 5.h),
-                                      HexText(
-                                        '8098',
-                                        fontSize: 13.sp,
-                                        color: AppColors.grey,
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              );
-                            },
-                          ),
-                          SizedBox(height: 25.h),
-                          SafeArea(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: CupertinoTextField(
-                                    padding: EdgeInsets.all(15.h),
-                                    placeholderStyle: TextStyle(
-                                      fontFamily: 'Nova',
-                                      fontSize: 14.sp,
-                                      color: AppColors.grey,
-                                    ),
-                                    placeholder: 'Leave a comment',
-                                    controller: controller,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: const Color(0xffE0E0E0),
-                                        width: 1.h,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 12.h),
-                                InkWell(
-                                  onTap: () async {
-                                    bool bb = await model.createComment({
-                                      'message': controller.text,
-                                    });
-                                    if (bb) {}
+                                    )
+                                  ],
+                                )
+                              : ListView.separated(
+                                  separatorBuilder: (_, __) =>
+                                      SizedBox(height: 12.h),
+                                  itemCount: model.comments!.length,
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.zero,
+                                  physics: const ClampingScrollPhysics(),
+                                  itemBuilder: (_, i) {
+                                    Comment c = model.comments![i];
+                                    return item(c, model);
                                   },
-                                  child: Image.asset('send'.png, height: 50.h),
                                 ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SafeArea(
+                          child: SafeArea(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  right: 10.h, left: 10.h, bottom: 5.h),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: CupertinoTextField(
+                                      padding: EdgeInsets.all(15.h),
+                                      placeholderStyle: TextStyle(
+                                        fontFamily: 'Nova',
+                                        fontSize: 14.sp,
+                                        color: AppColors.grey,
+                                      ),
+                                      placeholder: 'Leave a comment',
+                                      controller: controller,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                          color: const Color(0xffE0E0E0),
+                                          width: 1.h,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 12.h),
+                                  InkWell(
+                                    onTap: () async {
+                                      bool bb = await model.createComment({
+                                        'message': controller.text,
+                                      });
+                                      if (bb) {}
+                                    },
+                                    child:
+                                        Image.asset('send'.png, height: 50.h),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
       ),
+    );
+  }
+
+  Widget item(Comment c, PostViewModel model) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: () {
+            if (c.user?.role == 'creator') {
+              push(context, OtherProfileScreen(user: c.user!));
+            }
+          },
+          borderRadius: BorderRadius.circular(40.h),
+          child: CircleAvatar(
+            radius: 16.h,
+            backgroundColor: Colors.white,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(40.h),
+              child: UserImage(
+                imageUrl: c.text,
+                size: 31.h,
+                radius: 31.h,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 9.h),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HexText(
+                '${c.text}',
+                fontSize: 13.sp,
+                color: AppColors.grey,
+                fontWeight: FontWeight.w600,
+              ),
+              SizedBox(height: 5.h),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: HexText(
+                      '${c.user?.username}',
+                      fontSize: 13.sp,
+                      color: AppColors.black,
+                      maxLines: 4,
+                    ),
+                  ),
+                  SizedBox(width: 6.h),
+                  HexText(
+                    timeago.format(DateTime.parse(c.createdAt!)),
+                    fontSize: 15.sp,
+                    color: AppColors.grey,
+                  ),
+                ],
+              ),
+              SizedBox(height: 11.h),
+/*
+              Row(
+                children: [
+                  HexText(
+                    'View replies (4)',
+                    fontSize: 13.sp,
+                    color: AppColors.grey,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  RotatedBox(
+                    quarterTurns: 1,
+                    child: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16.h,
+                      color: AppColors.grey,
+                    ),
+                  )
+                ],
+              )
+*/
+            ],
+          ),
+        ),
+        SizedBox(width: 30.h),
+        Column(
+          children: [
+            InkWell(
+              onTap: () {
+                int id = post.id!;
+                if (selected.contains(id)) {
+                  model.unlikeComment(id);
+                  selected.remove(id);
+                } else {
+                  model.likeComment(id);
+                  selected.add(id);
+                }
+                setState(() {});
+              },
+              child: Image.asset('like'.png, height: 18.h),
+            ),
+            SizedBox(height: 5.h),
+            HexText(
+              '${c.likesCount ?? 0}',
+              fontSize: 13.sp,
+              color: AppColors.grey,
+            ),
+          ],
+        )
+      ],
     );
   }
 }
@@ -609,7 +639,7 @@ class EditPostDialog extends StatelessWidget {
               bool a = await model.deletePost(post.id);
               if (a) {
                 Navigator.pop(context);
-                successSnackBar(context, 'Post has been updated');
+                successSnackBar(context, 'Post has been deleted');
               }
             },
           ),

@@ -309,7 +309,7 @@ class _PhotoCameraState extends State<PhotoCamera>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _cameraController!.setFlashMode(FlashMode.off);
+    _cameraController?.setFlashMode(FlashMode.off);
     _cameraController?.dispose();
     super.dispose();
   }

@@ -4,6 +4,7 @@ import 'package:flutter_sound/public/flutter_sound_player.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_platform_interface.dart';
 import 'package:hexcelon/views/create/create.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -17,17 +18,15 @@ class AudioRecorder extends StatefulWidget {
 }
 
 class _AudioRecorderState extends State<AudioRecorder> {
-  FlutterSoundRecorder? _audioRecorder;
   bool _isRecording = false;
-  String? _localPath;
-  final FlutterSoundPlayer _mPlayer = FlutterSoundPlayer();
-  bool _mPlayerIsInited = false;
-  final FlutterSoundRecorder _mRecorder = FlutterSoundRecorder();
+  String _localPath = '';
+  final FlutterSoundPlayer _mPlayer =
+      FlutterSoundPlayer(logLevel: Level.nothing);
+  final FlutterSoundRecorder _mRecorder =
+      FlutterSoundRecorder(logLevel: Level.nothing);
   Codec _codec = Codec.aacMP4;
-  String _mPath = 'tau_file.mp4';
-  bool _mRecorderIsInited = false;
-  double _mSubscriptionDuration = 0;
-  StreamSubscription? _recorderSubscription;
+  bool _mRecorderIsInitiated = false;
+  StreamSubscription? _recorderSubscription, playerStreamSub;
   int pos = 0;
   double dbLevel = 0;
   @override
@@ -38,26 +37,21 @@ class _AudioRecorderState extends State<AudioRecorder> {
     _initAudioRecorder();
     init().then((value) {
       setState(() {
-        _mRecorderIsInited = true;
+        _mRecorderIsInitiated = true;
       });
     });
     _mPlayer.openPlayer().then((value) {
-      setState(() {
-        _mPlayerIsInited = true;
-      });
+      setState(() {});
     });
   }
 
   void _initAudioRecorder() {
-    _audioRecorder = FlutterSoundRecorder();
-    _audioRecorder!.openRecorder().then((value) {});
+    _mRecorder.openRecorder().then((value) {});
   }
 
   void _startRecording() async {
     if (!_isRecording) {
-      await _audioRecorder!.startRecorder(
-        toFile: _localPath,
-      );
+      await _mRecorder.startRecorder(toFile: _localPath);
       setState(() {
         _isRecording = true;
       });
@@ -66,7 +60,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
   void _stopRecording() async {
     if (_isRecording) {
-      await _audioRecorder!.stopRecorder();
+      await _mRecorder.stopRecorder();
       setState(() {
         _isRecording = false;
       });
@@ -75,7 +69,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
   void play() async {
     await _mPlayer.startPlayer(
-        fromURI: '$_localPath',
+        fromURI: _localPath,
         // codec: Codec,
         whenFinished: () {
           setState(() {});
@@ -87,9 +81,16 @@ class _AudioRecorderState extends State<AudioRecorder> {
     await _mPlayer.stopPlayer();
   }
 
+  int a = 0;
   Future<void> init() async {
-    await openTheRecorder();
+    try {
+      await openTheRecorder();
+    } catch (e) {
+      print(e);
+    }
+
     _recorderSubscription = _mRecorder.onProgress!.listen((e) {
+      print(e);
       setState(() {
         pos = e.duration.inMilliseconds;
         if (e.decibels != null) {
@@ -99,17 +100,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
     });
   }
 
-  Future<Uint8List> getAssetData(String path) async {
-    var asset = await rootBundle.load(path);
-    return asset.buffer.asUint8List();
-  }
-
   // -------  Here is the code to playback  -----------------------
-
-  void record(FlutterSoundRecorder? recorder) async {
-    await recorder!.startRecorder(codec: _codec, toFile: _mPath);
-    setState(() {});
-  }
 
   Future<void> stopRecorder(FlutterSoundRecorder recorder) async {
     await recorder.stopRecorder();
@@ -119,6 +110,8 @@ class _AudioRecorderState extends State<AudioRecorder> {
     if (_recorderSubscription != null) {
       _recorderSubscription!.cancel();
       _recorderSubscription = null;
+      playerStreamSub!.cancel();
+      playerStreamSub = null;
     }
   }
 
@@ -132,9 +125,8 @@ class _AudioRecorderState extends State<AudioRecorder> {
     await _mRecorder.openRecorder();
     if (!await _mRecorder.isEncoderSupported(_codec) && kIsWeb) {
       _codec = Codec.opusWebM;
-      _mPath = 'tau_file.webm';
       if (!await _mRecorder.isEncoderSupported(_codec) && kIsWeb) {
-        _mRecorderIsInited = true;
+        _mRecorderIsInitiated = true;
         return;
       }
     }
@@ -158,28 +150,23 @@ class _AudioRecorderState extends State<AudioRecorder> {
       androidWillPauseWhenDucked: true,
     ));
 
-    _mRecorderIsInited = true;
+    _mRecorderIsInitiated = true;
   }
 
-  Future<void> setSubscriptionDuration(
-      double d) async // v is between 0.0 and 2000 (milliseconds)
-  {
-    _mSubscriptionDuration = d;
+  Future<void> setSubscriptionDuration(double d) async {
     setState(() {});
-    await _mRecorder.setSubscriptionDuration(
-      Duration(milliseconds: d.floor()),
-    );
+    await _mPlayer.setSubscriptionDuration(Duration(milliseconds: d.floor()));
   }
 
   // --------------------- UI -------------------
 
   Function? getPlaybackFn(FlutterSoundRecorder? recorder) {
-    if (!_mRecorderIsInited) {
+    if (!_mRecorderIsInitiated) {
       return null;
     }
     return recorder!.isStopped
         ? () {
-            record(recorder);
+            _startRecording();
           }
         : () {
             stopRecorder(recorder).then((value) => setState(() {}));
@@ -188,8 +175,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
   @override
   Widget build(BuildContext context) {
-    bool fileHeavy = File(_localPath!).lengthSync() > 100;
-    print(File(_localPath!).lengthSync());
+    bool fileHeavy = File(_localPath).lengthSync() > 100;
     return Scaffold(
       body: Center(
         child: Column(
@@ -213,32 +199,43 @@ class _AudioRecorderState extends State<AudioRecorder> {
               fontSize: 24.sp,
             ),
             SizedBox(height: 30.h),
-            if (fileHeavy)
+            if (fileHeavy && !_isRecording)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.h),
                 child: Row(
                   children: [
                     IconButton(
                       onPressed: _mPlayer.isStopped
-                          ? () {
+                          ? () async {
                               play();
                             }
                           : () {
                               stopPlayer().then((value) => setState(() {}));
                             },
-                      icon: const Icon(Icons.play_arrow_rounded),
+                      icon: Icon(_mPlayer.isPlaying
+                          ? Icons.stop_rounded
+                          : Icons.play_arrow_rounded),
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
+                    SizedBox(width: 10.h),
                     Expanded(
-                      child: Slider(
-                        value: _mSubscriptionDuration,
-                        min: 0.0,
-                        max: 2000.0,
-                        onChanged: setSubscriptionDuration,
-                        //divisions: 100
-                      ),
+                      child: StreamBuilder<PlaybackDisposition>(
+                          stream: _mPlayer.onProgress,
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) const SizedBox.shrink();
+                            return Slider(
+                              min: 0,
+                              value: snapshot.data?.position.inMilliseconds
+                                      .toDouble() ??
+                                  0,
+                              max: snapshot.data?.duration.inMilliseconds
+                                      .toDouble() ??
+                                  0,
+                              onChanged: (a) {
+                                setSubscriptionDuration(a);
+                              },
+                              //divisions: 100
+                            );
+                          }),
                     ),
                   ],
                 ),
@@ -285,8 +282,8 @@ class _AudioRecorderState extends State<AudioRecorder> {
                           children: [
                             Icon(
                               Icons.refresh_rounded,
-                              size: 30.h,
-                              color: AppColors.primary,
+                              size: 24.h,
+                              color: AppColors.black,
                             )
                           ],
                         ),
@@ -294,8 +291,8 @@ class _AudioRecorderState extends State<AudioRecorder> {
                         height: 60,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w400,
-                        textColor: AppColors.primary,
-                        borderColor: AppColors.primary,
+                        textColor: AppColors.black,
+                        borderColor: AppColors.black,
                         borderRadius: 10.h,
                         onPressed: () async {
                           bool a = await _checkPermission();
@@ -331,7 +328,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                             push(
                               context,
                               CreatePostScreen(
-                                file: await File(_localPath!).readAsBytes(),
+                                file: await File(_localPath).readAsBytes(),
                                 type: 'audio',
                               ),
                             );
@@ -384,7 +381,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
   @override
   void dispose() {
-    _audioRecorder?.closeRecorder();
+    _mRecorder.closeRecorder();
     stopRecorder(_mRecorder);
     cancelRecorderSubscriptions();
 
@@ -414,7 +411,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
     final String path = await _findLocalPath();
     _localPath = '$path${Platform.pathSeparator}song';
 
-    final File savedDir = File(_localPath!);
+    final File savedDir = File(_localPath);
     final bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
       savedDir.create();
