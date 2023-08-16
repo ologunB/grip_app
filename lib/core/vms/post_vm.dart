@@ -8,11 +8,40 @@ class PostViewModel extends BaseModel {
   final PostApi _api = locator<PostApi>();
   String? error;
 
-  Future<bool> create(Map<String, dynamic> a, List files) async {
+  Future<bool> createPost(Map<String, dynamic> a, List files) async {
     setBusy(true);
     try {
       Post res = await _api.create(a, files);
       print(res.id);
+      setBusy(false);
+      return true;
+    } on GripException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+      return false;
+    }
+  }
+
+  Future<bool> updatePost(int? id, Map<String, dynamic> a) async {
+    setBusy(true);
+    try {
+      Post res = await _api.updatePost(id, a);
+      print(res.id);
+      setBusy(false);
+      return true;
+    } on GripException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+      return false;
+    }
+  }
+
+  Future<bool> deletePost(int? id) async {
+    setBusy(true);
+    try {
+      await _api.deletePost(id);
       setBusy(false);
       return true;
     } on GripException catch (e) {

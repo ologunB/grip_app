@@ -4,7 +4,7 @@ import '../../core/models/comment_model.dart';
 import '../../core/models/post_model.dart';
 import '../../core/storage/local_storage.dart';
 import '../../core/vms/post_vm.dart';
-import '../profile/post_details.dart';
+import '../create/create.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
 import 'profile.dart';
@@ -141,7 +141,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       ),
                                     ),
                                     builder: (c) {
-                                      return const EditPostDialog();
+                                      return EditPostDialog(post: post);
                                     },
                                   );
                                 },
@@ -526,6 +526,94 @@ class DevotionalDialog extends StatelessWidget {
           color: AppColors.black,
         ),
         SizedBox(height: 150.h),
+      ],
+    );
+  }
+}
+
+class EditPostDialog extends StatelessWidget {
+  const EditPostDialog({super.key, required this.post});
+
+  final Post post;
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 25.h),
+      physics: const ClampingScrollPhysics(),
+      children: [
+        Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: HexText(
+                'Post',
+                fontSize: 14.sp,
+                align: TextAlign.center,
+                color: AppColors.black,
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  'close'.png,
+                  height: 24.h,
+                  width: 24.h,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 50.h),
+        BaseView<PostViewModel>(
+          builder: (_, PostViewModel model, __) => HexButton(
+            'Edit Post',
+            buttonColor: AppColors.primary,
+            height: 55,
+            safeArea: false,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+            textColor: AppColors.white,
+            borderColor: AppColors.primary,
+            borderRadius: 10.h,
+            busy: model.busy,
+            onPressed: () async {
+              dynamic data = await push(context, CreatePostScreen(post: post));
+              if (data != null) {
+                bool a = await model.updatePost(post.id, data);
+                if (a) {
+                  Navigator.pop(context);
+                  successSnackBar(context, 'Post has been updated');
+                }
+              }
+            },
+          ),
+        ),
+        SizedBox(height: 20.h),
+        BaseView<PostViewModel>(
+          builder: (_, PostViewModel model, __) => HexButton(
+            'Delete Post',
+            buttonColor: AppColors.white,
+            height: 55,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+            textColor: AppColors.red,
+            borderColor: AppColors.grey,
+            borderRadius: 10.h,
+            busy: model.busy,
+            onPressed: () async {
+              bool a = await model.deletePost(post.id);
+              if (a) {
+                Navigator.pop(context);
+                successSnackBar(context, 'Post has been updated');
+              }
+            },
+          ),
+        )
       ],
     );
   }

@@ -4,7 +4,6 @@ import '../../core/vms/post_vm.dart';
 import '../bible/search.dart';
 import '../home/post_details.dart';
 import '../profile/all_versions.dart';
-import '../profile/post_details.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
 import 'edit.dart';
@@ -424,4 +423,40 @@ class SettingsDialog extends StatelessWidget {
         ['Change Password', const ChangePasswordScreen()],
         ['Log out']
       ];
+}
+
+class MyPostDetailScreen extends StatelessWidget {
+  const MyPostDetailScreen({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.primaryBG,
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryBG,
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: HexText(
+          '@${AppCache.getUser()?.user?.username}',
+          fontSize: 16.sp,
+          color: AppColors.primary,
+          fontWeight: FontWeight.w700,
+        ),
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          HexText(
+            'My Posts',
+            fontSize: 14.sp,
+            color: AppColors.black,
+          ),
+          SizedBox(height: 20.h),
+          Expanded(child: PostDetailScreen(post: post))
+        ],
+      ),
+    );
+  }
 }

@@ -73,7 +73,7 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
             : model.categories == null
                 ? RetryItem(
                     onTap: () {
-                      model.getCreators();
+                      model.getCategories();
                     },
                   )
                 : SafeArea(

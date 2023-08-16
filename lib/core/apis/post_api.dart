@@ -120,7 +120,7 @@ class PostApi extends BaseAPI {
     }
   }
 
-  Future<Post> update(String? id, Map<String, dynamic> data) async {
+  Future<Post> updatePost(int? id, Map<String, dynamic> data) async {
     String url = 'post/$id';
     log(data);
     try {
@@ -129,6 +129,23 @@ class PostApi extends BaseAPI {
       switch (res.statusCode) {
         case 200:
           return Post.fromJson(res.data['data']);
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw GripException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<bool> deletePost(int? id) async {
+    String url = 'post/$id';
+    try {
+      final Response res = await dio().delete(url);
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          return true;
         default:
           throw error(res.data);
       }
@@ -209,7 +226,6 @@ class PostApi extends BaseAPI {
       throw GripException(DioErrorUtil.handleError(e));
     }
   }
-
 
   Future<bool> likeComment(int? id) async {
     String url = 'like';
