@@ -160,20 +160,13 @@ class _VersesScreenState extends State<VersesScreen> {
                         ),
                       ),
                       const VerticalDivider(width: 0, thickness: 0),
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30.h),
-                          bottomLeft: Radius.circular(30.h),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: HexText(
-                            'Books',
-                            fontSize: 16.sp,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                          ),
+                      Padding(
+                        padding: EdgeInsets.all(10.h),
+                        child: HexText(
+                          'Books',
+                          fontSize: 16.sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
                     ],
@@ -203,6 +196,7 @@ class _VersesScreenState extends State<VersesScreen> {
                     getVerses();
                   }
                 },
+                borderRadius: BorderRadius.circular(30.h),
                 child: Image.asset(
                   'search'.png,
                   height: 32.h,

@@ -29,32 +29,19 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
       builder: (_, PostViewModel model, __) => Scaffold(
-        backgroundColor: AppColors.black,
+        backgroundColor: Colors.black,
         body: Stack(
           children: [
-            ShaderMask(
-              shaderCallback: (bounds) => const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Color(0xff280E40)],
-                stops: [0.0, 1.0],
-              ).createShader(bounds),
-              blendMode: BlendMode.srcATop,
+            Center(
               child: CachedNetworkImage(
                 imageUrl: post.coverImage ?? 'm',
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
                 fit: BoxFit.cover,
                 placeholder: (_, __) => Image.asset(
                   'placeholder'.png,
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,
                 ),
                 errorWidget: (_, __, ___) => Image.asset(
                   'placeholder'.png,
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -162,7 +149,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               ),
                             ),
                       const Spacer(),
-                      ...[1, 2, 3, 4, if (post.bibleBook != null) 5, 6]
+                      ...[
+                        1,
+                        2,
+                        3,
+                        4,
+                        if (post.bibleBook != null && post.bibleBook != '') 5
+                      ]
                           .map(
                             (e) => Padding(
                               padding: EdgeInsets.only(bottom: 20.h),
@@ -216,6 +209,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     );
                                   } else {}
                                 },
+                                borderRadius: BorderRadius.circular(10.h),
                                 child: Image.asset(
                                   e == 4 && liked ? 'like'.png : 'v$e'.png,
                                   height: 26.h,
@@ -375,11 +369,17 @@ class _CommentsDialogState extends State<CommentsDialog> {
                                   SizedBox(width: 12.h),
                                   InkWell(
                                     onTap: () async {
-                                      bool bb = await model.createComment({
-                                        'message': controller.text,
+                                      if (controller.text.trim().isEmpty) {
+                                        return;
+                                      }
+                                      model.createComment({
+                                        'postId': post.id,
+                                        'comment': controller.text.trim(),
                                       });
-                                      if (bb) {}
+                                      controller.clear();
+                                      setState(() {});
                                     },
+                                    borderRadius: BorderRadius.circular(30.h),
                                     child:
                                         Image.asset('send'.png, height: 50.h),
                                   ),
@@ -412,7 +412,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(40.h),
               child: UserImage(
-                imageUrl: c.text,
+                imageUrl: c.user?.image,
                 size: 31.h,
                 radius: 31.h,
               ),
@@ -425,7 +425,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HexText(
-                '${c.text}',
+                '${c.user?.username}',
                 fontSize: 13.sp,
                 color: AppColors.grey,
                 fontWeight: FontWeight.w600,
@@ -436,7 +436,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
                 children: [
                   Expanded(
                     child: HexText(
-                      '${c.user?.username}',
+                      '${c.comment}',
                       fontSize: 13.sp,
                       color: AppColors.black,
                       maxLines: 4,
@@ -444,7 +444,8 @@ class _CommentsDialogState extends State<CommentsDialog> {
                   ),
                   SizedBox(width: 6.h),
                   HexText(
-                    timeago.format(DateTime.parse(c.createdAt!)),
+                    timeago.format(DateTime.parse(c.createdAt!),
+                        locale: 'en_short'),
                     fontSize: 15.sp,
                     color: AppColors.grey,
                   ),
@@ -474,7 +475,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
             ],
           ),
         ),
-        SizedBox(width: 30.h),
+        SizedBox(width: 20.h),
         Column(
           children: [
             InkWell(
@@ -489,6 +490,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
                 }
                 setState(() {});
               },
+              borderRadius: BorderRadius.circular(8.h),
               child: Image.asset('like'.png, height: 18.h),
             ),
             SizedBox(height: 5.h),
@@ -602,13 +604,13 @@ class EditPostDialog extends StatelessWidget {
         BaseView<PostViewModel>(
           builder: (_, PostViewModel model, __) => HexButton(
             'Edit Post',
-            buttonColor: AppColors.primary,
+            buttonColor: AppColors.black,
             height: 55,
             safeArea: false,
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             textColor: AppColors.white,
-            borderColor: AppColors.primary,
+            borderColor: AppColors.black,
             borderRadius: 10.h,
             busy: model.busy,
             onPressed: () async {

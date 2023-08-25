@@ -188,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<List> get all => [
         ['Edit Profile', const EditProfileScreen()],
         ['Preferred Bible Translation', const AllVersionScreen()],
-        ['History', const HistoryScreen()],
+        ['Bookmarks', const HistoryScreen()],
         ['Change Password', const ChangePasswordScreen()],
         ['Log out']
       ];

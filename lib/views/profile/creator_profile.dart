@@ -38,37 +38,38 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
       builder: (_, PostViewModel model, __) => Material(
         child: CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
-              transitionBetweenRoutes: false,
-              backgroundColor: Colors.white,
-              border: Border.all(color: Colors.white),
-              trailing: Padding(
-                padding: EdgeInsets.only(right: 25.h, top: 10.h),
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        await showModalBottomSheet(
-                          backgroundColor: Colors.white,
-                          context: context,
-                          useRootNavigator: true,
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(50.h),
-                              topLeft: Radius.circular(50.h),
-                            ),
+            transitionBetweenRoutes: false,
+            backgroundColor: Colors.white,
+            border: Border.all(color: Colors.white),
+            trailing: Padding(
+              padding: EdgeInsets.only(right: 25.h, top: 10.h),
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      await showModalBottomSheet(
+                        backgroundColor: Colors.white,
+                        context: context,
+                        useRootNavigator: true,
+                        isScrollControlled: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(50.h),
+                            topLeft: Radius.circular(50.h),
                           ),
-                          builder: (c) {
-                            return const SettingsDialog();
-                          },
-                        );
-                        setState(() {});
-                      },
-                      child: Image.asset('category'.png, height: 24.h),
-                    )
-                  ],
-                ),
-              )),
+                        ),
+                        builder: (c) {
+                          return const SettingsDialog();
+                        },
+                      );
+                      setState(() {});
+                    },
+                    child: Image.asset('category'.png, height: 24.h),
+                  )
+                ],
+              ),
+            ),
+          ),
           child: NestedScrollView(
             headerSliverBuilder: (_, __) => [
               SliverList.list(
@@ -439,7 +440,7 @@ class SettingsDialog extends StatelessWidget {
   List<List> get all => [
         ['Edit Profile', const EditProfileScreen()],
         ['Preferred Bible Translation', const AllVersionScreen()],
-        ['History', const HistoryScreen()],
+        ['Bookmarks', const HistoryScreen()],
         ['Change Password', const ChangePasswordScreen()],
         ['Log out']
       ];

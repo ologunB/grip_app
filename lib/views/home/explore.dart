@@ -120,27 +120,27 @@ class ExploreItem extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10.h),
-            child: ShaderMask(
-              shaderCallback: (bounds) => const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Color(0xff280E40)],
-                stops: [0.0, 1.0],
-              ).createShader(bounds),
-              blendMode: BlendMode.srcATop,
-              child: CachedNetworkImage(
-                imageUrl: post.coverImage ?? 'm',
-                width: 400,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => Image.asset(
-                  'placeholder'.png,
-                  width: 400,
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 400.h, minHeight: 200.h),
+              child: ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Color(0xff280E40)],
+                  stops: [0.0, 1.0],
+                ).createShader(bounds),
+                blendMode: BlendMode.srcATop,
+                child: CachedNetworkImage(
+                  imageUrl: post.coverImage ?? 'm',
                   fit: BoxFit.cover,
-                ),
-                errorWidget: (_, __, ___) => Image.asset(
-                  'placeholder'.png,
-                  width: 400,
-                  fit: BoxFit.cover,
+                  placeholder: (_, __) => Image.asset(
+                    'placeholder'.png,
+                    fit: BoxFit.cover,
+                  ),
+                  errorWidget: (_, __, ___) => Image.asset(
+                    'placeholder'.png,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

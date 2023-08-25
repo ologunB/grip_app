@@ -173,19 +173,19 @@ class HomeItem extends StatelessWidget {
                 stops: [0.0, 1.0],
               ).createShader(bounds),
               blendMode: BlendMode.srcATop,
-              child: CachedNetworkImage(
-                imageUrl: post.coverImage ?? 'm',
-                width: 400,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => Image.asset(
-                  'placeholder'.png,
-                  width: 400,
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 400.h, minHeight: 250.h),
+                child: CachedNetworkImage(
+                  imageUrl: post.coverImage ?? 'm',
                   fit: BoxFit.cover,
-                ),
-                errorWidget: (_, __, ___) => Image.asset(
-                  'placeholder'.png,
-                  width: 400,
-                  fit: BoxFit.cover,
+                  placeholder: (_, __) => Image.asset(
+                    'placeholder'.png,
+                    fit: BoxFit.cover,
+                  ),
+                  errorWidget: (_, __, ___) => Image.asset(
+                    'placeholder'.png,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

@@ -96,7 +96,7 @@ class _SearchPageState extends State<SearchPage> {
                   shrinkWrap: true,
                   separatorBuilder: (_, __) =>
                       Divider(height: 0, thickness: 1.h, color: Colors.black12),
-                  padding: EdgeInsets.zero,
+                  padding: EdgeInsets.only(bottom: 20.h, top: 10.h),
                   itemBuilder: (context, index) {
                     Verse v = filtered[index];
                     return InkWell(
@@ -136,7 +136,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
 
-    String highlightedText = v.text.splitMapJoin(
+    String ht = v.text.splitMapJoin(
       RegExp(controller.text, caseSensitive: false),
       onMatch: (match) => '<highlight>${match.group(0)}</highlight>',
       onNonMatch: (nonMatch) => nonMatch,
@@ -148,7 +148,7 @@ class _SearchPageState extends State<SearchPage> {
       color: AppColors.black,
       fontWeight: FontWeight.w400,
     );
-    highlightedText.split('<highlight>').forEach((segment) {
+    ht.split('<highlight>').forEach((segment) {
       if (segment.contains('</highlight>')) {
         var parts = segment.split('</highlight>');
         spans.add(

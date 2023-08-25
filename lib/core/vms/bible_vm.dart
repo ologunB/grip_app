@@ -43,9 +43,15 @@ class BibleViewModel extends BaseModel {
       downloaded = downloaded.toSet().toList();
       setBusy(false);
     });
-
+    for (var e in savedDir.listSync()) {
+      String abbr = e.path.split('/').last;
+      if (e.statSync().size < (AppCache.getBibleWeights()[abbr] ?? 0)) {
+        await e.delete();
+      }
+    }
     downloaded =
         savedDir.listSync().map((e) => e.path.split('/').last).toList();
+
     setBusy(false);
   }
 

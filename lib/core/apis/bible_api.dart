@@ -16,6 +16,7 @@ class BibleApi extends BaseAPI {
           settingsVM.currentDownloads = present;
           if (percent > 98) present.remove(abbr);
           if (percent % 10 == 0) print('$abbr is $percent%');
+          AppCache.setBibleWeights(abbr, b);
         },
       );
 

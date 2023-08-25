@@ -51,45 +51,7 @@ class PostApi extends BaseAPI {
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return Comment.fromJson(res.data['data']);
-        default:
-          throw error(res.data);
-      }
-    } catch (e) {
-      log(e);
-      throw GripException(DioErrorUtil.handleError(e));
-    }
-  }
-
-  Future<Post> bookmark(int? id) async {
-    String url = 'bookmark';
-    try {
-      final Response res = await dio().post(url);
-      log(res.data);
-      switch (res.statusCode) {
-        case 200:
-          return Post.fromJson(res.data['data']);
-        default:
-          throw error(res.data);
-      }
-    } catch (e) {
-      log(e);
-      throw GripException(DioErrorUtil.handleError(e));
-    }
-  }
-
-  Future<List<Post>> getBookmarks(int? id) async {
-    String url = 'post/$id';
-    try {
-      final Response res = await dio().get(url);
-      log(res.data);
-      switch (res.statusCode) {
-        case 200:
-          List<Post> dirs = [];
-          (res.data['data'] ?? []).forEach((a) {
-            dirs.add(Post.fromJson(a));
-          });
-          return dirs;
+          return Comment.fromJson(res.data['data'] ?? {});
         default:
           throw error(res.data);
       }
@@ -100,7 +62,8 @@ class PostApi extends BaseAPI {
   }
 
   Future<List<Comment>> getComments(int? id) async {
-    String url = 'post/$id';
+    String url = 'comment/$id';
+    print(id);
     try {
       final Response res = await dio().get(url);
       log(res.data);
@@ -120,15 +83,15 @@ class PostApi extends BaseAPI {
     }
   }
 
-  Future<Post> updatePost(int? id, Map<String, dynamic> data) async {
+  Future<bool> updatePost(int? id, Map<String, dynamic> data) async {
     String url = 'post/$id';
     log(data);
     try {
-      final Response res = await dio().post(url, data: data);
+      final Response res = await dio().patch(url, data: data);
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return Post.fromJson(res.data['data']);
+          return true;
         default:
           throw error(res.data);
       }
@@ -155,7 +118,7 @@ class PostApi extends BaseAPI {
     }
   }
 
-  Future<Post> getDetails(String? id) async {
+  Future<Post> getPostDetails(String? id) async {
     String url = 'post/$id';
     try {
       final Response res = await dio().get(url);
@@ -252,6 +215,44 @@ class PostApi extends BaseAPI {
       switch (res.statusCode) {
         case 200:
           return true;
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw GripException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<Post> bookmark(int? id) async {
+    String url = 'bookmark';
+    try {
+      final Response res = await dio().post(url);
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          return Post.fromJson(res.data['data']);
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw GripException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<List<Post>> getBookmarks() async {
+    String url = 'bookmark';
+    try {
+      final Response res = await dio().get(url);
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          List<Post> dirs = [];
+          (res.data['data'] ?? []).forEach((a) {
+            dirs.add(Post.fromJson(a));
+          });
+          return dirs;
         default:
           throw error(res.data);
       }
