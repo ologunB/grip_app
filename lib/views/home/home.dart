@@ -1,3 +1,4 @@
+import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../core/models/post_model.dart';
@@ -18,135 +19,159 @@ class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
-    return BaseView<PostViewModel>(
-      onModelReady: (a) => a.getPosts(),
-      builder: (_, PostViewModel model, __) => RefreshIndicator(
-        onRefresh: () async {
-          return model.getPosts();
-        },
-        color: AppColors.primary,
-        child: Scaffold(
-          backgroundColor: AppColors.white,
-          appBar: AppBar(
-            elevation: 0,
-            centerTitle: false,
-            backgroundColor: AppColors.white,
-            titleSpacing: 25.h,
-            title: CupertinoTextField(
-              prefix: Column(
-                mainAxisSize: MainAxisSize.min,
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        backgroundColor: AppColors.white,
+        titleSpacing: 25.h,
+        title: CupertinoTextField(
+          prefix: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.h),
+                child: Image.asset(
+                  'search'.png,
+                  height: 24.h,
+                  color: const Color(0xffE0E0E0),
+                ),
+              ),
+            ],
+          ),
+          placeholder: 'Search',
+          placeholderStyle: TextStyle(
+            fontFamily: 'Nova',
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xffE0E0E0),
+          ),
+          padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(20.h),
+            border: Border.all(color: const Color(0xffE0E0E0)),
+          ),
+          maxLines: 3,
+          minLines: 1,
+        ),
+        actions: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.h),
-                    child: Image.asset(
-                      'search'.png,
-                      height: 24.h,
-                      color: const Color(0xffE0E0E0),
-                    ),
+                  InkWell(
+                    onTap: () {
+                      push(context, const NotificationScreen());
+                    },
+                    borderRadius: BorderRadius.circular(50.h),
+                    child: Image.asset('h1'.png, height: 44.h),
                   ),
-                ],
-              ),
-              placeholder: 'Search',
-              placeholderStyle: TextStyle(
-                fontFamily: 'Nova',
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xffE0E0E0),
-              ),
-              padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20.h),
-                border: Border.all(color: const Color(0xffE0E0E0)),
-              ),
-              maxLines: 3,
-              minLines: 1,
-            ),
-            actions: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          push(context, const NotificationScreen());
-                        },
-                        borderRadius: BorderRadius.circular(50.h),
-                        child: Image.asset('h1'.png, height: 44.h),
-                      ),
-                      SizedBox(width: 25.h),
-                    ],
-                  )
+                  SizedBox(width: 25.h),
                 ],
               )
             ],
-          ),
-          body: ListView(
+          )
+        ],
+      ),
+      body: Column(
+        children: [
+          SizedBox(height: 5.h),
+          Row(
             children: [
-              SizedBox(height: 5.h),
-              Row(
-                children: [
-                  SizedBox(width: 15.h),
-                  TextButton(
-                    onPressed: () {
-                      setState(() => index = 0);
-                    },
-                    child: HexText(
-                      'Recent Posts',
-                      fontSize: 20.sp,
-                      color: index == 0 ? Colors.black : AppColors.grey,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  SizedBox(width: 10.h),
-                  TextButton(
-                    onPressed: () {
-                      setState(() => index = 1);
-                    },
-                    child: HexText(
-                      'Recommended',
-                      fontSize: 20.sp,
-                      color: index == 1 ? Colors.black : AppColors.grey,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
+              SizedBox(width: 15.h),
+              TextButton(
+                onPressed: () {
+                  setState(() => index = 0);
+                },
+                child: HexText(
+                  'Recent Posts',
+                  fontSize: 20.sp,
+                  color: index == 0 ? Colors.black : AppColors.grey,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-              model.busy
-                  ? model.posts != null
-                      ? StaggeredGrid.count(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 4.h,
-                          crossAxisSpacing: 4.h,
-                          children: model.posts!
-                              .map((e) => HomeItem(post: e))
-                              .toList(),
-                        )
-                      : Container(
-                          height: 200.h,
-                          alignment: Alignment.center,
-                          child: const HexProgress(text: 'Getting posts'),
-                        )
-                  : model.posts == null
-                      ? Container(
-                          height: 200.h,
-                          alignment: Alignment.center,
-                          child: const HexError(
-                              text: 'Error occurred getting posts'),
-                        )
-                      : StaggeredGrid.count(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 4.h,
-                          crossAxisSpacing: 4.h,
-                          children: model.posts!
-                              .map((e) => HomeItem(post: e))
-                              .toList(),
-                        ),
+              SizedBox(width: 10.h),
+              TextButton(
+                onPressed: () {
+                  setState(() => index = 1);
+                },
+                child: HexText(
+                  'Recommended',
+                  fontSize: 20.sp,
+                  color: index == 1 ? Colors.black : AppColors.grey,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
             ],
           ),
-        ),
+          Expanded(
+            child: IndexedStack(
+              index: index,
+              children: [
+                BaseView<PostViewModel>(
+                  onModelReady: (a) => a.getPosts(
+                      type: 'recent/${AppCache.getUser()?.user?.id}'),
+                  builder: (_, PostViewModel model, __) => RefreshIndicator(
+                    onRefresh: () async {
+                      return model.getPosts(
+                          type: 'recent/${AppCache.getUser()?.user?.id}');
+                    },
+                    color: AppColors.primary,
+                    child: body(model),
+                  ),
+                ),
+                BaseView<PostViewModel>(
+                  onModelReady: (a) => a.getPosts(type: 'recommended'),
+                  builder: (_, PostViewModel model, __) => RefreshIndicator(
+                    onRefresh: () async {
+                      return model.getPosts(type: 'recommended');
+                    },
+                    color: AppColors.primary,
+                    child: body(model),
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
       ),
+    );
+  }
+
+  Widget body(PostViewModel model) {
+    return ListView(
+      children: [
+        model.busy
+            ? model.posts != null
+                ? StaggeredGrid.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 4.h,
+                    crossAxisSpacing: 4.h,
+                    children:
+                        model.posts!.map((e) => HomeItem(post: e)).toList(),
+                  )
+                : Container(
+                    height: 200.h,
+                    alignment: Alignment.center,
+                    child: const HexProgress(text: 'Getting posts'),
+                  )
+            : model.posts == null
+                ? Container(
+                    height: 200.h,
+                    alignment: Alignment.center,
+                    child: const HexError(text: 'Error occurred getting posts'),
+                  )
+                : StaggeredGrid.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 4.h,
+                    crossAxisSpacing: 4.h,
+                    children:
+                        model.posts!.map((e) => HomeItem(post: e)).toList(),
+                  )
+      ],
     );
   }
 }

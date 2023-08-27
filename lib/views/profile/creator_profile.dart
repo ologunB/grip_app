@@ -6,8 +6,8 @@ import '../home/post_details.dart';
 import '../profile/all_versions.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
+import 'bookmarks.dart';
 import 'edit.dart';
-import 'history.dart';
 import 'password.dart';
 import 'profile.dart';
 
@@ -33,7 +33,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
       onModelReady: (a) {
-        a.getPosts();
+        a.getPosts(type: 'recent/${AppCache.getUser()?.user?.id}');
       },
       builder: (_, PostViewModel model, __) => Material(
         child: CupertinoPageScaffold(
@@ -440,7 +440,7 @@ class SettingsDialog extends StatelessWidget {
   List<List> get all => [
         ['Edit Profile', const EditProfileScreen()],
         ['Preferred Bible Translation', const AllVersionScreen()],
-        ['Bookmarks', const HistoryScreen()],
+        ['Bookmarks', const BookmarksScreen()],
         ['Change Password', const ChangePasswordScreen()],
         ['Log out']
       ];

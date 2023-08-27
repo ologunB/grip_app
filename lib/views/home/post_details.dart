@@ -4,6 +4,7 @@ import '../../core/models/comment_model.dart';
 import '../../core/models/post_model.dart';
 import '../../core/storage/local_storage.dart';
 import '../../core/vms/post_vm.dart';
+import '../../core/vms/settings_vm.dart';
 import '../create/create.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
@@ -19,15 +20,40 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   late Post post;
+
+  bool liked = false;
+  bool bookmarked = false;
+  StreamSubscription? sSub;
+
   @override
   void initState() {
     post = widget.post;
+    if (settingsVM.currentPosts[post.id] != null) {
+      post = settingsVM.currentPosts[post.id]!;
+      liked = post.isLiked!;
+      bookmarked = post.isBookmarked!;
+    }
+    sSub = settingsVM.outPosts.listen((event) {
+      if (settingsVM.currentPosts[post.id] != null) {
+        post = settingsVM.currentPosts[post.id]!;
+        liked = post.isLiked!;
+        bookmarked = post.isBookmarked!;
+        return;
+      }
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    sSub?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
+      onModelReady: (a) => a.getPostDetails(widget.post.id),
       builder: (_, PostViewModel model, __) => Scaffold(
         backgroundColor: Colors.black,
         body: Stack(
@@ -154,7 +180,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         2,
                         3,
                         4,
-                        if (post.bibleBook != null && post.bibleBook != '') 5
+                        if (post.bibleBook != null &&
+                            post.bibleBook != '' &&
+                            int.tryParse(post.bibleChapter ?? '') != null)
+                          5
                       ]
                           .map(
                             (e) => Padding(
@@ -166,7 +195,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                         subject:
                                             '${post.description}\n\n ${post.file}');
                                   } else if (e == 2) {
-                                    model.bookmark(post.id);
+                                    if (bookmarked) {
+                                      model.deleteBookmark(post.id);
+                                    } else {
+                                      model.addBookmark(post.id);
+                                    }
+                                    bookmarked = !bookmarked;
+                                    setState(() {});
                                   } else if (e == 3) {
                                     showModalBottomSheet(
                                       backgroundColor: Colors.white,
@@ -184,11 +219,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       },
                                     );
                                   } else if (e == 4) {
-                                    if (liked) {
-                                      model.unlikePost(post.id);
-                                    } else {
-                                      model.likePost(post.id);
-                                    }
+                                    model.likePost(post.id);
+
                                     liked = !liked;
                                     setState(() {});
                                   } else if (e == 5) {
@@ -211,7 +243,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 },
                                 borderRadius: BorderRadius.circular(10.h),
                                 child: Image.asset(
-                                  e == 4 && liked ? 'like'.png : 'v$e'.png,
+                                  e == 4 && liked
+                                      ? 'like'.png
+                                      : e == 2 && bookmarked
+                                          ? 'bookmark'.png
+                                          : 'v$e'.png,
                                   height: 26.h,
                                 ),
                               ),
@@ -229,8 +265,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       ),
     );
   }
-
-  bool liked = false;
 }
 
 class CommentsDialog extends StatefulWidget {
@@ -244,165 +278,181 @@ class CommentsDialog extends StatefulWidget {
 class _CommentsDialogState extends State<CommentsDialog> {
   late Post post;
   TextEditingController controller = TextEditingController();
+  ScrollController scrollController = ScrollController();
   @override
   void initState() {
     post = widget.post;
     super.initState();
   }
 
-  List<int> selected = [];
-
   @override
   Widget build(BuildContext context) {
-    return BaseView<PostViewModel>(
-      onModelReady: (m) => m.getComments(post.id),
-      builder: (_, PostViewModel model, __) => Container(
-        height: MediaQuery.of(context).size.height * .8,
-        padding: MediaQuery.of(context).viewInsets,
-        child: model.busy
-            ? Container(
-                height: 200.h,
-                alignment: Alignment.center,
-                child: const HexProgress(),
-              )
-            : model.comments == null
-                ? Container(
-                    height: 200.h,
-                    alignment: Alignment.center,
-                    child: const HexError(
-                        text: 'Error occurred when getting\ncomments'),
-                  )
-                : Stack(
-                    children: [
-                      ListView(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.symmetric(
-                            vertical: 16.h, horizontal: 25.h),
-                        physics: const ClampingScrollPhysics(),
-                        children: [
-                          Stack(
-                            children: [
-                              Align(
-                                alignment: Alignment.center,
-                                child: HexText(
-                                  '${model.comments?.length ?? 'No'} comments',
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  align: TextAlign.center,
-                                  color: AppColors.black,
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Image.asset('close'.png,
-                                      height: 20.h, width: 20.h),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 25.h),
-                          model.comments!.isEmpty
-                              ? ListView(
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.zero,
-                                  physics: const ClampingScrollPhysics(),
-                                  children: [
-                                    Container(
-                                      height: 200.h,
-                                      alignment: Alignment.center,
-                                      child: HexText(
-                                        'There are no comments at the moment. Be the\nfirst to comment',
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                        align: TextAlign.center,
-                                        color: AppColors.black,
-                                      ),
-                                    )
-                                  ],
-                                )
-                              : ListView.separated(
-                                  separatorBuilder: (_, __) =>
-                                      SizedBox(height: 12.h),
-                                  itemCount: model.comments!.length,
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.zero,
-                                  physics: const ClampingScrollPhysics(),
-                                  itemBuilder: (_, i) {
-                                    Comment c = model.comments![i];
-                                    return item(c, model);
-                                  },
-                                ),
-                        ],
+    return GestureDetector(
+      onTap: Utils.offKeyboard,
+      child: BaseView<PostViewModel>(
+        onModelReady: (m) => m.getComments(post.id),
+        builder: (_, PostViewModel model, __) => Container(
+          height: MediaQuery.of(context).size.height * .8,
+          padding: MediaQuery.of(context).viewInsets,
+          child: model.busy
+              ? Container(
+                  height: 200.h,
+                  alignment: Alignment.center,
+                  child: const HexProgress(),
+                )
+              : model.comments == null
+                  ? Container(
+                      height: 200.h,
+                      alignment: Alignment.center,
+                      child: const HexError(
+                          text: 'Error occurred when getting\ncomments'),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(50.h),
+                        topLeft: Radius.circular(50.h),
                       ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SafeArea(
-                          child: SafeArea(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  right: 10.h, left: 10.h, bottom: 5.h),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: CupertinoTextField(
-                                      padding: EdgeInsets.all(15.h),
-                                      placeholderStyle: TextStyle(
-                                        fontFamily: 'Nova',
-                                        fontSize: 14.sp,
-                                        color: AppColors.grey,
-                                      ),
-                                      placeholder: 'Leave a comment',
-                                      controller: controller,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: const Color(0xffE0E0E0),
-                                          width: 1.h,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 12.h),
-                                  InkWell(
-                                    onTap: () async {
-                                      if (controller.text.trim().isEmpty) {
-                                        return;
-                                      }
-                                      model.createComment({
-                                        'postId': post.id,
-                                        'comment': controller.text.trim(),
-                                      });
-                                      controller.clear();
-                                      setState(() {});
-                                    },
-                                    borderRadius: BorderRadius.circular(30.h),
-                                    child:
-                                        Image.asset('send'.png, height: 50.h),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                      child: body(model)),
+        ),
       ),
     );
   }
 
-  Widget item(Comment c, PostViewModel model) {
+  Widget body(PostViewModel model) {
+    return Stack(
+      children: [
+        ListView(
+          controller: scrollController,
+          shrinkWrap: true,
+          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.h),
+          physics: const ClampingScrollPhysics(),
+          children: [
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: HexText(
+                    '${model.comments?.length ?? 'No'} comments',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    align: TextAlign.center,
+                    color: AppColors.black,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Image.asset('close'.png, height: 20.h, width: 20.h),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 25.h),
+            model.comments!.isEmpty
+                ? ListView(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    physics: const ClampingScrollPhysics(),
+                    children: [
+                      Container(
+                        height: 200.h,
+                        alignment: Alignment.center,
+                        child: HexText(
+                          'There are no comments at the moment. Be the\nfirst to comment',
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          align: TextAlign.center,
+                          color: AppColors.black,
+                        ),
+                      )
+                    ],
+                  )
+                : ListView.separated(
+                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                    itemCount: model.comments!.length,
+                    shrinkWrap: true,
+                    reverse: true,
+                    padding: EdgeInsets.only(bottom: 60.h),
+                    physics: const ClampingScrollPhysics(),
+                    itemBuilder: (_, i) {
+                      Comment c = model.comments![i];
+                      return item(c);
+                    },
+                  ),
+          ],
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: SafeArea(
+            child: SafeArea(
+              child: Container(
+                color: Colors.white,
+                padding: EdgeInsets.only(right: 10.h, left: 10.h, bottom: 5.h),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CupertinoTextField(
+                        padding: EdgeInsets.all(15.h),
+                        placeholderStyle: TextStyle(
+                          fontFamily: 'Nova',
+                          fontSize: 14.sp,
+                          color: AppColors.grey,
+                        ),
+                        placeholder: 'Leave a comment',
+                        controller: controller,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: const Color(0xffE0E0E0),
+                            width: 1.h,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.h),
+                    InkWell(
+                      onTap: () async {
+                        if (controller.text.trim().isEmpty) {
+                          return;
+                        }
+                        model.createComment({
+                          'postId': post.id,
+                          'comment': controller.text.trim(),
+                        });
+                        controller.clear();
+                        scrollController.animateTo(
+                            scrollController.position.maxScrollExtent + 60.h,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.linear);
+                        setState(() {});
+                      },
+                      borderRadius: BorderRadius.circular(30.h),
+                      child: Image.asset('send'.png, height: 50.h),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<int> selected = [];
+
+  Widget item(Comment c) {
+    bool contain = selected.contains(c.id);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
           onTap: () {
             if (c.user?.role == 'creator') {
-              push(context, OtherProfileScreen(user: c.user!));
+              // push(context, OtherProfileScreen(user: c.user!));
             }
           },
           borderRadius: BorderRadius.circular(40.h),
@@ -452,46 +502,30 @@ class _CommentsDialogState extends State<CommentsDialog> {
                 ],
               ),
               SizedBox(height: 11.h),
-/*
-              Row(
-                children: [
-                  HexText(
-                    'View replies (4)',
-                    fontSize: 13.sp,
-                    color: AppColors.grey,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  RotatedBox(
-                    quarterTurns: 1,
-                    child: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 16.h,
-                      color: AppColors.grey,
-                    ),
-                  )
-                ],
-              )
-*/
             ],
           ),
         ),
         SizedBox(width: 20.h),
         Column(
           children: [
-            InkWell(
-              onTap: () {
-                int id = post.id!;
-                if (selected.contains(id)) {
-                  model.unlikeComment(id);
-                  selected.remove(id);
-                } else {
-                  model.likeComment(id);
-                  selected.add(id);
-                }
-                setState(() {});
-              },
-              borderRadius: BorderRadius.circular(8.h),
-              child: Image.asset('like'.png, height: 18.h),
+            BaseView<PostViewModel>(
+              builder: (_, PostViewModel model, __) => InkWell(
+                onTap: () {
+                  if (contain) {
+                    selected.remove(c.id);
+                  } else {
+                    selected.add(c.id!);
+                  }
+                  model.likeComment(c.postId, c.id);
+                  setState(() {});
+                },
+                borderRadius: BorderRadius.circular(8.h),
+                child: Image.asset(
+                  (contain ? 'like' : 'v4').png,
+                  height: 20.h,
+                  color: contain ? null : Colors.grey,
+                ),
+              ),
             ),
             SizedBox(height: 5.h),
             HexText(
@@ -552,7 +586,7 @@ class DevotionalDialog extends StatelessWidget {
         HexText(
           objectbox
               .getOneVerse(post.bibleBook!, int.parse(post.bibleChapter!),
-                  verse: int.parse(post.bibleVerse!))
+                  verse: int.parse(post.bibleChapter!))
               .text,
           fontSize: 14.sp,
           color: AppColors.black,

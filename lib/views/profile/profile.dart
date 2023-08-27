@@ -5,8 +5,8 @@ import '../auth/login_view.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
 import 'all_versions.dart';
+import 'bookmarks.dart';
 import 'edit.dart';
-import 'history.dart';
 import 'password.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -188,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<List> get all => [
         ['Edit Profile', const EditProfileScreen()],
         ['Preferred Bible Translation', const AllVersionScreen()],
-        ['Bookmarks', const HistoryScreen()],
+        ['Bookmarks', const BookmarksScreen()],
         ['Change Password', const ChangePasswordScreen()],
         ['Log out']
       ];

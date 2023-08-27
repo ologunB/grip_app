@@ -43,3 +43,40 @@ class Comment {
     return data;
   }
 }
+
+class NotificationModel {
+  int? id;
+  int? userId;
+  String? message;
+  bool? isRead;
+  String? createdAt;
+  String? updatedAt;
+
+  NotificationModel(
+      {this.id,
+      this.userId,
+      this.message,
+      this.isRead,
+      this.createdAt,
+      this.updatedAt});
+
+  NotificationModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['userId'];
+    message = json['message'];
+    isRead = json['isRead'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['userId'] = userId;
+    data['message'] = message;
+    data['isRead'] = isRead;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    return data;
+  }
+}

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:hexcelon/core/apis/base_api.dart';
 
+import '../models/post_model.dart';
+
 class SettingsVM {
   final StreamController<Map<String, int>> _downloadsController =
       StreamController<Map<String, int>>.broadcast();
@@ -13,6 +15,18 @@ class SettingsVM {
   set currentDownloads(Map<String, int> i) {
     _currentDownloads = i;
     _inMainDownloads.add(i);
+  }
+
+  final StreamController<Map<int, Post>> _postsController =
+      StreamController<Map<int, Post>>.broadcast();
+  Sink<Map<int, Post>> get _inPosts => _postsController.sink;
+  Stream<Map<int, Post>> get outPosts => _postsController.stream;
+  Map<int, Post> _currentPosts = {};
+  Map<int, Post> get currentPosts => _currentPosts;
+
+  set currentPosts(Map<int, Post> i) {
+    _currentPosts = i;
+    _inPosts.add(i);
   }
 
   final StreamController<String?> _bibleController =

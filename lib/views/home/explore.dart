@@ -15,56 +15,76 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
-      onModelReady: (a) => a.getPosts(),
-      builder: (_, PostViewModel model, __) => RefreshIndicator(
-        onRefresh: () async {
-          return model.getPosts();
-        },
-        color: AppColors.primary,
-        child: Scaffold(
+      onModelReady: (a) => a.getPosts(type: 'recommended'),
+      builder: (_, PostViewModel model, __) => Scaffold(
+        backgroundColor: AppColors.white,
+        appBar: AppBar(
+          elevation: 0,
           backgroundColor: AppColors.white,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: AppColors.white,
-            titleSpacing: 20.h,
-            centerTitle: false,
-            title: CupertinoTextField(
-              prefix: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.h),
-                    child: Image.asset(
-                      'search'.png,
-                      height: 24.h,
-                      color: const Color(0xffE0E0E0),
-                    ),
+          titleSpacing: 20.h,
+          centerTitle: false,
+          title: CupertinoTextField(
+            prefix: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.h),
+                  child: Image.asset(
+                    'search'.png,
+                    height: 24.h,
+                    color: const Color(0xffE0E0E0),
                   ),
-                ],
-              ),
-              placeholder: 'Search',
-              placeholderStyle: TextStyle(
-                fontFamily: 'Nova',
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xffE0E0E0),
-              ),
-              padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20.h),
-                border: Border.all(color: const Color(0xffE0E0E0)),
-              ),
-              maxLines: 3,
-              minLines: 1,
+                ),
+              ],
             ),
+            placeholder: 'Search',
+            placeholderStyle: TextStyle(
+              fontFamily: 'Nova',
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xffE0E0E0),
+            ),
+            padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(20.h),
+              border: Border.all(color: const Color(0xffE0E0E0)),
+            ),
+            maxLines: 3,
+            minLines: 1,
           ),
-          body: model.busy
-              ? model.posts != null
-                  ? ListView(
-                      padding: EdgeInsets.all(25.h),
-                      children: [
-                        StaggeredGrid.count(
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            return model.getPosts(type: 'recommended');
+          },
+          color: AppColors.primary,
+          child: ListView(
+            padding: EdgeInsets.all(25.h),
+            children: [
+              model.busy
+                  ? model.posts != null
+                      ? StaggeredGrid.count(
+                          crossAxisCount: model.posts!.length,
+                          mainAxisSpacing: 6.h,
+                          crossAxisSpacing: 6.h,
+                          children: model.posts!
+                              .map((e) => ExploreItem(post: e))
+                              .toList(),
+                        )
+                      : Container(
+                          height: 200.h,
+                          alignment: Alignment.center,
+                          child: const HexProgress(text: 'Getting posts'),
+                        )
+                  : model.posts == null
+                      ? Container(
+                          height: 200.h,
+                          alignment: Alignment.center,
+                          child: const HexError(
+                              text: 'Error occurred getting posts'),
+                        )
+                      : StaggeredGrid.count(
                           crossAxisCount: model.posts!.length,
                           mainAxisSpacing: 6.h,
                           crossAxisSpacing: 6.h,
@@ -72,33 +92,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               .map((e) => ExploreItem(post: e))
                               .toList(),
                         ),
-                      ],
-                    )
-                  : Container(
-                      height: 200.h,
-                      alignment: Alignment.center,
-                      child: const HexProgress(text: 'Getting posts'),
-                    )
-              : model.posts == null
-                  ? Container(
-                      height: 200.h,
-                      alignment: Alignment.center,
-                      child:
-                          const HexError(text: 'Error occurred getting posts'),
-                    )
-                  : ListView(
-                      padding: EdgeInsets.all(25.h),
-                      children: [
-                        StaggeredGrid.count(
-                          crossAxisCount: model.posts!.length,
-                          mainAxisSpacing: 6.h,
-                          crossAxisSpacing: 6.h,
-                          children: model.posts!
-                              .map((e) => ExploreItem(post: e))
-                              .toList(),
-                        ),
-                      ],
-                    ),
+            ],
+          ),
         ),
       ),
     );

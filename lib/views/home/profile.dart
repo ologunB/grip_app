@@ -31,7 +31,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
   Widget build(BuildContext context) {
     return BaseView<AuthViewModel>(
       builder: (_, AuthViewModel aModel, __) => BaseView<PostViewModel>(
-        onModelReady: (a) => a.getPosts(),
+        onModelReady: (a) => a.getPosts(type: 'recent/${widget.user.id}'),
         builder: (_, PostViewModel pModel, __) => Material(
           child: CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBar(
@@ -69,7 +69,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 38.h),
                             child: HexText(
-                              '${user.categories?.map((e) => e.name).toList().join(', ')}',
+                              '${user.categories?.map((e) => e.name).toList().join('# ')}',
                               fontSize: 16.sp,
                               align: TextAlign.center,
                               color: AppColors.black,

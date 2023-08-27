@@ -220,18 +220,14 @@ class ChapterItem extends StatelessWidget {
                 ),
                 SizedBox(height: 8.h),
                 HexText(
-                  '${value.length} Chapters',
+                  value.length == 1 ? '1 Chapter' : '${value.length} Chapters',
                   fontSize: 14.sp,
                   color: AppColors.black,
                 ),
               ],
             ),
             const Spacer(),
-            Image.asset(
-              'go'.png,
-              height: 24.h,
-              color: Colors.grey,
-            )
+            Image.asset('go'.png, height: 24.h, color: Colors.grey)
           ],
         ),
       ),

@@ -45,7 +45,8 @@ class BibleViewModel extends BaseModel {
     });
     for (var e in savedDir.listSync()) {
       String abbr = e.path.split('/').last;
-      if (e.statSync().size < (AppCache.getBibleWeights()[abbr] ?? 0)) {
+      if (e.statSync().size < (AppCache.getBibleWeights()[abbr] ?? 0) ||
+          e.statSync().size == 0) {
         await e.delete();
       }
     }

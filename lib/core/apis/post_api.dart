@@ -5,7 +5,7 @@ import '../models/post_model.dart';
 import 'base_api.dart';
 
 class PostApi extends BaseAPI {
-  Future<Post> create(Map<String, dynamic> data, List? files) async {
+  Future<Post> createPost(Map<String, dynamic> data, List? files) async {
     String url = 'post';
     log(data);
     files = files ?? [];
@@ -34,6 +34,44 @@ class PostApi extends BaseAPI {
       switch (res.statusCode) {
         case 200:
           return Post.fromJson(res.data['data']);
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw GripException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<List<NotificationModel>> getNotifications() async {
+    String url = 'notification';
+    try {
+      final Response res = await dio().get(url);
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          List<NotificationModel> dirs = [];
+          (res.data['data'] ?? []).forEach((a) {
+            dirs.add(NotificationModel.fromJson(a));
+          });
+          return dirs;
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw GripException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<bool> updateNotification(int? id) async {
+    String url = 'notification/$id';
+    try {
+      final Response res = await dio().patch(url);
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          return true;
         default:
           throw error(res.data);
       }
@@ -118,7 +156,7 @@ class PostApi extends BaseAPI {
     }
   }
 
-  Future<Post> getPostDetails(String? id) async {
+  Future<Post> getPostDetails(int? id) async {
     String url = 'post/$id';
     try {
       final Response res = await dio().get(url);
@@ -135,14 +173,15 @@ class PostApi extends BaseAPI {
     }
   }
 
-  Future<List<Post>> getPosts({String? type = 'all'}) async {
-    String url = type == 'all' ? 'post' : 'post/all';
+  Future<List<Post>> getPosts({String? type}) async {
+    String url = 'post/$type';
+    print(url);
     try {
       final Response res = await dio().get(url);
-      log(res.data);
       switch (res.statusCode) {
         case 200:
           List<Post> dirs = [];
+          log(res.data);
           (res.data['data'] ?? []).forEach((a) {
             dirs.add(Post.fromJson(a));
           });
@@ -156,14 +195,14 @@ class PostApi extends BaseAPI {
     }
   }
 
-  Future<bool> likePost(int? id) async {
+  Future<String> likePost(int? id) async {
     String url = 'like';
     try {
-      final Response res = await dio().post(url, data: {'creatorId': id});
+      final Response res = await dio().post(url, data: {'postId': id});
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return true;
+          return res.data['message'];
         default:
           throw error(res.data);
       }
@@ -173,27 +212,11 @@ class PostApi extends BaseAPI {
     }
   }
 
-  Future<bool> unlikePost(int? id) async {
-    String url = 'like/remove';
+  Future<bool> likeComment(int? postId, int? commentId) async {
+    String url = 'like/comment';
     try {
-      final Response res = await dio().post(url, data: {'creatorId': id});
-      log(res.data);
-      switch (res.statusCode) {
-        case 200:
-          return true;
-        default:
-          throw error(res.data);
-      }
-    } catch (e) {
-      log(e);
-      throw GripException(DioErrorUtil.handleError(e));
-    }
-  }
-
-  Future<bool> likeComment(int? id) async {
-    String url = 'like';
-    try {
-      final Response res = await dio().post(url, data: {'creatorId': id});
+      final Response res = await dio()
+          .post(url, data: {'postId': postId, 'commentId': commentId});
       log(res.data);
       switch (res.statusCode) {
         case 200:
@@ -224,14 +247,31 @@ class PostApi extends BaseAPI {
     }
   }
 
-  Future<Post> bookmark(int? id) async {
+  Future<bool> addBookmark(int? id) async {
     String url = 'bookmark';
     try {
-      final Response res = await dio().post(url);
+      final Response res = await dio().post(url, data: {'postId': id});
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return Post.fromJson(res.data['data']);
+          return true;
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw GripException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<bool> deleteBookmark(int? id) async {
+    String url = 'bookmark/$id';
+    try {
+      final Response res = await dio().delete(url);
+      log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          return true;
         default:
           throw error(res.data);
       }
@@ -250,7 +290,7 @@ class PostApi extends BaseAPI {
         case 200:
           List<Post> dirs = [];
           (res.data['data'] ?? []).forEach((a) {
-            dirs.add(Post.fromJson(a));
+            dirs.add(Post.fromJson(a['post']));
           });
           return dirs;
         default:

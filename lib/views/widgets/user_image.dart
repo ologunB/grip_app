@@ -20,7 +20,7 @@ class UserImage extends StatelessWidget {
       borderRadius: BorderRadius.circular(radius),
       child: file == null
           ? CachedNetworkImage(
-              imageUrl: imageUrl ?? 'm',
+              imageUrl: imageUrl ?? 'https://firebasestorage.googleapis.com/v0/b/flagmode-test.appspot.com/o/profilePictures%2Fuser.png?alt=media&token=b31835e4-dab4-4eab-b838-c678be035eba',
               height: size,
               width: size,
               fit: BoxFit.fill,

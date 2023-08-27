@@ -1,3 +1,5 @@
+import 'package:hexcelon/core/vms/settings_vm.dart';
+
 import '../../core/apis/post_api.dart';
 import '../models/comment_model.dart';
 import '../models/error_util.dart';
@@ -11,7 +13,7 @@ class PostViewModel extends BaseModel {
   Future<bool> createPost(Map<String, dynamic> a, List files) async {
     setBusy(true);
     try {
-      Post res = await _api.create(a, files);
+      Post res = await _api.createPost(a, files);
       print(res.id);
       setBusy(false);
       return true;
@@ -54,7 +56,12 @@ class PostViewModel extends BaseModel {
 
   Future<bool> likePost(int? a) async {
     try {
-      await _api.likePost(a);
+      String msg = await _api.likePost(a);
+      if (settingsVM.currentPosts[a] != null) {
+        Post post = settingsVM.currentPosts[a]!;
+        post.isLiked = msg == 'Liked';
+        settingsVM.currentPosts.update(a!, (value) => post);
+      }
       return true;
     } on GripException catch (e) {
       error = e.message;
@@ -63,21 +70,11 @@ class PostViewModel extends BaseModel {
     }
   }
 
-  Future<bool> unlikePost(int? a) async {
-    try {
-      await _api.unlikePost(a);
-      return true;
-    } on GripException catch (e) {
-      error = e.message;
-      showVMSnackbar(e.message, err: true);
-      return false;
-    }
-  }
-
-  Future<bool> likeComment(int? a) async {
+  Future<bool> likeComment(int? postId, int? commentId) async {
     setBusy(true);
     try {
-      await _api.likeComment(a);
+      await _api.likeComment(postId, commentId);
+
       return true;
     } on GripException catch (e) {
       error = e.message;
@@ -86,9 +83,14 @@ class PostViewModel extends BaseModel {
     }
   }
 
-  Future<bool> unlikeComment(int? a) async {
+  Future<bool> addBookmark(int? a) async {
     try {
-      await _api.unlikeComment(a);
+      await _api.addBookmark(a);
+      if (settingsVM.currentPosts[a] != null) {
+        Post post = settingsVM.currentPosts[a]!;
+        post.isBookmarked = true;
+        settingsVM.currentPosts.update(a!, (value) => post);
+      }
       return true;
     } on GripException catch (e) {
       error = e.message;
@@ -97,30 +99,65 @@ class PostViewModel extends BaseModel {
     }
   }
 
-  Future<bool> bookmark(int? a) async {
+  Future<bool> deleteBookmark(int? a) async {
     try {
-      Post res = await _api.bookmark(a);
-      print(res.id);
+      await _api.deleteBookmark(a);
+      if (settingsVM.currentPosts[a] != null) {
+        Post post = settingsVM.currentPosts[a]!;
+        post.isBookmarked = false;
+        settingsVM.currentPosts.update(a!, (value) => post);
+      }
       return true;
     } on GripException catch (e) {
       error = e.message;
       showVMSnackbar(e.message, err: true);
       return false;
+    }
+  }
+
+  List<NotificationModel>? notifications;
+  Future<void> getNotifications() async {
+    setBusy(true);
+    try {
+      notifications = await _api.getNotifications();
+      setBusy(false);
+    } on GripException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
     }
   }
 
   List<Post>? bookmarks;
-  Future<bool> getBookmarks() async {
+  Future<void> getBookmarks() async {
     setBusy(true);
     try {
       bookmarks = await _api.getBookmarks();
       setBusy(false);
-      return true;
     } on GripException catch (e) {
       error = e.message;
       setBusy(false);
       showVMSnackbar(e.message, err: true);
-      return false;
+    }
+  }
+
+  late Post post;
+  Future<void> getPostDetails(int? id) async {
+    if (settingsVM.currentPosts[id] != null) {
+      post = settingsVM.currentPosts[id]!;
+      return;
+    }
+    setBusy(true);
+    try {
+      post = await _api.getPostDetails(id);
+      Map<int, Post> present = settingsVM.currentPosts;
+      present.update(post.id!, (a) => post, ifAbsent: () => post);
+      settingsVM.currentPosts = present;
+      setBusy(false);
+    } on GripException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
     }
   }
 
