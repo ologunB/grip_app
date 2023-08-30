@@ -20,8 +20,8 @@ class Post {
   List<Category>? categories;
   UserModel? user;
   bool? isLiked;
-  bool? isBookmarked;
-  bool? isFollowing;
+  bool? isBooked;
+  bool? isFollow;
 
   Post({
     this.id,
@@ -41,8 +41,8 @@ class Post {
     this.commentCount,
     this.categories,
     this.user,
-    this.isBookmarked,
-    this.isFollowing,
+    this.isBooked,
+    this.isFollow,
     this.isLiked,
   });
 
@@ -61,8 +61,8 @@ class Post {
     status = json['status'];
     updatedAt = json['updatedAt'];
     likeCount = json['likeCount'];
-    isBookmarked = json['isBookmarked'] ?? false;
-    isFollowing = json['isFollowing'] ?? false;
+    isBooked = json['isBooked'] ?? false;
+    isFollow = json['isFollow'] ?? false;
     isLiked = json['isLiked'] ?? false;
     commentCount = json['CommentCount'];
     if (json['Categories'] != null) {
@@ -76,8 +76,8 @@ class Post {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['isBookmarked'] = isBookmarked;
-    data['isFollowing'] = isFollowing;
+    data['isBooked'] = isBooked;
+    data['isFollow'] = isFollow;
     data['isLiked'] = isLiked;
     data['id'] = id;
     data['title'] = title;

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:hexcelon/core/vms/settings_vm.dart';
 
 import '../../core/apis/post_api.dart';
@@ -13,8 +15,7 @@ class PostViewModel extends BaseModel {
   Future<bool> createPost(Map<String, dynamic> a, List files) async {
     setBusy(true);
     try {
-      Post res = await _api.createPost(a, files);
-      print(res.id);
+      await _api.createPost(a, files);
       setBusy(false);
       return true;
     } on GripException catch (e) {
@@ -71,10 +72,8 @@ class PostViewModel extends BaseModel {
   }
 
   Future<bool> likeComment(int? postId, int? commentId) async {
-    setBusy(true);
     try {
       await _api.likeComment(postId, commentId);
-
       return true;
     } on GripException catch (e) {
       error = e.message;
@@ -88,7 +87,7 @@ class PostViewModel extends BaseModel {
       await _api.addBookmark(a);
       if (settingsVM.currentPosts[a] != null) {
         Post post = settingsVM.currentPosts[a]!;
-        post.isBookmarked = true;
+        post.isBooked = true;
         settingsVM.currentPosts.update(a!, (value) => post);
       }
       return true;
@@ -104,7 +103,7 @@ class PostViewModel extends BaseModel {
       await _api.deleteBookmark(a);
       if (settingsVM.currentPosts[a] != null) {
         Post post = settingsVM.currentPosts[a]!;
-        post.isBookmarked = false;
+        post.isBooked = false;
         settingsVM.currentPosts.update(a!, (value) => post);
       }
       return true;
@@ -153,6 +152,13 @@ class PostViewModel extends BaseModel {
       Map<int, Post> present = settingsVM.currentPosts;
       present.update(post.id!, (a) => post, ifAbsent: () => post);
       settingsVM.currentPosts = present;
+
+      Map<int, UserModel> users = settingsVM.currentUsers;
+
+      UserModel u = post.user!;
+      u.isFollow = post.isFollow;
+      users.update(post.userId!, (a) => u, ifAbsent: () => u);
+
       setBusy(false);
     } on GripException catch (e) {
       error = e.message;
@@ -174,22 +180,41 @@ class PostViewModel extends BaseModel {
     }
   }
 
-  List<Comment>? comments;
+  LinkedHashMap<int, Comment>? comments;
   Future<bool> createComment(Map<String, dynamic> a) async {
+    int tempId = DateTime.now().microsecondsSinceEpoch;
     try {
-      comments?.insert(
-        0,
-        Comment(
-          comment: a['comment'],
-          postId: a['postId'],
-          createdAt: DateTime.now().toIso8601String(),
-          user: AppCache.getUser()?.user,
-        ),
+      Comment c = Comment(
+        id: tempId,
+        comment: a['comment'],
+        postId: a['postId'],
+        createdAt: DateTime.now().toIso8601String(),
+        user: AppCache.getUser()?.user,
+        isLike: false,
+        likesCount: '0',
       );
-      await _api.createComment(a);
+
+      comments?[tempId] = c;
+      List<MapEntry<int, Comment>> entries = comments!.entries.toList();
+      entries.sort((b, a) => a.key.compareTo(b.key));
+      comments = LinkedHashMap.fromEntries(entries);
+
+      Comment c2 = await _api.createComment(a);
+      c.id = c2.id;
+
+      entries.sort((b, a) => a.key.compareTo(b.key));
+      for (int i = 0; i < entries.length; i++) {
+        if (entries[i].key == tempId) {
+          entries[i] = MapEntry(c2.id!, c);
+          break;
+        }
+      }
+      comments = LinkedHashMap.fromEntries(entries);
+
       return true;
     } on GripException catch (e) {
       error = e.message;
+      comments?.remove(tempId);
       showVMSnackbar(e.message, err: true);
       return false;
     }

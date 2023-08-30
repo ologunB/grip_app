@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:uuid/uuid.dart';
 
 import '../models/comment_model.dart';
@@ -27,9 +29,7 @@ class PostApi extends BaseAPI {
 
     try {
       final Response res =
-          await dio().post(url, data: forms, onSendProgress: (a, b) {
-        print((a, b));
-      });
+          await dio().post(url, data: forms, onSendProgress: (a, b) {});
       log(res.data);
       switch (res.statusCode) {
         case 200:
@@ -89,7 +89,7 @@ class PostApi extends BaseAPI {
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          return Comment.fromJson(res.data['data'] ?? {});
+          return Comment.fromJson(res.data['data']);
         default:
           throw error(res.data);
       }
@@ -99,17 +99,17 @@ class PostApi extends BaseAPI {
     }
   }
 
-  Future<List<Comment>> getComments(int? id) async {
-    String url = 'comment/$id';
-    print(id);
+  Future<LinkedHashMap<int, Comment>> getComments(int? id) async {
+    String url = 'comment/$id?page=1&limit=100';
     try {
       final Response res = await dio().get(url);
       log(res.data);
       switch (res.statusCode) {
         case 200:
-          List<Comment> dirs = [];
+          LinkedHashMap<int, Comment> dirs = LinkedHashMap();
           (res.data['data'] ?? []).forEach((a) {
-            dirs.add(Comment.fromJson(a));
+            Comment c = Comment.fromJson(a);
+            dirs[c.id!] = c;
           });
           return dirs;
         default:

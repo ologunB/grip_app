@@ -1,3 +1,4 @@
+import 'package:hexcelon/core/models/login_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../core/models/comment_model.dart';
@@ -31,13 +32,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     if (settingsVM.currentPosts[post.id] != null) {
       post = settingsVM.currentPosts[post.id]!;
       liked = post.isLiked!;
-      bookmarked = post.isBookmarked!;
+      bookmarked = post.isBooked!;
     }
     sSub = settingsVM.outPosts.listen((event) {
       if (settingsVM.currentPosts[post.id] != null) {
         post = settingsVM.currentPosts[post.id]!;
         liked = post.isLiked!;
-        bookmarked = post.isBookmarked!;
+        bookmarked = post.isBooked!;
         return;
       }
     });
@@ -83,7 +84,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         const Spacer(),
                         InkWell(
                           onTap: () {
-                            push(context, OtherProfileScreen(user: post.user!));
+                            UserModel u = post.user!;
+
+                            push(context, OtherProfileScreen(user: u));
                           },
                           child: Row(
                             children: [
@@ -175,85 +178,96 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               ),
                             ),
                       const Spacer(),
-                      ...[
-                        1,
-                        2,
-                        3,
-                        4,
-                        if (post.bibleBook != null &&
-                            post.bibleBook != '' &&
-                            int.tryParse(post.bibleChapter ?? '') != null)
-                          5
-                      ]
-                          .map(
-                            (e) => Padding(
-                              padding: EdgeInsets.only(bottom: 20.h),
-                              child: InkWell(
-                                onTap: () {
-                                  if (e == 1) {
-                                    Share.share('${post.title}',
-                                        subject:
-                                            '${post.description}\n\n ${post.file}');
-                                  } else if (e == 2) {
-                                    if (bookmarked) {
-                                      model.deleteBookmark(post.id);
-                                    } else {
-                                      model.addBookmark(post.id);
-                                    }
-                                    bookmarked = !bookmarked;
-                                    setState(() {});
-                                  } else if (e == 3) {
-                                    showModalBottomSheet(
-                                      backgroundColor: Colors.white,
-                                      context: context,
-                                      useRootNavigator: true,
-                                      isScrollControlled: true,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(50.h),
-                                          topLeft: Radius.circular(50.h),
-                                        ),
-                                      ),
-                                      builder: (c) {
-                                        return CommentsDialog(post: post);
-                                      },
-                                    );
-                                  } else if (e == 4) {
-                                    model.likePost(post.id);
+                      Container(
+                        padding: EdgeInsets.all(8.h),
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(8.h)),
+                        child: Column(
+                          children: [
+                            ...[
+                              1,
+                              2,
+                              3,
+                              4,
+                              if (Utils.allBooks.keys
+                                      .contains(post.bibleBook) &&
+                                  int.tryParse(post.bibleChapter ?? '') != null)
+                                5
+                            ]
+                                .map(
+                                  (e) => Padding(
+                                    padding: EdgeInsets.only(bottom: 20.h),
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (e == 1) {
+                                          Share.share('${post.title}',
+                                              subject:
+                                                  '${post.description}\n\n ${post.file}');
+                                        } else if (e == 2) {
+                                          if (bookmarked) {
+                                            model.deleteBookmark(post.id);
+                                          } else {
+                                            model.addBookmark(post.id);
+                                          }
+                                          bookmarked = !bookmarked;
+                                          setState(() {});
+                                        } else if (e == 3) {
+                                          showModalBottomSheet(
+                                            backgroundColor: Colors.white,
+                                            context: context,
+                                            useRootNavigator: true,
+                                            isScrollControlled: true,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(50.h),
+                                                topLeft: Radius.circular(50.h),
+                                              ),
+                                            ),
+                                            builder: (c) {
+                                              return CommentsDialog(post: post);
+                                            },
+                                          );
+                                        } else if (e == 4) {
+                                          model.likePost(post.id);
 
-                                    liked = !liked;
-                                    setState(() {});
-                                  } else if (e == 5) {
-                                    showModalBottomSheet(
-                                      backgroundColor: Colors.white,
-                                      context: context,
-                                      useRootNavigator: true,
-                                      isScrollControlled: true,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(50.h),
-                                          topLeft: Radius.circular(50.h),
-                                        ),
-                                      ),
-                                      builder: (c) {
-                                        return DevotionalDialog(post: post);
+                                          liked = !liked;
+                                          setState(() {});
+                                        } else if (e == 5) {
+                                          showModalBottomSheet(
+                                            backgroundColor: Colors.white,
+                                            context: context,
+                                            useRootNavigator: true,
+                                            isScrollControlled: true,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(50.h),
+                                                topLeft: Radius.circular(50.h),
+                                              ),
+                                            ),
+                                            builder: (c) {
+                                              return DevotionalDialog(
+                                                  post: post);
+                                            },
+                                          );
+                                        } else {}
                                       },
-                                    );
-                                  } else {}
-                                },
-                                borderRadius: BorderRadius.circular(10.h),
-                                child: Image.asset(
-                                  e == 4 && liked
-                                      ? 'like'.png
-                                      : e == 2 && bookmarked
-                                          ? 'bookmark'.png
-                                          : 'v$e'.png,
-                                  height: 26.h,
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
+                                      borderRadius: BorderRadius.circular(10.h),
+                                      child: Image.asset(
+                                        e == 4 && liked
+                                            ? 'like'.png
+                                            : e == 2 && bookmarked
+                                                ? 'bookmark'.png
+                                                : 'v$e'.png,
+                                        height: 26.h,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ],
+                        ),
+                      ),
                       SizedBox(height: 20.h),
                     ],
                   )
@@ -378,8 +392,8 @@ class _CommentsDialogState extends State<CommentsDialog> {
                     padding: EdgeInsets.only(bottom: 60.h),
                     physics: const ClampingScrollPhysics(),
                     itemBuilder: (_, i) {
-                      Comment c = model.comments![i];
-                      return item(c);
+                      Comment c = model.comments!.values.toList()[i];
+                      return item(c, model);
                     },
                   ),
           ],
@@ -424,9 +438,10 @@ class _CommentsDialogState extends State<CommentsDialog> {
                         });
                         controller.clear();
                         scrollController.animateTo(
-                            scrollController.position.maxScrollExtent + 60.h,
-                            duration: const Duration(seconds: 1),
-                            curve: Curves.linear);
+                          scrollController.position.maxScrollExtent + 60.h,
+                          duration: const Duration(seconds: 1),
+                          curve: Curves.linear,
+                        );
                         setState(() {});
                       },
                       borderRadius: BorderRadius.circular(30.h),
@@ -442,10 +457,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
     );
   }
 
-  List<int> selected = [];
-
-  Widget item(Comment c) {
-    bool contain = selected.contains(c.id);
+  Widget item(Comment c, PostViewModel cModel) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -511,19 +523,23 @@ class _CommentsDialogState extends State<CommentsDialog> {
             BaseView<PostViewModel>(
               builder: (_, PostViewModel model, __) => InkWell(
                 onTap: () {
-                  if (contain) {
-                    selected.remove(c.id);
-                  } else {
-                    selected.add(c.id!);
-                  }
                   model.likeComment(c.postId, c.id);
+                  Comment? old = cModel.comments![c.id];
+                  old?.isLike = !old.isLike!;
+                  print(cModel.comments);
+                  if (old!.isLike!) {
+                    c.likesCount = (int.parse(c.likesCount!) + 1).toString();
+                  } else {
+                    c.likesCount = (int.parse(c.likesCount!) - 1).toString();
+                  }
+                  cModel.comments?.update(c.id!, (value) => old);
                   setState(() {});
                 },
                 borderRadius: BorderRadius.circular(8.h),
                 child: Image.asset(
-                  (contain ? 'like' : 'v4').png,
+                  (c.isLike! ? 'like' : 'v4').png,
                   height: 20.h,
-                  color: contain ? null : Colors.grey,
+                  color: c.isLike! ? null : Colors.grey,
                 ),
               ),
             ),

@@ -7,6 +7,7 @@ class Comment {
   String? comment;
   String? createdAt;
   String? likesCount;
+  bool? isLike;
   UserModel? user;
 
   Comment({
@@ -17,6 +18,7 @@ class Comment {
     this.likesCount,
     this.userId,
     this.postId,
+    this.isLike,
   });
 
   Comment.fromJson(dynamic json) {
@@ -24,18 +26,20 @@ class Comment {
     comment = json['comment'];
     postId = json['postId'];
     userId = json['userId'];
-    likesCount = json['likesCount'];
+    likesCount = json['commentLikeCount'];
     createdAt = json['createdAt'];
+    isLike = json['isLike'];
     user = json['User'] != null ? UserModel.fromJson(json['User']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
+    data['isLike'] = isLike;
     data['comment'] = comment;
     data['postId'] = postId;
     data['userId'] = userId;
-    data['likesCount'] = likesCount;
+    data['commentLikeCount'] = likesCount;
     data['createdAt'] = createdAt;
     if (user != null) {
       data['User'] = user!.toJson();

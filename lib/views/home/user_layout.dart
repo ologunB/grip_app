@@ -1,5 +1,6 @@
 import 'package:hexcelon/views/bible/bible_home.dart';
 
+import '../../main.dart';
 import '../profile/profile.dart';
 import '../widgets/hex_text.dart';
 import 'explore.dart';
@@ -17,9 +18,11 @@ class _UserLayoutState extends State<UserLayout> {
       const [HomeScreen(), BibleHome(), ExploreScreen(), ProfileScreen()];
 
   int currentIndex = 0;
-
-  final List<GlobalKey<NavigatorState>> _navigatorKeys =
-      List.generate(4, (index) => GlobalKey<NavigatorState>());
+  @override
+  void initState() {
+    navigatorKeys = List.generate(5, (index) => GlobalKey<NavigatorState>());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class _UserLayoutState extends State<UserLayout> {
         children: screens
             .map(
               (e) => Navigator(
-                key: _navigatorKeys[screens.indexOf(e)],
+                key: navigatorKeys[screens.indexOf(e)],
                 onGenerateRoute: (settings) =>
                     MaterialPageRoute(builder: (context) => e),
               ),
@@ -59,7 +62,7 @@ class _UserLayoutState extends State<UserLayout> {
         currentIndex: currentIndex,
         onTap: (i) {
           if (i == currentIndex) {
-            _navigatorKeys[i].currentState!.popUntil((route) => route.isFirst);
+            navigatorKeys[i].currentState!.popUntil((route) => route.isFirst);
           } else {
             setState(() => currentIndex = i);
           }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:hexcelon/core/apis/base_api.dart';
 
+import '../models/login_model.dart';
 import '../models/post_model.dart';
 
 class SettingsVM {
@@ -27,6 +28,18 @@ class SettingsVM {
   set currentPosts(Map<int, Post> i) {
     _currentPosts = i;
     _inPosts.add(i);
+  }
+
+  final StreamController<Map<int, UserModel>> _usersController =
+      StreamController<Map<int, UserModel>>.broadcast();
+  Sink<Map<int, UserModel>> get _inUsers => _usersController.sink;
+  Stream<Map<int, UserModel>> get outUsers => _usersController.stream;
+  Map<int, UserModel> _currentUsers = {};
+  Map<int, UserModel> get currentUsers => _currentUsers;
+
+  set currentUsers(Map<int, UserModel> i) {
+    _currentUsers = i;
+    _inUsers.add(i);
   }
 
   final StreamController<String?> _bibleController =

@@ -8,6 +8,8 @@ import 'views/create/media.dart';
 import 'views/home/user_layout.dart';
 import 'views/widgets/hex_text.dart';
 
+List<GlobalKey<NavigatorState>> navigatorKeys = [];
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(

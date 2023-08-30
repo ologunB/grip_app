@@ -1,4 +1,5 @@
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hexcelon/core/vms/settings_vm.dart';
 import 'package:hexcelon/views/home/user_layout.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logger/logger.dart';
@@ -188,6 +189,12 @@ class AuthViewModel extends BaseModel {
     setBusy(true);
     try {
       await _api.follow(a.toString());
+      Map<int, UserModel> present = settingsVM.currentUsers;
+      if (present[a] != null) {
+        UserModel u = present[a]!;
+        u.isFollow = true;
+        present.update(a!, (a) => u, ifAbsent: () => u);
+      }
       setBusy(false);
       return true;
     } on GripException catch (e) {
@@ -202,6 +209,12 @@ class AuthViewModel extends BaseModel {
     setBusy(true);
     try {
       await _api.unfollow(a.toString());
+      Map<int, UserModel> present = settingsVM.currentUsers;
+      if (present[a] != null) {
+        UserModel u = present[a]!;
+        u.isFollow = false;
+        present.update(a!, (a) => u, ifAbsent: () => u);
+      }
       setBusy(false);
       return true;
     } on GripException catch (e) {

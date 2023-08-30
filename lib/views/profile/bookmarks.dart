@@ -2,6 +2,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import '../../core/models/post_model.dart';
 import '../../core/vms/post_vm.dart';
+import '../home/post_details.dart';
 import '../widgets/hex_text.dart';
 
 class BookmarksScreen extends StatefulWidget {
@@ -73,64 +74,70 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                             itemBuilder: (c, i) {
                               Post? co = model.bookmarks?[i];
 
-                              return Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 20.h, horizontal: 25.h),
-                                child: Row(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4.h),
-                                      child: CachedNetworkImage(
-                                        imageUrl: co?.coverImage ?? 'm',
-                                        fit: BoxFit.cover,
-                                        height: 40.h,
-                                        width: 40.h,
-                                        placeholder: (_, __) => Image.asset(
-                                          'placeholder'.png,
+                              return InkWell(
+                                onTap: () {
+                                  push(context, PostDetailScreen(post: co));
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 20.h, horizontal: 25.h),
+                                  child: Row(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(4.h),
+                                        child: CachedNetworkImage(
+                                          imageUrl: co?.coverImage ?? 'm',
                                           fit: BoxFit.cover,
                                           height: 40.h,
                                           width: 40.h,
-                                        ),
-                                        errorWidget: (_, __, ___) =>
-                                            Image.asset(
-                                          'placeholder'.png,
-                                          fit: BoxFit.cover,
-                                          height: 40.h,
-                                          width: 40.h,
+                                          placeholder: (_, __) => Image.asset(
+                                            'placeholder'.png,
+                                            fit: BoxFit.cover,
+                                            height: 40.h,
+                                            width: 40.h,
+                                          ),
+                                          errorWidget: (_, __, ___) =>
+                                              Image.asset(
+                                            'placeholder'.png,
+                                            fit: BoxFit.cover,
+                                            height: 40.h,
+                                            width: 40.h,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(width: 16.h),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          HexText(
-                                            '${co?.title}',
-                                            fontSize: 16.sp,
-                                            color: AppColors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          SizedBox(height: 8.h),
-                                          HexText(
-                                            '${co?.description}',
-                                            fontSize: 14.sp,
-                                            color: AppColors.black,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ],
+                                      SizedBox(width: 16.h),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            HexText(
+                                              '${co?.title}',
+                                              fontSize: 16.sp,
+                                              color: AppColors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            SizedBox(height: 8.h),
+                                            HexText(
+                                              '${co?.description}',
+                                              fontSize: 14.sp,
+                                              color: AppColors.black,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(width: 8.h),
-                                    HexText(
-                                      timeago.format(
-                                          DateTime.parse(co!.createdAt!)),
-                                      fontSize: 14.sp,
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ],
+                                      SizedBox(width: 8.h),
+                                      HexText(
+                                        timeago.format(
+                                            DateTime.parse(co!.createdAt!)),
+                                        fontSize: 14.sp,
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },

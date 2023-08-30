@@ -4,6 +4,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../../core/models/bible_model.dart';
 import '../../core/vms/bible_vm.dart';
 import '../../core/vms/settings_vm.dart';
+import '../../main.dart';
 import '../widgets/hex_text.dart';
 
 class AllVersionScreen extends StatefulWidget {
@@ -111,6 +112,10 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
                             } else {
                               AppCache.setDefaultBible(v.abbr);
                             }
+                            navigatorKeys[1]
+                                .currentState!
+                                .popUntil((route) => route.isFirst);
+
                             setState(() {});
                           },
                         ),

@@ -15,7 +15,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
-      onModelReady: (a) => a.getPosts(type: 'recommended'),
+      onModelReady: (a) => a.getPosts(type: 'explore'),
       builder: (_, PostViewModel model, __) => Scaffold(
         backgroundColor: AppColors.white,
         appBar: AppBar(
@@ -56,7 +56,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            return model.getPosts(type: 'recommended');
+            return model.getPosts(type: 'explore');
           },
           color: AppColors.primary,
           child: ListView(
@@ -65,7 +65,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               model.busy
                   ? model.posts != null
                       ? StaggeredGrid.count(
-                          crossAxisCount: model.posts!.length,
+                          crossAxisCount: 2,
                           mainAxisSpacing: 6.h,
                           crossAxisSpacing: 6.h,
                           children: model.posts!
@@ -84,14 +84,26 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           child: const HexError(
                               text: 'Error occurred getting posts'),
                         )
-                      : StaggeredGrid.count(
-                          crossAxisCount: model.posts!.length,
-                          mainAxisSpacing: 6.h,
-                          crossAxisSpacing: 6.h,
-                          children: model.posts!
-                              .map((e) => ExploreItem(post: e))
-                              .toList(),
-                        ),
+                      : model.posts!.isEmpty
+                          ? Container(
+                              height: 200.h,
+                              alignment: Alignment.center,
+                              child: HexText(
+                                'There are no posts at the moment',
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                align: TextAlign.center,
+                                color: AppColors.black,
+                              ),
+                            )
+                          : StaggeredGrid.count(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 6.h,
+                              crossAxisSpacing: 6.h,
+                              children: model.posts!
+                                  .map((e) => ExploreItem(post: e))
+                                  .toList(),
+                            ),
             ],
           ),
         ),

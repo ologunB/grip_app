@@ -1,6 +1,7 @@
 import 'package:hexcelon/views/bible/bible_home.dart';
 import 'package:hexcelon/views/profile/creator_profile.dart';
 
+import '../../main.dart';
 import '../create/media.dart';
 import '../widgets/hex_text.dart';
 import 'explore.dart';
@@ -24,8 +25,12 @@ class _CreatorLayoutState extends State<CreatorLayout> {
 
   int currentIndex = 0;
 
-  final List<GlobalKey<NavigatorState>> _navigatorKeys =
-      List.generate(5, (index) => GlobalKey<NavigatorState>());
+  @override
+  void initState() {
+    navigatorKeys = List.generate(5, (index) => GlobalKey<NavigatorState>());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +39,7 @@ class _CreatorLayoutState extends State<CreatorLayout> {
         children: screens
             .map(
               (e) => Navigator(
-                key: _navigatorKeys[screens.indexOf(e)],
+                key: navigatorKeys[screens.indexOf(e)],
                 onGenerateRoute: (settings) => MaterialPageRoute(
                   builder: (context) => e,
                 ),
@@ -69,7 +74,7 @@ class _CreatorLayoutState extends State<CreatorLayout> {
             return;
           }
           if (i == currentIndex) {
-            _navigatorKeys[i].currentState!.popUntil((route) => route.isFirst);
+            navigatorKeys[i].currentState!.popUntil((route) => route.isFirst);
           } else {
             setState(() => currentIndex = i);
           }

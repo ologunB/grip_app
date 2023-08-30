@@ -1,6 +1,9 @@
+import 'package:hexcelon/core/apis/base_api.dart';
+
 import '../../core/models/login_model.dart';
 import '../../core/vms/auth_vm.dart';
 import '../../core/vms/post_vm.dart';
+import '../../core/vms/settings_vm.dart';
 import '../profile/creator_profile.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
@@ -17,15 +20,35 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController controller;
   PageController pageController = PageController();
+  bool selected = false;
+  StreamSubscription? sSub;
 
   @override
   void initState() {
     controller = TabController(length: 3, vsync: this);
     user = widget.user;
+
+    if (settingsVM.currentUsers[user.id] != null) {
+      user = settingsVM.currentUsers[user.id]!;
+      selected = user.isFollow ?? false;
+    }
+    sSub = settingsVM.outUsers.listen((event) {
+      if (settingsVM.currentPosts[user.id] != null) {
+        user = settingsVM.currentUsers[user.id]!;
+        selected = user.isFollow ?? false;
+      }
+    });
+
     super.initState();
   }
 
   late UserModel user;
+
+  @override
+  void dispose() {
+    sSub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,47 +181,52 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                               ],
                             ),
                           ),
-                          SizedBox(height: 26.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  if (selected) {
-                                    aModel.unfollow(user.id);
-                                  } else {
-                                    aModel.follow(user.id);
-                                  }
-                                  selected = !selected;
-                                  setState(() {});
-                                },
-                                borderRadius: BorderRadius.circular(15.h),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 50.h, vertical: 13.h),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.h),
-                                    border: Border.all(
-                                      width: 1.h,
-                                      color: AppColors.black,
+                          SizedBox(height: 10.h),
+                          if (AppCache.getUser()?.user?.id != user.id)
+                            Padding(
+                              padding: EdgeInsets.all(16.h),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      if (selected) {
+                                        aModel.unfollow(user.id);
+                                        selected = false;
+                                      } else {
+                                        aModel.follow(user.id);
+                                        selected = true;
+                                      }
+                                      setState(() {});
+                                    },
+                                    borderRadius: BorderRadius.circular(15.h),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 50.h, vertical: 13.h),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10.h),
+                                        border: Border.all(
+                                          width: 1.h,
+                                          color: AppColors.black,
+                                        ),
+                                        color: selected
+                                            ? Colors.transparent
+                                            : AppColors.black,
+                                      ),
+                                      child: HexText(
+                                        selected ? 'Following' : 'Follow',
+                                        fontSize: 12.sp,
+                                        color: !selected
+                                            ? Colors.white
+                                            : AppColors.black,
+                                        align: TextAlign.center,
+                                      ),
                                     ),
-                                    color: selected
-                                        ? Colors.transparent
-                                        : AppColors.black,
                                   ),
-                                  child: HexText(
-                                    selected ? 'Following' : 'Follow',
-                                    fontSize: 12.sp,
-                                    color: !selected
-                                        ? Colors.white
-                                        : AppColors.black,
-                                    align: TextAlign.center,
-                                  ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                          SizedBox(height: 16.h),
+                            ),
                         ],
                       ),
                     )
@@ -279,6 +307,4 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
       ),
     );
   }
-
-  bool selected = false;
 }

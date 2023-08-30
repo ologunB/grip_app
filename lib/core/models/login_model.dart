@@ -36,6 +36,7 @@ class UserModel {
   String? followersCount;
   String? followingCount;
   List<Category>? categories;
+  bool? isFollow;
 
   UserModel({
     this.id,
@@ -53,6 +54,7 @@ class UserModel {
     this.categories,
     this.followersCount,
     this.followingCount,
+    this.isFollow,
   });
 
   UserModel.fromJson(dynamic json) {
@@ -70,6 +72,7 @@ class UserModel {
     updatedAt = json['updatedAt'];
     followersCount = json['followersCount'];
     followingCount = json['followingCount'];
+    isFollow = json['isFollow'];
     categories = [];
     json['categories']?.forEach((v) {
       categories!.add(Category.fromJson(v));
@@ -79,6 +82,7 @@ class UserModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['categories'] = categories!.map((v) => v.toJson()).toList();
+    data['isFollow'] = isFollow;
     data['id'] = id;
     data['username'] = username;
     data['email'] = email;
