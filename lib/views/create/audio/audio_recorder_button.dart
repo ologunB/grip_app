@@ -1,3 +1,5 @@
+import 'package:permission_handler/permission_handler.dart';
+
 import '../../create/create.dart';
 import '../../widgets/hex_text.dart';
 import 'audio_player.dart';
@@ -19,13 +21,13 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
   Timer? timer;
   bool get timerIsActive => timer?.isActive ?? false;
   Duration elapsedTime = const Duration();
-  FancyAudioRecorderState state = FancyAudioRecorderState.start;
+  FancyRecorderState state = FancyRecorderState.start;
   Uri? audioUri;
 
   @override
   void initState() {
     if (audioUri != null) {
-      state = FancyAudioRecorderState.recorded;
+      state = FancyRecorderState.recorded;
     }
     record.onAmplitudeChanged(sampleTime).listen((amp) {
       if (mounted) setState(() => waveHeight = 40 * calculatedDB(amp.current));
@@ -34,8 +36,43 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
     record.onStateChanged().listen((state) {
       if (state == RecordState.stop && mounted) setState(() => waveHeight = 0);
     });
+    _checkPermission();
 
     super.initState();
+  }
+
+  Future<bool> _checkPermission() async {
+    if (Platform.isIOS) {
+      return true;
+    }
+
+    List<Permission> permissions = [
+      Permission.microphone,
+      Permission.storage,
+    ];
+
+    // Filter out the permissions that are already granted
+    List<Permission> permissionsToRequest = [];
+
+    for (Permission permission in permissions) {
+      PermissionStatus status = await permission.status;
+      if (!status.isGranted) {
+        permissionsToRequest.add(permission);
+      }
+    }
+
+    if (permissionsToRequest.isEmpty) {
+      return true; // All permissions are already granted
+    }
+
+    // Request the remaining permissions
+    Map<Permission, PermissionStatus> statuses =
+        await permissionsToRequest.request();
+
+    // Check if all newly requested permissions are granted
+    bool allGranted = statuses.values.every((status) => status.isGranted);
+
+    return allGranted;
   }
 
   @override
@@ -45,15 +82,15 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
         child: Column(
           children: [
             Stack(
-              alignment: state == FancyAudioRecorderState.recorded ||
-                      state == FancyAudioRecorderState.start
+              alignment: state == FancyRecorderState.recorded ||
+                      state == FancyRecorderState.start
                   ? Alignment.centerRight
                   : Alignment.centerLeft,
               children: [
                 AnimatedSize(
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.easeIn,
-                  child: state == FancyAudioRecorderState.recorded
+                  child: state == FancyRecorderState.recorded
                       ? Padding(
                           padding: const EdgeInsets.only(right: 60),
                           child: AudioSlidePlayer(path: audioUri!.path),
@@ -67,7 +104,7 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
                       borderRadius: BorderRadius.circular(20)),
                   child: AnimatedPadding(
                     duration: const Duration(milliseconds: 200),
-                    padding: state == FancyAudioRecorderState.recording
+                    padding: state == FancyRecorderState.recording
                         ? const EdgeInsets.fromLTRB(60, 16, 16, 16)
                         : const EdgeInsets.symmetric(vertical: 16),
                     child: Text(timerIsActive
@@ -104,7 +141,7 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
                 ),
               ],
             ),
-            if (state == FancyAudioRecorderState.start)
+            if (state == FancyRecorderState.start)
               Padding(
                 padding: EdgeInsets.only(top: 80.h),
                 child: TextButton(
@@ -114,7 +151,7 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
 
                     if (picker != null) {
                       audioUri = Uri.tryParse(picker.files.first.path!);
-                      state = FancyAudioRecorderState.recorded;
+                      state = FancyRecorderState.recorded;
                       setState(() {});
                     }
                   },
@@ -160,13 +197,13 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
 
   void _toggleRecord() async {
     switch (state) {
-      case FancyAudioRecorderState.start:
+      case FancyRecorderState.start:
         _startRecord();
         break;
-      case FancyAudioRecorderState.recording:
+      case FancyRecorderState.recording:
         _stopRecord();
         break;
-      case FancyAudioRecorderState.recorded:
+      case FancyRecorderState.recorded:
         _deleteRecord();
         break;
     }
@@ -174,17 +211,17 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
 
   IconData _switchIconState() {
     switch (state) {
-      case FancyAudioRecorderState.start:
+      case FancyRecorderState.start:
         return Icons.mic_rounded;
-      case FancyAudioRecorderState.recording:
+      case FancyRecorderState.recording:
         return Icons.stop_rounded;
-      case FancyAudioRecorderState.recorded:
+      case FancyRecorderState.recorded:
         return Icons.refresh_rounded;
     }
   }
 
   void _startRecord() async {
-    state = FancyAudioRecorderState.recording;
+    state = FancyRecorderState.recording;
     record.start();
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       elapsedTime = Duration(seconds: timer.tick);
@@ -199,12 +236,12 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
     audioUri = Uri.tryParse(await record.stop() ?? '');
     elapsedTime = const Duration();
     if (audioUri != null) {
-      state = FancyAudioRecorderState.recorded;
+      state = FancyRecorderState.recorded;
       if (widget.onRecordComplete != null) {
         widget.onRecordComplete!(audioUri?.path);
       }
     } else {
-      state = FancyAudioRecorderState.start;
+      state = FancyRecorderState.start;
     }
 
     setState(() {});
@@ -215,10 +252,10 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
       File(audioUri!.path).deleteSync();
     } catch (_) {}
     audioUri = null;
-    state = FancyAudioRecorderState.start;
+    state = FancyRecorderState.start;
     if (widget.onRecordComplete != null) widget.onRecordComplete!(null);
     setState(() {});
   }
 }
 
-enum FancyAudioRecorderState { start, recording, recorded }
+enum FancyRecorderState { start, recording, recorded }

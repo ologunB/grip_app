@@ -73,7 +73,7 @@ class _MediaItemState extends State<MediaItem> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: widget.post?.fileType != 'image'
+      child: widget.post?.fileType == 'image'
           ? CachedNetworkImage(
               imageUrl: widget.post?.coverImage ?? 'm',
               fit: BoxFit.cover,
@@ -86,7 +86,7 @@ class _MediaItemState extends State<MediaItem> {
                 fit: BoxFit.cover,
               ),
             )
-          : widget.post?.fileType != 'audio'
+          : widget.post?.fileType == 'audio'
               ? ChewieAudio(
                   controller: chewieAudioController,
                 )

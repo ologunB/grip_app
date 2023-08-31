@@ -1,4 +1,5 @@
 import 'package:hexcelon/views/create/create.dart';
+import 'package:hexcelon/views/create/video_edit/main.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_editor_plus/image_editor_plus.dart';
 import 'package:image_editor_plus/utils.dart';
@@ -6,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../widgets/hex_text.dart';
 import 'audio/audio.dart';
+import 'audio/audio_recorder_button.dart';
 
 class ChooseMediaScreen extends StatefulWidget {
   const ChooseMediaScreen({super.key});
@@ -45,27 +47,41 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                         ),
                       ),
                       const Spacer(),
-                      InkWell(
-                        onTap: () {
-                          _cameraController?.setFlashMode(FlashMode.always);
-                        },
-                        child: Image.asset(
-                          'flash'.png,
-                          height: 24.h,
+                      Visibility(
+                        visible: currentIndex != 0,
+                        maintainAnimation: true,
+                        maintainSize: true,
+                        maintainState: true,
+                        maintainInteractivity: true,
+                        child: InkWell(
+                          onTap: () {
+                            _cameraController?.setFlashMode(FlashMode.always);
+                          },
+                          child: Image.asset(
+                            'flash'.png,
+                            height: 24.h,
+                          ),
                         ),
                       ),
                       SizedBox(width: 30.h),
-                      InkWell(
-                        onTap: () {
-                          if (_cameraController?.description == cameras[0]) {
-                            _cameraController?.setDescription(cameras[1]);
-                          } else {
-                            _cameraController?.setDescription(cameras[0]);
-                          }
-                        },
-                        child: Image.asset(
-                          'turn'.png,
-                          height: 24.h,
+                      Visibility(
+                        visible: currentIndex != 0,
+                        maintainAnimation: true,
+                        maintainSize: true,
+                        maintainState: true,
+                        maintainInteractivity: true,
+                        child: InkWell(
+                          onTap: () {
+                            if (_cameraController?.description == cameras[0]) {
+                              _cameraController?.setDescription(cameras[1]);
+                            } else {
+                              _cameraController?.setDescription(cameras[0]);
+                            }
+                          },
+                          child: Image.asset(
+                            'turn'.png,
+                            height: 24.h,
+                          ),
                         ),
                       ),
                     ],
@@ -93,6 +109,10 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                       InkWell(
                         onTap: () {
                           currentIndex = 0;
+                          if (state == FancyRecorderState.recording) {
+                            state = FancyRecorderState.start;
+                            _cameraController?.stopVideoRecording();
+                          }
                           setState(() {});
                         },
                         child: HexText(
@@ -107,6 +127,12 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                       InkWell(
                         onTap: () {
                           currentIndex = 1;
+                          _childColor = null;
+                          if (state == FancyRecorderState.recording) {
+                            state = FancyRecorderState.start;
+                            _cameraController?.stopVideoRecording();
+                          }
+
                           setState(() {});
                         },
                         child: HexText(
@@ -121,6 +147,7 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                       InkWell(
                         onTap: () {
                           currentIndex = 2;
+                          _childColor = Colors.red;
                           setState(() {});
                         },
                         child: HexText(
@@ -145,48 +172,35 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                       children: [
                         GestureDetector(
                           onTapUp: (a) {
-                            _childColor = null;
-                            setState(() {});
-                            takePicture().then((File? file) async {
-                              if (mounted) {
-                                Uint8List? editedImage = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ImageEditor(
-                                      image: flipAndConvertToBytes(file!),
-                                      features: const ImageEditorFeatures(
-                                        captureFromCamera: false,
-                                        crop: true,
-                                        pickFromGallery: true,
-                                        blur: true,
-                                        brush: true,
-                                        emoji: true,
-                                        filters: true,
-                                        flip: true,
-                                        rotate: true,
-                                        text: true,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                                if (editedImage != null) {
-                                  push(
-                                    context,
-                                    CreatePostScreen(file: editedImage),
-                                  );
-                                }
+                            if (currentIndex == 1) {
+                              _childColor = null;
+                              setState(() {});
+                              takePicture();
+                            } else {
+                              if (state == FancyRecorderState.recording) {
+                                endVideo();
+                              } else {
+                                startVideo();
                               }
-                            });
+                              setState(() {});
+                            }
                           },
                           onTapDown: (a) {
+                            if (currentIndex == 2) return;
                             _childColor = Colors.grey;
                             setState(() {});
                           },
-                          child: Image.asset(
-                            'take'.png,
-                            height: 65.h,
-                            color: _childColor,
-                          ),
+                          child: state == FancyRecorderState.recording
+                              ? Icon(
+                                  Icons.stop_circle,
+                                  color: Colors.red,
+                                  size: 65.h,
+                                )
+                              : Image.asset(
+                                  'take'.png,
+                                  height: 65.h,
+                                  color: _childColor,
+                                ),
                         ),
                         Row(
                           children: [
@@ -197,29 +211,38 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                                 margin: EdgeInsets.only(left: 58.h),
                                 child: InkWell(
                                   onTap: () async {
-                                    String? _path;
-                                    if (currentIndex == 0) {
-                                      return;
-                                    }
-                                    final XFile? file = await ImagePicker()
-                                        .pickImage(source: ImageSource.gallery);
-                                    _path = file?.path;
+                                    if (currentIndex == 1) {
+                                      String? path;
+                                      final XFile? file = await ImagePicker()
+                                          .pickImage(
+                                              source: ImageSource.gallery);
+                                      path = file?.path;
 
-                                    if (_path != null) {
-                                      final editedImage = await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ImageEditor(
-                                            image:
-                                                File(_path!).readAsBytesSync(),
-                                          ),
-                                        ),
-                                      );
-                                      if (editedImage != null) {
-                                        push(
+                                      if (path != null) {
+                                        final editedImage =
+                                            await Navigator.push(
                                           context,
-                                          CreatePostScreen(file: editedImage),
+                                          MaterialPageRoute(
+                                            builder: (context) => ImageEditor(
+                                              image:
+                                                  File(path!).readAsBytesSync(),
+                                            ),
+                                          ),
                                         );
+                                        if (editedImage != null) {
+                                          push(
+                                            context,
+                                            CreatePostScreen(file: editedImage),
+                                          );
+                                        }
+                                      }
+                                    } else {
+                                      FilePickerResult? picker =
+                                          await FilePicker.platform
+                                              .pickFiles(type: FileType.audio);
+
+                                      if (picker != null) {
+                                        //  picker.files.first.path!;
                                       }
                                     }
                                   },
@@ -250,25 +273,108 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
   }
 
   Color? _childColor;
+  FancyRecorderState state = FancyRecorderState.start;
 
-  Future<File?> takePicture() async {
+  Future<void> takePicture() async {
     final CameraController? cameraController = _cameraController;
     if (cameraController == null || !cameraController.value.isInitialized) {
       // showInSnackBar('Error: select a camera first.');
-      return null;
+      return;
     }
 
     if (cameraController.value.isTakingPicture) {
       // A capture is already pending, do nothing.
-      return null;
+      return;
     }
 
     try {
       final file = await cameraController.takePicture();
-      return File(file.path);
+
+      if (mounted) {
+        Uint8List? editedImage = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImageEditor(
+              image: flipAndConvertToBytes(File(file.path)),
+              features: const ImageEditorFeatures(
+                captureFromCamera: false,
+                crop: true,
+                pickFromGallery: true,
+                blur: true,
+                brush: true,
+                emoji: true,
+                filters: true,
+                flip: true,
+                rotate: true,
+                text: true,
+              ),
+            ),
+          ),
+        );
+        if (editedImage != null) {
+          push(context, CreatePostScreen(file: editedImage));
+        }
+      }
     } on CameraException {
       // showInSnackBar('Error: ${e.code}\n${e.description}');
-      return null;
+    }
+  }
+
+  Future<void> startVideo() async {
+    final CameraController? cameraController = _cameraController;
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      // showInSnackBar('Error: select a camera first.');
+      return;
+    }
+
+    if (cameraController.value.isRecordingVideo) {
+      // A capture is already pending, do nothing.
+      return;
+    }
+
+    try {
+      await cameraController.prepareForVideoRecording();
+      await cameraController.startVideoRecording();
+      state = FancyRecorderState.recording;
+      setState(() {});
+    } on CameraException {
+      // showInSnackBar('Error: ${e.code}\n${e.description}');
+      return;
+    }
+  }
+
+  Future<void> endVideo() async {
+    final CameraController? cameraController = _cameraController;
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      // showInSnackBar('Error: select a camera first.');
+      return;
+    }
+
+    if (!cameraController.value.isRecordingVideo) {
+      // A capture is already pending, do nothing.
+      return;
+    }
+
+    try {
+      state = FancyRecorderState.start;
+      setState(() {});
+      await cameraController.pauseVideoRecording();
+      final file = await cameraController.stopVideoRecording();
+
+      if (mounted) {
+        Uint8List? editedImage = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VideoEditor(file: File(file.path)),
+          ),
+        );
+        if (editedImage != null) {
+          push(context, CreatePostScreen(file: editedImage));
+        }
+      }
+    } on CameraException {
+      // showInSnackBar('Error: ${e.code}\n${e.description}');
+      return;
     }
   }
 

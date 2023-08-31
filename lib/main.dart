@@ -41,6 +41,11 @@ class App extends StatelessWidget {
             colorScheme: const ColorScheme.dark(background: Colors.transparent),
             primaryColor: AppColors.primary,
             visualDensity: VisualDensity.adaptivePlatformDensity,
+            tabBarTheme: const TabBarTheme(
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+            ),
           ),
           navigatorKey: AppNavigator.navKey,
           home: AppCache.getUser() == null
