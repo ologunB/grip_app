@@ -1,3 +1,4 @@
+import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:hexcelon/core/models/login_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -8,8 +9,89 @@ import '../../core/vms/post_vm.dart';
 import '../../core/vms/settings_vm.dart';
 import '../create/create.dart';
 import '../widgets/hex_text.dart';
+import '../widgets/lib/voice_message_package.dart';
 import '../widgets/user_image.dart';
 import 'profile.dart';
+
+class MediaItem extends StatefulWidget {
+  const MediaItem({super.key, this.post});
+  final Post? post;
+
+  @override
+  State<MediaItem> createState() => _MediaItemState();
+}
+
+class _MediaItemState extends State<MediaItem> {
+  late VideoPlayerController videoPlayerController;
+  late CustomVideoPlayerController _customVideoPlayerController;
+
+  String videoUrl =
+      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4';
+
+  @override
+  void initState() {
+    super.initState();
+
+    videoPlayerController =
+        VideoPlayerController.networkUrl(Uri.parse(videoUrl))
+          ..initialize().then((value) => setState(() {}));
+    _customVideoPlayerController = CustomVideoPlayerController(
+      context: context,
+      videoPlayerController: videoPlayerController,
+      customVideoPlayerSettings: const CustomVideoPlayerSettings(
+        placeholderWidget: CircularProgressIndicator(),
+        showSeekButtons: true,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    videoPlayerController.dispose();
+    _customVideoPlayerController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: widget.post?.fileType == 'image'
+          ? CachedNetworkImage(
+              imageUrl: widget.post?.coverImage ?? 'm',
+              fit: BoxFit.cover,
+              placeholder: (_, __) => Image.asset(
+                'placeholder'.png,
+                fit: BoxFit.cover,
+              ),
+              errorWidget: (_, __, ___) => Image.asset(
+                'placeholder'.png,
+                fit: BoxFit.cover,
+              ),
+            )
+          : widget.post?.fileType == 'audio'
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    VoiceMessage(
+                      audioSrc:
+                          'https://download.samplelib.com/mp3/sample-15s.mp3',
+                      played: false,
+                      me: true,
+                      //  meFgColor: AppColors.primary,
+                      meBgColor: Colors.transparent,
+                      contactPlayIconBgColor: AppColors.white,
+                      contactPlayIconColor: AppColors.primary,
+                      onPlay: () {},
+                      radius: 1,
+                    ),
+                  ],
+                )
+              : CustomVideoPlayer(
+                  customVideoPlayerController: _customVideoPlayerController,
+                ),
+    );
+  }
+}
 
 class PostDetailScreen extends StatefulWidget {
   const PostDetailScreen({super.key, required this.post});
@@ -59,20 +141,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         backgroundColor: Colors.black,
         body: Stack(
           children: [
-            Center(
-              child: CachedNetworkImage(
-                imageUrl: post.coverImage ?? 'm',
-                fit: BoxFit.cover,
-                placeholder: (_, __) => Image.asset(
-                  'placeholder'.png,
-                  fit: BoxFit.cover,
-                ),
-                errorWidget: (_, __, ___) => Image.asset(
-                  'placeholder'.png,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            MediaItem(post: post),
             Padding(
               padding: EdgeInsets.only(left: 25.h, right: 25.h, bottom: 50.h),
               child: Row(

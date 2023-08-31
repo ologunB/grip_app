@@ -33,7 +33,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
       onModelReady: (a) {
-        a.getPosts(type: 'recent/${AppCache.getUser()?.user?.id}');
+        a.getPosts(type: '');
       },
       builder: (_, PostViewModel model, __) => Material(
         child: CupertinoPageScaffold(

@@ -158,6 +158,7 @@ class PostApi extends BaseAPI {
 
   Future<Post> getPostDetails(int? id) async {
     String url = 'post/$id';
+    print(url);
     try {
       final Response res = await dio().get(url);
       log(res.data);

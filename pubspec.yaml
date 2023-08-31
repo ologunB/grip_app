@@ -40,11 +40,16 @@ dependencies:
   provider: ^6.0.5
   scrollable_positioned_list: ^0.3.8
   share_plus: ^7.1.0
+  timeago: ^3.5.0
   the_apple_sign_in: ^1.1.1
   url_launcher: ^6.1.11
   watcher: ^1.0.2
-  timeago: ^3.5.0
   audio_session:
+  appinio_video_player: ^1.2.2
+ # voice_message_package: ^1.0.41
+  voice_message_package:
+    git:
+      url: https://github.com/AQuadic/voice_message_player.git
 
 dev_dependencies:
   flutter_native_splash: ^2.3.1

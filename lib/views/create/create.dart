@@ -126,7 +126,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               child: Column(
                 children: [
                   SizedBox(height: MediaQuery.of(context).padding.top + 60.h),
-                  if (post != null)
+                  if (post == null)
                     IntrinsicHeight(
                       child: Stack(
                         children: [
