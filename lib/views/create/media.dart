@@ -5,7 +5,7 @@ import 'package:image_editor_plus/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../widgets/hex_text.dart';
-import 'audio.dart';
+import 'audio/audio.dart';
 
 class ChooseMediaScreen extends StatefulWidget {
   const ChooseMediaScreen({super.key});
@@ -134,97 +134,103 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      GestureDetector(
-                        onTapUp: (a) {
-                          _childColor = null;
-                          setState(() {});
-                          takePicture().then((File? file) async {
-                            if (mounted) {
-                              Uint8List? editedImage = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ImageEditor(
-                                    image: flipAndConvertToBytes(file!),
-                                    features: const ImageEditorFeatures(
-                                      captureFromCamera: false,
-                                      crop: true,
-                                      pickFromGallery: true,
-                                      blur: true,
-                                      brush: true,
-                                      emoji: true,
-                                      filters: true,
-                                      flip: true,
-                                      rotate: true,
-                                      text: true,
+                  Visibility(
+                    visible: currentIndex != 0,
+                    maintainAnimation: true,
+                    maintainSize: true,
+                    maintainState: true,
+                    maintainInteractivity: true,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        GestureDetector(
+                          onTapUp: (a) {
+                            _childColor = null;
+                            setState(() {});
+                            takePicture().then((File? file) async {
+                              if (mounted) {
+                                Uint8List? editedImage = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ImageEditor(
+                                      image: flipAndConvertToBytes(file!),
+                                      features: const ImageEditorFeatures(
+                                        captureFromCamera: false,
+                                        crop: true,
+                                        pickFromGallery: true,
+                                        blur: true,
+                                        brush: true,
+                                        emoji: true,
+                                        filters: true,
+                                        flip: true,
+                                        rotate: true,
+                                        text: true,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                              if (editedImage != null) {
-                                push(
-                                  context,
-                                  CreatePostScreen(
-                                    file: editedImage,
-                                  ),
                                 );
+                                if (editedImage != null) {
+                                  push(
+                                    context,
+                                    CreatePostScreen(file: editedImage),
+                                  );
+                                }
                               }
-                            }
-                          });
-                        },
-                        onTapDown: (a) {
-                          _childColor = Colors.grey;
-                          setState(() {});
-                        },
-                        child: Image.asset(
-                          'take'.png,
-                          height: 65.h,
-                          color: _childColor,
+                            });
+                          },
+                          onTapDown: (a) {
+                            _childColor = Colors.grey;
+                            setState(() {});
+                          },
+                          child: Image.asset(
+                            'take'.png,
+                            height: 65.h,
+                            color: _childColor,
+                          ),
                         ),
-                      ),
-                      Row(
-                        children: [
-                          const Expanded(child: SizedBox()),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.only(left: 58.h),
-                              child: InkWell(
-                                onTap: () async {
-                                  final XFile? file = await ImagePicker()
-                                      .pickImage(source: ImageSource.gallery);
-                                  if (file != null) {
-                                    final editedImage = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ImageEditor(
-                                          image:
-                                              File(file.path).readAsBytesSync(),
-                                        ),
-                                      ),
-                                    );
-                                    if (editedImage != null) {
-                                      push(
+                        Row(
+                          children: [
+                            const Expanded(child: SizedBox()),
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(left: 58.h),
+                                child: InkWell(
+                                  onTap: () async {
+                                    String? _path;
+                                    if (currentIndex == 0) {
+                                      return;
+                                    }
+                                    final XFile? file = await ImagePicker()
+                                        .pickImage(source: ImageSource.gallery);
+                                    _path = file?.path;
+
+                                    if (_path != null) {
+                                      final editedImage = await Navigator.push(
                                         context,
-                                        CreatePostScreen(
-                                          file: editedImage,
+                                        MaterialPageRoute(
+                                          builder: (context) => ImageEditor(
+                                            image:
+                                                File(_path!).readAsBytesSync(),
+                                          ),
                                         ),
                                       );
+                                      if (editedImage != null) {
+                                        push(
+                                          context,
+                                          CreatePostScreen(file: editedImage),
+                                        );
+                                      }
                                     }
-                                  }
-                                },
-                                child: Image.asset(
-                                  'pick'.png,
-                                  height: 33.h,
+                                  },
+                                  child: Image.asset('pick'.png, height: 33.h),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      )
-                    ],
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                   SizedBox(height: 20.h),
                   HexText(

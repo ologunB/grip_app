@@ -1,10 +1,7 @@
 import '../../widgets/hex_text.dart';
 
 class AudioSlidePlayer extends StatefulWidget {
-  const AudioSlidePlayer({
-    Key? key,
-    required this.path,
-  }) : super(key: key);
+  const AudioSlidePlayer({Key? key, required this.path}) : super(key: key);
   final String path;
 
   @override
@@ -55,7 +52,7 @@ class _AudioSlidePlayerState extends State<AudioSlidePlayer>
               controller.forward();
               await player
                   .setSourceDeviceFile(widget.path); // Set the source again
-              player.play(player.source!);
+              player.resume();
             } else if (player.state == PlayerState.playing) {
               controller.reverse();
               player.pause(); // Consider using pause instead of stop
@@ -93,8 +90,9 @@ class _AudioSlidePlayerState extends State<AudioSlidePlayer>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text(_positionText), Text(_durationText)]),
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text(_positionText), Text(_durationText)],
+                ),
               )
             ],
           ),
