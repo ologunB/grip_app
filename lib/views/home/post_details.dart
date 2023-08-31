@@ -1,4 +1,5 @@
 import 'package:appinio_video_player/appinio_video_player.dart';
+import 'package:chewie_audio/chewie_audio.dart';
 import 'package:hexcelon/core/models/login_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -9,7 +10,6 @@ import '../../core/vms/post_vm.dart';
 import '../../core/vms/settings_vm.dart';
 import '../create/create.dart';
 import '../widgets/hex_text.dart';
-import '../widgets/lib/voice_message_package.dart';
 import '../widgets/user_image.dart';
 import 'profile.dart';
 
@@ -23,24 +23,41 @@ class MediaItem extends StatefulWidget {
 
 class _MediaItemState extends State<MediaItem> {
   late VideoPlayerController videoPlayerController;
-  late CustomVideoPlayerController _customVideoPlayerController;
-
-  String videoUrl =
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4';
+  late CustomVideoPlayerController customVideoPlayerController;
+  late ChewieAudioController chewieAudioController;
+  String videoUrl = 'https://download.samplelib.com/mp3/sample-15s.mp3';
 
   @override
   void initState() {
     super.initState();
-
     videoPlayerController =
         VideoPlayerController.networkUrl(Uri.parse(videoUrl))
           ..initialize().then((value) => setState(() {}));
-    _customVideoPlayerController = CustomVideoPlayerController(
+
+    customVideoPlayerController = CustomVideoPlayerController(
       context: context,
       videoPlayerController: videoPlayerController,
       customVideoPlayerSettings: const CustomVideoPlayerSettings(
         placeholderWidget: CircularProgressIndicator(),
         showSeekButtons: true,
+      ),
+    );
+
+    chewieAudioController = ChewieAudioController(
+      videoPlayerController: videoPlayerController,
+      autoPlay: true,
+      looping: false,
+      materialProgressColors: ChewieProgressColors(
+        backgroundColor: Colors.grey,
+        handleColor: AppColors.white,
+        bufferedColor: AppColors.primaryBG,
+        playedColor: AppColors.primary,
+      ),
+      cupertinoProgressColors: ChewieProgressColors(
+        backgroundColor: Colors.grey,
+        handleColor: AppColors.white,
+        bufferedColor: AppColors.primaryBG,
+        playedColor: AppColors.primary,
       ),
     );
   }
@@ -49,13 +66,14 @@ class _MediaItemState extends State<MediaItem> {
   void dispose() {
     super.dispose();
     videoPlayerController.dispose();
-    _customVideoPlayerController.dispose();
+    customVideoPlayerController.dispose();
+    chewieAudioController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: widget.post?.fileType == 'image'
+      child: widget.post?.fileType != 'image'
           ? CachedNetworkImage(
               imageUrl: widget.post?.coverImage ?? 'm',
               fit: BoxFit.cover,
@@ -68,26 +86,12 @@ class _MediaItemState extends State<MediaItem> {
                 fit: BoxFit.cover,
               ),
             )
-          : widget.post?.fileType == 'audio'
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    VoiceMessage(
-                      audioSrc:
-                          'https://download.samplelib.com/mp3/sample-15s.mp3',
-                      played: false,
-                      me: true,
-                      //  meFgColor: AppColors.primary,
-                      meBgColor: Colors.transparent,
-                      contactPlayIconBgColor: AppColors.white,
-                      contactPlayIconColor: AppColors.primary,
-                      onPlay: () {},
-                      radius: 1,
-                    ),
-                  ],
+          : widget.post?.fileType != 'audio'
+              ? ChewieAudio(
+                  controller: chewieAudioController,
                 )
               : CustomVideoPlayer(
-                  customVideoPlayerController: _customVideoPlayerController,
+                  customVideoPlayerController: customVideoPlayerController,
                 ),
     );
   }

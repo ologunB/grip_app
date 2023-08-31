@@ -38,6 +38,7 @@ class App extends StatelessWidget {
           title: 'Grip',
           theme: ThemeData(
             fontFamily: 'Nova',
+            colorScheme: const ColorScheme.dark(background: Colors.transparent),
             primaryColor: AppColors.primary,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),

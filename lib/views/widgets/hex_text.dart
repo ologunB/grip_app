@@ -6,6 +6,7 @@ export 'dart:io';
 export 'dart:math';
 
 export 'package:another_flushbar/flushbar.dart';
+export 'package:audioplayers/audioplayers.dart';
 export 'package:cached_network_image/cached_network_image.dart';
 export 'package:camera/camera.dart';
 export 'package:file_picker/file_picker.dart';
@@ -22,6 +23,7 @@ export 'package:intl/intl.dart' hide TextDirection;
 export 'package:keyboard_attachable/keyboard_attachable.dart';
 export 'package:pinput/pinput.dart';
 export 'package:provider/provider.dart';
+export 'package:record/record.dart';
 export 'package:share_plus/share_plus.dart';
 export 'package:url_launcher/url_launcher_string.dart';
 
