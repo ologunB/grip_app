@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import '../widgets/hex_text.dart';
 import 'audio/audio.dart';
 import 'audio/audio_recorder_button.dart';
+import 'audio/utils.dart';
 
 class ChooseMediaScreen extends StatefulWidget {
   const ChooseMediaScreen({super.key});
@@ -87,6 +88,10 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                     ],
                   ),
                   SizedBox(height: 12.h),
+                  Text(
+                    currentIndex != 2 ? '' : formatDuration(elapsedTime),
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
                 ],
               ),
             ),
@@ -242,7 +247,23 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                                               .pickFiles(type: FileType.audio);
 
                                       if (picker != null) {
-                                        //  picker.files.first.path!;
+                                        if (mounted) {
+                                          Uint8List? editedImage =
+                                              await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => VideoEditor(
+                                                  file: File(picker
+                                                      .files.first.path!)),
+                                            ),
+                                          );
+                                          if (editedImage != null) {
+                                            push(
+                                                context,
+                                                CreatePostScreen(
+                                                    file: editedImage));
+                                          }
+                                        }
                                       }
                                     }
                                   },
@@ -320,6 +341,9 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
     }
   }
 
+  Timer? timer;
+  bool get timerIsActive => timer?.isActive ?? false;
+  Duration elapsedTime = const Duration();
   Future<void> startVideo() async {
     final CameraController? cameraController = _cameraController;
     if (cameraController == null || !cameraController.value.isInitialized) {
@@ -336,6 +360,13 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
       await cameraController.prepareForVideoRecording();
       await cameraController.startVideoRecording();
       state = FancyRecorderState.recording;
+      timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        elapsedTime = Duration(seconds: timer.tick);
+        if (elapsedTime.inSeconds >= const Duration(minutes: 3).inSeconds) {
+          endVideo();
+        }
+        setState(() {});
+      });
       setState(() {});
     } on CameraException {
       // showInSnackBar('Error: ${e.code}\n${e.description}');
@@ -357,6 +388,8 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
 
     try {
       state = FancyRecorderState.start;
+      timer?.cancel();
+      elapsedTime = const Duration();
       setState(() {});
       await cameraController.pauseVideoRecording();
       final file = await cameraController.stopVideoRecording();
@@ -388,6 +421,12 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
     ); // Flip the image
 
     return Uint8List.fromList(img.encodePng(flippedImage)); // Convert to bytes
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 }
 

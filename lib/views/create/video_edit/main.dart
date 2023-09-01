@@ -230,7 +230,7 @@ class _VideoEditorState extends State<VideoEditor> {
             Expanded(
               child: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.exit_to_app),
+                icon: const Icon(Icons.close_rounded),
                 tooltip: 'Leave editor',
               ),
             ),
