@@ -20,6 +20,7 @@ class _FollowPeopleScreenState extends State<FollowPeopleScreen> {
       onModelReady: (m) => m.getCreators(),
       builder: (_, AuthViewModel model, __) => Scaffold(
         extendBodyBehindAppBar: true,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -145,7 +146,10 @@ class _FollowPeopleScreenState extends State<FollowPeopleScreen> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25.h),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 25.h,
+                            vertical: 20.h,
+                          ),
                           child: HexButton(
                             'Continue',
                             buttonColor: AppColors.black,

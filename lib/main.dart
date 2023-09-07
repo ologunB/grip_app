@@ -1,5 +1,5 @@
+import 'package:hexcelon/views/auth/follow_people_view.dart';
 import 'package:hexcelon/views/auth/onboard_view.dart';
-import 'package:hexcelon/views/home/creator_layout.dart';
 
 import 'core/models/navigator.dart';
 import 'core/storage/local_storage.dart';
@@ -40,7 +40,6 @@ class App extends StatelessWidget {
             fontFamily: 'Nova',
             colorScheme: const ColorScheme.dark(background: Colors.transparent),
             primaryColor: AppColors.primary,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
             tabBarTheme: const TabBarTheme(
               indicator: UnderlineTabIndicator(
                 borderSide: BorderSide(color: Colors.white),
@@ -52,7 +51,7 @@ class App extends StatelessWidget {
               ? const OnboardScreen()
               : AppCache.getUser()?.user?.role == 'user'
                   ? const UserLayout()
-                  : const CreatorLayout(),
+                  : const FollowPeopleScreen(),
         ), // AgentMainLayout ClientMainLayout
       ),
     );
