@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: false,
         backgroundColor: AppColors.white,
         titleSpacing: 25.h,
+        toolbarHeight: 70.h,
         title: Padding(
           padding: EdgeInsets.only(top: 20.h),
           child: CupertinoTextField(
@@ -92,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HexText(
                   'Recent Posts',
                   fontSize: 20.sp,
-                  color: index == 0 ? Colors.black : AppColors.grey,
+                  color: index == 0 ? Colors.black : const Color(0xffC6C6C6),
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -104,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HexText(
                   'Recommended',
                   fontSize: 20.sp,
-                  color: index == 1 ? Colors.black : AppColors.grey,
+                  color: index == 1 ? Colors.black : const Color(0xffC6C6C6),
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -197,7 +198,7 @@ class HomeItem extends StatelessWidget {
               shaderCallback: (bounds) => const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Color(0xff280E40)],
+                colors: [Colors.transparent, Color(0xff393939)],
                 stops: [0.0, 1.0],
               ).createShader(bounds),
               blendMode: BlendMode.srcATop,

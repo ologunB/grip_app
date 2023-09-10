@@ -252,9 +252,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             ),
                       const Spacer(),
                       Container(
-                        padding: EdgeInsets.all(8.h),
+                        padding: EdgeInsets.symmetric(vertical: 8.h),
                         decoration: BoxDecoration(
-                            color: Colors.black,
                             borderRadius: BorderRadius.circular(8.h)),
                         child: Column(
                           children: [
@@ -269,71 +268,66 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 5
                             ]
                                 .map(
-                                  (e) => Padding(
-                                    padding: EdgeInsets.only(bottom: 20.h),
-                                    child: InkWell(
-                                      onTap: () {
-                                        if (e == 1) {
-                                          Share.share('${post.title}',
-                                              subject:
-                                                  '${post.description}\n\n ${post.file}');
-                                        } else if (e == 2) {
-                                          if (bookmarked) {
-                                            model.deleteBookmark(post.id);
-                                          } else {
-                                            model.addBookmark(post.id);
-                                          }
-                                          bookmarked = !bookmarked;
-                                          setState(() {});
-                                        } else if (e == 3) {
-                                          showModalBottomSheet(
-                                            backgroundColor: Colors.white,
-                                            context: context,
-                                            useRootNavigator: true,
-                                            isScrollControlled: true,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(50.h),
-                                                topLeft: Radius.circular(50.h),
-                                              ),
+                                  (e) => IconButton(
+                                    onPressed: () {
+                                      if (e == 1) {
+                                        Share.share('${post.title}',
+                                            subject:
+                                                '${post.description}\n\n ${post.file}');
+                                      } else if (e == 2) {
+                                        if (bookmarked) {
+                                          model.deleteBookmark(post.id);
+                                        } else {
+                                          model.addBookmark(post.id);
+                                        }
+                                        bookmarked = !bookmarked;
+                                        setState(() {});
+                                      } else if (e == 3) {
+                                        showModalBottomSheet(
+                                          backgroundColor: Colors.white,
+                                          context: context,
+                                          useRootNavigator: true,
+                                          isScrollControlled: true,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(50.h),
+                                              topLeft: Radius.circular(50.h),
                                             ),
-                                            builder: (c) {
-                                              return CommentsDialog(post: post);
-                                            },
-                                          );
-                                        } else if (e == 4) {
-                                          model.likePost(post.id);
+                                          ),
+                                          builder: (c) {
+                                            return CommentsDialog(post: post);
+                                          },
+                                        );
+                                      } else if (e == 4) {
+                                        model.likePost(post.id);
 
-                                          liked = !liked;
-                                          setState(() {});
-                                        } else if (e == 5) {
-                                          showModalBottomSheet(
-                                            backgroundColor: Colors.white,
-                                            context: context,
-                                            useRootNavigator: true,
-                                            isScrollControlled: true,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(50.h),
-                                                topLeft: Radius.circular(50.h),
-                                              ),
+                                        liked = !liked;
+                                        setState(() {});
+                                      } else if (e == 5) {
+                                        showModalBottomSheet(
+                                          backgroundColor: Colors.white,
+                                          context: context,
+                                          useRootNavigator: true,
+                                          isScrollControlled: true,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(50.h),
+                                              topLeft: Radius.circular(50.h),
                                             ),
-                                            builder: (c) {
-                                              return DevotionalDialog(
-                                                  post: post);
-                                            },
-                                          );
-                                        } else {}
-                                      },
-                                      borderRadius: BorderRadius.circular(10.h),
-                                      child: Image.asset(
-                                        e == 4 && liked
-                                            ? 'like'.png
-                                            : e == 2 && bookmarked
-                                                ? 'bookmark'.png
-                                                : 'v$e'.png,
-                                        height: 26.h,
-                                      ),
+                                          ),
+                                          builder: (c) {
+                                            return DevotionalDialog(post: post);
+                                          },
+                                        );
+                                      } else {}
+                                    },
+                                    icon: Image.asset(
+                                      e == 4 && liked
+                                          ? 'like'.png
+                                          : e == 2 && bookmarked
+                                              ? 'bookmark'.png
+                                              : 'v$e'.png,
+                                      height: 26.h,
                                     ),
                                   ),
                                 )
@@ -411,31 +405,38 @@ class _CommentsDialogState extends State<CommentsDialog> {
         ListView(
           controller: scrollController,
           shrinkWrap: true,
-          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.h),
+          padding: EdgeInsets.symmetric(vertical: 8.h),
           physics: const ClampingScrollPhysics(),
           children: [
-            Stack(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: HexText(
-                    '${model.comments?.length ?? 'No'} comments',
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    align: TextAlign.center,
-                    color: AppColors.black,
+            Padding(
+              padding: EdgeInsets.only(top: 12.h),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: HexText(
+                      '${model.comments?.length ?? 'No'} comments',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      align: TextAlign.center,
+                      color: AppColors.black,
+                    ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Image.asset('close'.png, height: 20.h, width: 20.h),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 25.h),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child:
+                            Image.asset('close'.png, height: 20.h, width: 20.h),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(height: 25.h),
             model.comments!.isEmpty
@@ -534,6 +535,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(width: 24.h),
         InkWell(
           onTap: () {
             if (c.user?.role == 'creator') {
@@ -590,16 +592,15 @@ class _CommentsDialogState extends State<CommentsDialog> {
             ],
           ),
         ),
-        SizedBox(width: 20.h),
+        SizedBox(width: 4.h),
         Column(
           children: [
             BaseView<PostViewModel>(
-              builder: (_, PostViewModel model, __) => InkWell(
-                onTap: () {
+              builder: (_, PostViewModel model, __) => IconButton(
+                onPressed: () {
                   model.likeComment(c.postId, c.id);
                   Comment? old = cModel.comments![c.id];
                   old?.isLike = !old.isLike!;
-                  print(cModel.comments);
                   if (old!.isLike!) {
                     c.likesCount = (int.parse(c.likesCount!) + 1).toString();
                   } else {
@@ -608,22 +609,21 @@ class _CommentsDialogState extends State<CommentsDialog> {
                   cModel.comments?.update(c.id!, (value) => old);
                   setState(() {});
                 },
-                borderRadius: BorderRadius.circular(8.h),
-                child: Image.asset(
+                icon: Image.asset(
                   (c.isLike! ? 'like' : 'v4').png,
                   height: 20.h,
                   color: c.isLike! ? null : Colors.grey,
                 ),
               ),
             ),
-            SizedBox(height: 5.h),
             HexText(
               '${c.likesCount ?? 0}',
               fontSize: 13.sp,
               color: AppColors.grey,
             ),
           ],
-        )
+        ),
+        SizedBox(width: 10.h),
       ],
     );
   }

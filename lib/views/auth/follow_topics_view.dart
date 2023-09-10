@@ -30,6 +30,7 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
       onModelReady: (m) => m.getCategories(),
       builder: (_, AuthViewModel model, __) => Scaffold(
         extendBodyBehindAppBar: true,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,

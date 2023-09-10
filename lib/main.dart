@@ -1,4 +1,3 @@
-import 'package:hexcelon/views/auth/follow_people_view.dart';
 import 'package:hexcelon/views/auth/onboard_view.dart';
 
 import 'core/models/navigator.dart';
@@ -34,25 +33,23 @@ class App extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, builder) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Grip',
-          theme: ThemeData(
-            fontFamily: 'Nova',
-            colorScheme: const ColorScheme.dark(background: Colors.transparent),
-            primaryColor: AppColors.primary,
-            tabBarTheme: const TabBarTheme(
-              indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(color: Colors.white),
+            debugShowCheckedModeBanner: false,
+            title: 'Grip',
+            theme: ThemeData(
+              fontFamily: 'Nova',
+              colorScheme:
+                  const ColorScheme.dark(background: Colors.transparent),
+              primaryColor: AppColors.primary,
+              tabBarTheme: const TabBarTheme(
+                indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
               ),
             ),
-          ),
-          navigatorKey: AppNavigator.navKey,
-          home: AppCache.getUser() == null
-              ? const OnboardScreen()
-              : AppCache.getUser()?.user?.role == 'user'
-                  ? const UserLayout()
-                  : const FollowPeopleScreen(),
-        ), // AgentMainLayout ClientMainLayout
+            navigatorKey: AppNavigator.navKey,
+            home: AppCache.getUser() == null
+                ? const OnboardScreen()
+                : const UserLayout()), // AgentMainLayout ClientMainLayout
       ),
     );
   }

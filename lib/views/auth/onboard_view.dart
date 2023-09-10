@@ -21,7 +21,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
       }
       controller.animateToPage(
         index,
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(seconds: 2),
         curve: Curves.linear,
       );
     });
