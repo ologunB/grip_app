@@ -405,11 +405,43 @@ class _CommentsDialogState extends State<CommentsDialog> {
         ListView(
           controller: scrollController,
           shrinkWrap: true,
-          padding: EdgeInsets.symmetric(vertical: 8.h),
+          padding: EdgeInsets.symmetric(vertical: 20.h),
           physics: const ClampingScrollPhysics(),
           children: [
-            Padding(
-              padding: EdgeInsets.only(top: 12.h),
+            SizedBox(height: 25.h),
+            model.comments!.isEmpty
+                ? Container(
+                    height: 200.h,
+                    alignment: Alignment.center,
+                    child: HexText(
+                      'There are no comments at the moment. Be the\nfirst to comment',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      align: TextAlign.center,
+                      color: AppColors.black,
+                    ),
+                  )
+                : ListView.separated(
+                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                    itemCount: model.comments!.length,
+                    shrinkWrap: true,
+                    reverse: true,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.manual,
+                    padding: EdgeInsets.only(bottom: 40.h),
+                    physics: const ClampingScrollPhysics(),
+                    itemBuilder: (_, i) {
+                      Comment c = model.comments!.values.toList()[i];
+                      return item(c, model);
+                    },
+                  ),
+          ],
+        ),
+        Column(
+          children: [
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.only(top: 12.h, bottom: 6.h),
               child: Stack(
                 children: [
                   Align(
@@ -438,38 +470,6 @@ class _CommentsDialogState extends State<CommentsDialog> {
                 ],
               ),
             ),
-            SizedBox(height: 25.h),
-            model.comments!.isEmpty
-                ? ListView(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    physics: const ClampingScrollPhysics(),
-                    children: [
-                      Container(
-                        height: 200.h,
-                        alignment: Alignment.center,
-                        child: HexText(
-                          'There are no comments at the moment. Be the\nfirst to comment',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          align: TextAlign.center,
-                          color: AppColors.black,
-                        ),
-                      )
-                    ],
-                  )
-                : ListView.separated(
-                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                    itemCount: model.comments!.length,
-                    shrinkWrap: true,
-                    reverse: true,
-                    padding: EdgeInsets.only(bottom: 60.h),
-                    physics: const ClampingScrollPhysics(),
-                    itemBuilder: (_, i) {
-                      Comment c = model.comments!.values.toList()[i];
-                      return item(c, model);
-                    },
-                  ),
           ],
         ),
         Align(
