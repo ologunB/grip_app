@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:watcher/watcher.dart';
@@ -66,6 +67,11 @@ class BibleViewModel extends BaseModel {
 
   Future<bool> _checkPermission() async {
     if (Platform.isAndroid) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      if (int.parse(androidInfo.version.release) > 12) {
+        return true;
+      }
       final PermissionStatus status = await Permission.storage.status;
       if (status != PermissionStatus.granted) {
         final PermissionStatus result = await Permission.storage.request();
@@ -75,8 +81,6 @@ class BibleViewModel extends BaseModel {
       } else {
         return true;
       }
-    } else {
-      return true;
     }
     return false;
   }

@@ -50,6 +50,7 @@ dependencies:
   video_editor: ^3.0.0
   fraction: ^4.1.4
   ffmpeg_kit_flutter_min: ^5.1.0
+  device_info:
 
 dev_dependencies:
   flutter_native_splash: ^2.3.1
@@ -62,9 +63,9 @@ flutter_native_splash:
   color: "#FFF6ED"
   image: assets/images/logo.png
   android_12:
-    image: assets/images/logo.png
+    image: assets/images/logo12.png
     icon_background_color: "#FFF6ED"
-    image_dark: assets/images/logo.png
+    image_dark: assets/images/logo12.png
     icon_background_color_dark: "#FFF6ED"
   android: true
   ios: true

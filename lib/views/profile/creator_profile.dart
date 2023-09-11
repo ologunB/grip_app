@@ -42,7 +42,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
             backgroundColor: Colors.white,
             border: Border.all(color: Colors.white),
             trailing: Padding(
-              padding: EdgeInsets.only(right: 25.h, top: 25.h),
+              padding: EdgeInsets.only(right: 25.h, top: 15.h),
               child: Column(
                 children: [
                   InkWell(

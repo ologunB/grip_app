@@ -96,115 +96,118 @@ class _VersesScreenState extends State<VersesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size(0, 55.h),
+        preferredSize: Size(0, 70.h),
         child: SafeArea(
-          child: Row(
-            children: [
-              SizedBox(width: 25.h),
-              IntrinsicHeight(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xffEAEAEA),
-                    borderRadius: BorderRadius.circular(40.h),
-                  ),
-                  child: Row(
-                    children: [
-                      InkWell(
-                        onTap: () async {
-                          dynamic a = await showModalBottomSheet(
-                            backgroundColor: Colors.white,
-                            context: context,
-                            useRootNavigator: true,
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(50.h),
-                                topLeft: Radius.circular(50.h),
+          child: Padding(
+            padding: EdgeInsets.only(top: 16.h),
+            child: Row(
+              children: [
+                SizedBox(width: 25.h),
+                IntrinsicHeight(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xffEAEAEA),
+                      borderRadius: BorderRadius.circular(40.h),
+                    ),
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            dynamic a = await showModalBottomSheet(
+                              backgroundColor: Colors.white,
+                              context: context,
+                              useRootNavigator: true,
+                              isScrollControlled: true,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(50.h),
+                                  topLeft: Radius.circular(50.h),
+                                ),
                               ),
+                              builder: (c) {
+                                return SelectChapterDialog(name: book);
+                              },
+                            );
+                            if (a != null) {
+                              book = a.first;
+                              chapter = a.last;
+                              verse = null;
+                              setState(() {});
+                              getVerses();
+                            }
+                          },
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30.h),
+                            bottomLeft: Radius.circular(30.h),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(10.h),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                HexText(
+                                  book,
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                SizedBox(width: 10.h),
+                                Image.asset(
+                                  'down'.png,
+                                  height: 32.h,
+                                  color: AppColors.black,
+                                ),
+                              ],
                             ),
-                            builder: (c) {
-                              return SelectChapterDialog(name: book);
-                            },
-                          );
-                          if (a != null) {
-                            book = a.first;
-                            chapter = a.last;
-                            verse = null;
-                            setState(() {});
-                            getVerses();
-                          }
-                        },
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30.h),
-                          bottomLeft: Radius.circular(30.h),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              HexText(
-                                book,
-                                fontSize: 16.sp,
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              SizedBox(width: 10.h),
-                              Image.asset(
-                                'down'.png,
-                                height: 32.h,
-                                color: AppColors.black,
-                              ),
-                            ],
                           ),
                         ),
-                      ),
-                      const VerticalDivider(width: 0, thickness: 0),
-                      Padding(
-                        padding: EdgeInsets.all(10.h),
-                        child: HexText(
-                          'Books',
-                          fontSize: 16.sp,
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
+                        const VerticalDivider(width: 0, thickness: 0),
+                        Padding(
+                          padding: EdgeInsets.all(10.h),
+                          child: HexText(
+                            'Books',
+                            fontSize: 16.sp,
+                            color: Colors.black,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const Spacer(),
-              InkWell(
-                onTap: () {
-                  openFont = true;
-                  setState(() {});
-                },
-                child: Image.asset(
-                  'aa'.png,
-                  height: 32.h,
-                ),
-              ),
-              SizedBox(width: 24.h),
-              InkWell(
-                onTap: () async {
-                  dynamic a = await push(context, const SearchPage(), true);
-                  if (a != null) {
-                    book = a.first;
-                    verse = a[1];
-                    chapter = a.last;
+                const Spacer(),
+                InkWell(
+                  onTap: () {
+                    openFont = true;
                     setState(() {});
-                    getVerses();
-                  }
-                },
-                borderRadius: BorderRadius.circular(30.h),
-                child: Image.asset(
-                  'search'.png,
-                  height: 32.h,
-                  color: AppColors.black,
+                  },
+                  child: Image.asset(
+                    'aa'.png,
+                    height: 32.h,
+                  ),
                 ),
-              ),
-              SizedBox(width: 25.h),
-            ],
+                SizedBox(width: 24.h),
+                InkWell(
+                  onTap: () async {
+                    dynamic a = await push(context, const SearchPage(), true);
+                    if (a != null) {
+                      book = a.first;
+                      verse = a[1];
+                      chapter = a.last;
+                      setState(() {});
+                      getVerses();
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(30.h),
+                  child: Image.asset(
+                    'search'.png,
+                    height: 32.h,
+                    color: AppColors.black,
+                  ),
+                ),
+                SizedBox(width: 25.h),
+              ],
+            ),
           ),
         ),
       ),

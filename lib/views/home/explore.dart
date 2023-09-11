@@ -22,36 +22,40 @@ class _ExploreScreenState extends State<ExploreScreen> {
           elevation: 0,
           backgroundColor: AppColors.white,
           titleSpacing: 20.h,
+          toolbarHeight: 70.h,
           centerTitle: false,
-          title: CupertinoTextField(
-            prefix: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.h),
-                  child: Image.asset(
-                    'search'.png,
-                    height: 24.h,
-                    color: const Color(0xffE0E0E0),
+          title: Padding(
+            padding: EdgeInsets.only(top: 16.h),
+            child: CupertinoTextField(
+              prefix: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.h),
+                    child: Image.asset(
+                      'search'.png,
+                      height: 24.h,
+                      color: const Color(0xffE0E0E0),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              placeholder: 'Search',
+              placeholderStyle: TextStyle(
+                fontFamily: 'Nova',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xffE0E0E0),
+              ),
+              padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(20.h),
+                border: Border.all(color: const Color(0xffE0E0E0)),
+              ),
+              maxLines: 3,
+              minLines: 1,
             ),
-            placeholder: 'Search',
-            placeholderStyle: TextStyle(
-              fontFamily: 'Nova',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xffE0E0E0),
-            ),
-            padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(20.h),
-              border: Border.all(color: const Color(0xffE0E0E0)),
-            ),
-            maxLines: 3,
-            minLines: 1,
           ),
         ),
         body: RefreshIndicator(

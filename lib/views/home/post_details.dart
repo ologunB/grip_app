@@ -137,6 +137,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     super.dispose();
   }
 
+  double initialSize = 0;
+
   @override
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
@@ -340,7 +342,25 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   )
                 ],
               ),
-            )
+            ),
+            DraggableScrollableSheet(
+              maxChildSize: .8,
+              minChildSize: 0,
+              snap: true,
+              initialChildSize: initialSize,
+              builder: (context, scrollController) {
+                return Container(
+                  color: Colors.blue[100],
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: 25,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(title: Text('Item $index'));
+                    },
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -373,7 +393,10 @@ class _CommentsDialogState extends State<CommentsDialog> {
       child: BaseView<PostViewModel>(
         onModelReady: (m) => m.getComments(post.id),
         builder: (_, PostViewModel model, __) => Container(
-          height: MediaQuery.of(context).size.height * .8,
+          //  height: MediaQuery.of(context).size.height * .8,
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * .8,
+          ),
           padding: MediaQuery.of(context).viewInsets,
           child: model.busy
               ? Container(
@@ -399,44 +422,44 @@ class _CommentsDialogState extends State<CommentsDialog> {
     );
   }
 
+  ScrollController controller2 = ScrollController();
   Widget body(PostViewModel model) {
     return Stack(
       children: [
-        ListView(
-          controller: scrollController,
-          shrinkWrap: true,
-          padding: EdgeInsets.symmetric(vertical: 20.h),
-          physics: const ClampingScrollPhysics(),
-          children: [
-            SizedBox(height: 25.h),
-            model.comments!.isEmpty
-                ? Container(
-                    height: 200.h,
-                    alignment: Alignment.center,
-                    child: HexText(
-                      'There are no comments at the moment. Be the\nfirst to comment',
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      align: TextAlign.center,
-                      color: AppColors.black,
-                    ),
-                  )
-                : ListView.separated(
-                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                    itemCount: model.comments!.length,
-                    shrinkWrap: true,
-                    reverse: true,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.manual,
-                    padding: EdgeInsets.only(bottom: 40.h),
-                    physics: const ClampingScrollPhysics(),
-                    itemBuilder: (_, i) {
-                      Comment c = model.comments!.values.toList()[i];
-                      return item(c, model);
-                    },
-                  ),
-          ],
-        ),
+        model.comments!.isEmpty
+            ? Container(
+                height: 400.h,
+                alignment: Alignment.center,
+                child: HexText(
+                  'There are no comments at the moment. Be the\nfirst to comment',
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  align: TextAlign.center,
+                  color: AppColors.black,
+                ),
+              )
+            : RawScrollbar(
+                controller: controller2,
+                thumbColor: AppColors.primary.withOpacity(.5),
+                radius: const Radius.circular(8),
+                crossAxisMargin: 2,
+                thumbVisibility: true,
+                child: ListView.separated(
+                  separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                  itemCount: model.comments!.length,
+                  shrinkWrap: true,
+                  controller: controller2,
+                  reverse: true,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.manual,
+                  padding: EdgeInsets.only(bottom: 40.h, top: 60.h),
+                  physics: const ClampingScrollPhysics(),
+                  itemBuilder: (_, i) {
+                    Comment c = model.comments!.values.toList()[i];
+                    return item(c, model);
+                  },
+                ),
+              ),
         Column(
           children: [
             Container(
@@ -446,12 +469,24 @@ class _CommentsDialogState extends State<CommentsDialog> {
                 children: [
                   Align(
                     alignment: Alignment.center,
-                    child: HexText(
-                      '${model.comments?.length ?? 'No'} comments',
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      align: TextAlign.center,
-                      color: AppColors.black,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 8.h,
+                          width: 70.h,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(.5),
+                              borderRadius: BorderRadius.circular(12.h)),
+                        ),
+                        SizedBox(height: 10.h),
+                        HexText(
+                          '${model.comments?.length ?? 'No'} comments',
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          align: TextAlign.center,
+                          color: AppColors.black,
+                        ),
+                      ],
                     ),
                   ),
                   Align(

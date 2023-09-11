@@ -13,7 +13,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
   Timer? timer;
   @override
   void initState() {
-    timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       index = (index + 1) % 3;
       if (index == 0) {
         controller.jumpToPage(0);
