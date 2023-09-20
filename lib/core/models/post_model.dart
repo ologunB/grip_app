@@ -16,6 +16,7 @@ class Post {
   bool? status;
   String? updatedAt;
   String? likeCount;
+  String? link;
   String? commentCount;
   List<Category>? categories;
   UserModel? user;
@@ -44,6 +45,7 @@ class Post {
     this.isBooked,
     this.isFollow,
     this.isLiked,
+    this.link,
   });
 
   Post.fromJson(Map<String, dynamic> json) {
@@ -51,6 +53,7 @@ class Post {
     title = json['title'];
     bibleBook = json['bible_book'];
     userId = json['userId'];
+    link = json['link'];
     bibleChapter = json['bible_chapter'];
     bibleVerse = json['bible_verse'];
     description = json['description'];
@@ -78,6 +81,7 @@ class Post {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['isBooked'] = isBooked;
     data['isFollow'] = isFollow;
+    data['link'] = link;
     data['isLiked'] = isLiked;
     data['id'] = id;
     data['title'] = title;

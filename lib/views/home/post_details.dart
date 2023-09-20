@@ -23,51 +23,51 @@ class MediaItem extends StatefulWidget {
 
 class _MediaItemState extends State<MediaItem> {
   late VideoPlayerController videoPlayerController;
-  late CustomVideoPlayerController customVideoPlayerController;
-  late ChewieAudioController chewieAudioController;
-  String videoUrl = 'https://download.samplelib.com/mp3/sample-15s.mp3';
+  CustomVideoPlayerController? customVideoPlayerController;
+  ChewieAudioController? chewieAudioController;
 
   @override
   void initState() {
     super.initState();
     videoPlayerController =
-        VideoPlayerController.networkUrl(Uri.parse(videoUrl))
+        VideoPlayerController.networkUrl(Uri.parse(widget.post!.file!))
           ..initialize().then((value) => setState(() {}));
-
-    customVideoPlayerController = CustomVideoPlayerController(
-      context: context,
-      videoPlayerController: videoPlayerController,
-      customVideoPlayerSettings: const CustomVideoPlayerSettings(
-        placeholderWidget: CircularProgressIndicator(),
-        showSeekButtons: true,
-      ),
-    );
-
-    chewieAudioController = ChewieAudioController(
-      videoPlayerController: videoPlayerController,
-      autoPlay: true,
-      looping: false,
-      materialProgressColors: ChewieProgressColors(
-        backgroundColor: Colors.grey,
-        handleColor: AppColors.white,
-        bufferedColor: AppColors.primaryBG,
-        playedColor: AppColors.primary,
-      ),
-      cupertinoProgressColors: ChewieProgressColors(
-        backgroundColor: Colors.grey,
-        handleColor: AppColors.white,
-        bufferedColor: AppColors.primaryBG,
-        playedColor: AppColors.primary,
-      ),
-    );
+    if (widget.post?.fileType == 'video') {
+      customVideoPlayerController = CustomVideoPlayerController(
+        context: context,
+        videoPlayerController: videoPlayerController,
+        customVideoPlayerSettings: const CustomVideoPlayerSettings(
+          placeholderWidget: CircularProgressIndicator(),
+          showSeekButtons: true,
+        ),
+      );
+    } else if (widget.post?.fileType == 'audio') {
+      chewieAudioController = ChewieAudioController(
+        videoPlayerController: videoPlayerController,
+        autoPlay: true,
+        looping: false,
+        materialProgressColors: ChewieProgressColors(
+          backgroundColor: Colors.grey,
+          handleColor: AppColors.white,
+          bufferedColor: AppColors.primaryBG,
+          playedColor: AppColors.primary,
+        ),
+        cupertinoProgressColors: ChewieProgressColors(
+          backgroundColor: Colors.grey,
+          handleColor: AppColors.white,
+          bufferedColor: AppColors.primaryBG,
+          playedColor: AppColors.primary,
+        ),
+      );
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
     videoPlayerController.dispose();
-    customVideoPlayerController.dispose();
-    chewieAudioController.dispose();
+    customVideoPlayerController?.dispose();
+    chewieAudioController?.dispose();
   }
 
   @override
@@ -88,19 +88,133 @@ class _MediaItemState extends State<MediaItem> {
             )
           : widget.post?.fileType == 'audio'
               ? ChewieAudio(
-                  controller: chewieAudioController,
+                  controller: chewieAudioController!,
                 )
               : CustomVideoPlayer(
-                  customVideoPlayerController: customVideoPlayerController,
+                  customVideoPlayerController: customVideoPlayerController!,
                 ),
     );
   }
 }
 
-class PostDetailScreen extends StatefulWidget {
-  const PostDetailScreen({super.key, required this.post});
+class VerticalPageView extends StatefulWidget {
+  const VerticalPageView({super.key, required this.post, this.from});
 
   final Post post;
+  final String? from;
+  @override
+  State<VerticalPageView> createState() => _VerticalPageViewState();
+}
+
+class _VerticalPageViewState extends State<VerticalPageView> {
+  List<Post> all = [];
+
+  final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    all.add(widget.post);
+    currentPost = widget.post;
+    _loadMoreContent();
+    _pageController.addListener(() {
+      if (_pageController.position.pixels ==
+              _pageController.position.maxScrollExtent &&
+          !busy) {
+        _loadMoreContent();
+      }
+    });
+  }
+
+  late Post currentPost;
+  bool busy = false;
+  Future<void> _loadMoreContent() async {
+    if (busy) return;
+    busy = true;
+    setState(() {});
+    List<Post> newOnes =
+        (await PostViewModel().getNextPosts(currentPost.id, widget.from)) ?? [];
+
+    all.addAll(newOnes);
+    busy = false;
+
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView(
+      controller: _pageController,
+      scrollDirection: Axis.vertical,
+      onPageChanged: (a) {
+        if (a >= all.length) return;
+        currentPost = all[a];
+      },
+      children: [
+        ...all
+            .map(
+              (e) => PostDetailScreen(
+                post: widget.post,
+                from: widget.from,
+              ),
+            )
+            .toList(),
+        Scaffold(
+          body: busy
+              ? Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3.h,
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(AppColors.white),
+                  ),
+                )
+              : Center(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 60.h, right: 24.h),
+                            child: InkWell(
+                              onTap: Navigator.of(context).pop,
+                              child: Image.asset(
+                                'close'.png,
+                                height: 32.h,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Icon(
+                        Icons.check_circle,
+                        color: AppColors.primary,
+                        size: 50.h,
+                      ),
+                      SizedBox(height: 20.h),
+                      HexText(
+                        'You are all caught up',
+                        fontSize: 20.sp,
+                        color: AppColors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class PostDetailScreen extends StatefulWidget {
+  const PostDetailScreen({super.key, required this.post, this.from});
+
+  final Post post;
+  final String? from;
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
 }
@@ -273,9 +387,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                   (e) => IconButton(
                                     onPressed: () {
                                       if (e == 1) {
-                                        Share.share('${post.title}',
-                                            subject:
-                                                '${post.description}\n\n ${post.file}');
+                                        if (post.link != null)
+                                          Share.share('${post.title}',
+                                              subject: '${post.link}');
                                       } else if (e == 2) {
                                         if (bookmarked) {
                                           model.deleteBookmark(post.id);

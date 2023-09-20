@@ -296,7 +296,8 @@ class ImageVideoAudioPV extends StatelessWidget {
                         if (AppCache.getUser()?.user?.id == e.userId) {
                           push(context, MyPostDetailScreen(post: e));
                         } else {
-                          push(context, PostDetailScreen(post: e));
+                          push(context,
+                              VerticalPageView(post: e, from: 'my-own'));
                         }
                       },
                       child: CachedNetworkImage(
@@ -476,7 +477,7 @@ class MyPostDetailScreen extends StatelessWidget {
             color: AppColors.black,
           ),
           SizedBox(height: 20.h),
-          Expanded(child: PostDetailScreen(post: post))
+          Expanded(child: VerticalPageView(post: post, from: 'recent'))
         ],
       ),
     );

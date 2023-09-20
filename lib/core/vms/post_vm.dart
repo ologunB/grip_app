@@ -180,6 +180,20 @@ class PostViewModel extends BaseModel {
     }
   }
 
+  Future<List<Post>?> getNextPosts(int? id, String? type) async {
+    setBusy(true);
+    try {
+      List<Post>? p = await _api.getNextPosts(id, type);
+      setBusy(false);
+      return p;
+    } on GripException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+      return null;
+    }
+  }
+
   LinkedHashMap<int, Comment>? comments;
   Future<bool> createComment(Map<String, dynamic> a) async {
     int tempId = DateTime.now().microsecondsSinceEpoch;

@@ -154,8 +154,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisCount: 2,
                     mainAxisSpacing: 4.h,
                     crossAxisSpacing: 4.h,
-                    children:
-                        model.posts!.map((e) => HomeItem(post: e)).toList(),
+                    children: model.posts!
+                        .map((e) => HomeItem(
+                            post: e, from: ['recent', 'recommended'][index]))
+                        .toList(),
                   )
                 : Container(
                     height: 200.h,
@@ -172,8 +174,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisCount: 2,
                     mainAxisSpacing: 4.h,
                     crossAxisSpacing: 4.h,
-                    children:
-                        model.posts!.map((e) => HomeItem(post: e)).toList(),
+                    children: model.posts!
+                        .map((e) => HomeItem(
+                            post: e, from: ['recent', 'recommended'][index]))
+                        .toList(),
                   )
       ],
     );
@@ -181,15 +185,16 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class HomeItem extends StatelessWidget {
-  const HomeItem({super.key, required this.post});
+  const HomeItem({super.key, required this.post, required this.from});
 
   final Post post;
+  final String from;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        push(context, PostDetailScreen(post: post));
+        push(context, VerticalPageView(post: post, from: from));
       },
       child: IntrinsicHeight(
         child: Stack(

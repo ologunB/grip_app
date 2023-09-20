@@ -196,6 +196,28 @@ class PostApi extends BaseAPI {
     }
   }
 
+  Future<List<Post>> getNextPosts(int? id, String? type) async {
+    String url = 'post/next/$id/$type?page=1&limit=10';
+    print(url);
+    try {
+      final Response res = await dio().get(url);
+      switch (res.statusCode) {
+        case 200:
+          List<Post> dirs = [];
+          log(res.data);
+          (res.data['data'] ?? []).forEach((a) {
+            dirs.add(Post.fromJson(a));
+          });
+          return dirs;
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw GripException(DioErrorUtil.handleError(e));
+    }
+  }
+
   Future<String> likePost(int? id) async {
     String url = 'like';
     try {

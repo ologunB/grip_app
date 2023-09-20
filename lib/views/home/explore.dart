@@ -124,7 +124,7 @@ class ExploreItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        push(context, PostDetailScreen(post: post));
+        push(context, VerticalPageView(post: post, from: 'explore'));
       },
       child: Stack(
         alignment: Alignment.bottomCenter,
