@@ -48,8 +48,8 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
                   child: Row(
                     children: [
                       ModalRoute.of(context)?.settings.arguments == true
-                          ? const CloseButton()
-                          : const BackButton(),
+                          ? const CloseButton(color: Colors.black)
+                          : const BackButton(color: Colors.black),
                       HexText(
                         'Bible',
                         fontSize: 28.sp,
@@ -193,7 +193,7 @@ class _DownloadButtonState extends State<DownloadButton> {
                       !isDownload
                           ? 'Download'
                           : !isChosen
-                              ? 'Chose'
+                              ? 'Choose'
                               : 'Chosen',
                       fontSize: 16.sp,
                       color: isChosen && isDownload

@@ -1,14 +1,18 @@
 import '../widgets/hex_text.dart';
 
 class VersesScreen extends StatefulWidget {
-  const VersesScreen(
-      {super.key,
-      required this.type,
-      required this.data,
-      required this.popNumber});
+  const VersesScreen({
+    super.key,
+    required this.type,
+    required this.data,
+    required this.popNumber,
+    required this.value,
+  });
 
   final String type;
   final List<String> data;
+  final List<int> value;
+
   final int popNumber;
   @override
   State<VersesScreen> createState() => _VersesScreenState();
@@ -33,7 +37,7 @@ class _VersesScreenState extends State<VersesScreen> {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
         title: HexText(
-          widget.type == 'verse' ? 'Verse' : 'Chapter',
+          widget.type == 'verse' ? 'Choose Verse' : 'Choose Chapter',
           fontSize: 20.sp,
           color: AppColors.black,
           fontWeight: FontWeight.w600,
@@ -47,21 +51,26 @@ class _VersesScreenState extends State<VersesScreen> {
             child: Wrap(
               spacing: 24.h,
               runSpacing: 24.h,
-              children: List.generate(150, (i) => i + 1)
+              children: List.generate(
+                      widget.type == 'verse'
+                          ? widget.value[int.parse(widget.data[1])]
+                          : widget.value.length,
+                      (i) => i + 1)
                   .map(
                     (e) => InkWell(
                       onTap: () {
                         if (widget.type == 'verse') {
-                          data.add(e.toString());
+                          data.insert(2, e.toString());
                           for (dynamic _ in List.filled(widget.popNumber, 0)) {
                             Navigator.pop(context, data);
                           }
                         } else {
-                          data.add(e.toString());
+                          data.insert(1, e.toString());
                           push(
                             context,
                             VersesScreen(
                               type: 'verse',
+                              value: widget.value,
                               data: data,
                               popNumber: widget.popNumber,
                             ),

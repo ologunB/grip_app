@@ -449,6 +449,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               : VersesScreen(
                                   data: [book.text],
                                   type: 'chapter',
+                                  value: Utils.allBooks[book.text],
                                   popNumber: 2,
                                 ),
                           true);
@@ -477,10 +478,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                     data: [book.text],
                                     type: 'chapter',
                                     popNumber: 2,
+                                    value: Utils.allBooks[book.text],
                                   )
                                 : VersesScreen(
                                     type: 'verse',
                                     data: [book.text, chapter.text],
+                                    value: Utils.allBooks[book.text],
                                     popNumber: 1,
                                   ),
                         true,

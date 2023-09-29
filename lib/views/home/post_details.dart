@@ -154,7 +154,7 @@ class _VerticalPageViewState extends State<VerticalPageView> {
         ...all
             .map(
               (e) => PostDetailScreen(
-                post: widget.post,
+                post: e,
                 from: widget.from,
               ),
             )
@@ -388,7 +388,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     onPressed: () {
                                       if (e == 1) {
                                         if (post.link != null)
-                                          Share.share('${post.title}',
+                                          Share.share('${post.link}',
                                               subject: '${post.link}');
                                       } else if (e == 2) {
                                         if (bookmarked) {
@@ -509,7 +509,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
         builder: (_, PostViewModel model, __) => Container(
           //  height: MediaQuery.of(context).size.height * .8,
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * .8,
+            maxHeight: MediaQuery.of(context).size.height * .7,
           ),
           padding: MediaQuery.of(context).viewInsets,
           child: model.busy
@@ -659,6 +659,8 @@ class _CommentsDialogState extends State<CommentsDialog> {
                           'postId': post.id,
                           'comment': controller.text.trim(),
                         });
+                        setState(() {});
+
                         controller.clear();
                         scrollController.animateTo(
                           scrollController.position.maxScrollExtent + 60.h,
@@ -824,7 +826,7 @@ class DevotionalDialog extends StatelessWidget {
         HexText(
           objectbox
               .getOneVerse(post.bibleBook!, int.parse(post.bibleChapter!),
-                  verse: int.parse(post.bibleChapter!))
+                  verse: int.parse(post.bibleVerse!))
               .text,
           fontSize: 14.sp,
           color: AppColors.black,

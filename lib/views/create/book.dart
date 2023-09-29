@@ -1,8 +1,7 @@
-import 'package:hexcelon/views/create/verses.dart';
-
 import '../bible/one_version.dart';
 import '../widgets/grip_divider.dart';
 import '../widgets/hex_text.dart';
+import 'verses.dart';
 
 class ChooseBookScreen extends StatefulWidget {
   const ChooseBookScreen({super.key});
@@ -103,6 +102,7 @@ class _ChooseBookScreenState extends State<ChooseBookScreen> {
                   itemBuilder: (c, i) {
                     Map d = Utils.splitBooks().first;
                     String name = d.keys.toList()[i];
+
                     return ChapterItem(
                       name: name,
                       value: d.values.toList()[i],
@@ -111,6 +111,7 @@ class _ChooseBookScreenState extends State<ChooseBookScreen> {
                           context,
                           VersesScreen(
                             type: 'chapter',
+                            value: d.values.toList()[i],
                             data: [name],
                             popNumber: 3,
                           ),
@@ -135,6 +136,7 @@ class _ChooseBookScreenState extends State<ChooseBookScreen> {
                         push(
                           context,
                           VersesScreen(
+                            value: d.values.toList()[i],
                             type: 'chapter',
                             data: [name],
                             popNumber: 3,

@@ -161,7 +161,6 @@ class PostApi extends BaseAPI {
     print(url);
     try {
       final Response res = await dio().get(url);
-      log(res.data);
       switch (res.statusCode) {
         case 200:
           return Post.fromJson(res.data['data']);
@@ -182,7 +181,6 @@ class PostApi extends BaseAPI {
       switch (res.statusCode) {
         case 200:
           List<Post> dirs = [];
-          log(res.data);
           (res.data['data'] ?? []).forEach((a) {
             dirs.add(Post.fromJson(a));
           });
@@ -197,7 +195,7 @@ class PostApi extends BaseAPI {
   }
 
   Future<List<Post>> getNextPosts(int? id, String? type) async {
-    String url = 'post/next/$id/$type?page=1&limit=10';
+    String url = 'post/prev/$id/$type?page=1&limit=10';
     print(url);
     try {
       final Response res = await dio().get(url);

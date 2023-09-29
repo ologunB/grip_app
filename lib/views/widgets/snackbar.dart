@@ -33,7 +33,7 @@ void errorSnackBar(BuildContext context, String title) {
     flushbarStyle: FlushbarStyle.FLOATING,
     flushbarPosition: FlushbarPosition.TOP,
     duration: const Duration(seconds: 2),
-    backgroundColor: const Color(0xFFE3CDC6),
+    backgroundColor: Colors.white,
   );
 
   if (!flushBar.isShowing()) {
@@ -74,7 +74,7 @@ void successSnackBar(BuildContext context, String title) {
     flushbarStyle: FlushbarStyle.FLOATING,
     flushbarPosition: FlushbarPosition.TOP,
     duration: const Duration(seconds: 4),
-    backgroundColor: const Color(0xFFE3CDC6),
+    backgroundColor: Colors.white,
   );
 
   if (!flushBar.isShowing()) {
