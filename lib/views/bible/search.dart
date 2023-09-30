@@ -19,72 +19,75 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size(0, 55.h),
-        child: SafeArea(
-          child: Row(
-            children: [
-              SizedBox(width: 25.h),
-              Expanded(
-                child: CupertinoTextField(
-                  prefix: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.h),
-                        child: Image.asset(
-                          'search'.png,
-                          height: 24.h,
-                          color: const Color(0xffE0E0E0),
+        preferredSize: Size(0, 60.h),
+        child: Padding(
+          padding: EdgeInsets.only(top: 12.h),
+          child: SafeArea(
+            child: Row(
+              children: [
+                SizedBox(width: 25.h),
+                Expanded(
+                  child: CupertinoTextField(
+                    prefix: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.h),
+                          child: Image.asset(
+                            'search'.png,
+                            height: 24.h,
+                            color: const Color(0xffE0E0E0),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  autofocus: true,
-                  placeholder: 'Search',
-                  textInputAction: TextInputAction.search,
-                  controller: controller,
-                  placeholderStyle: TextStyle(
-                    fontFamily: 'Nova',
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xffE0E0E0),
-                  ),
-                  padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(20.h),
-                    border: Border.all(
+                      ],
+                    ),
+                    autofocus: true,
+                    placeholder: 'Search',
+                    textInputAction: TextInputAction.search,
+                    controller: controller,
+                    placeholderStyle: TextStyle(
+                      fontFamily: 'Nova',
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
                       color: const Color(0xffE0E0E0),
                     ),
+                    padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(20.h),
+                      border: Border.all(
+                        color: const Color(0xffE0E0E0),
+                      ),
+                    ),
+                    maxLines: 3,
+                    minLines: 1,
+                    onChanged: (a) {
+                      a = a.trim();
+                      if (a.isNotEmpty) {
+                        filtered.clear();
+                        filtered = objectbox.searchText(a);
+                      } else {
+                        filtered.clear();
+                      }
+                      setState(() {});
+                    },
                   ),
-                  maxLines: 3,
-                  minLines: 1,
-                  onChanged: (a) {
-                    a = a.trim();
-                    if (a.isNotEmpty) {
-                      filtered.clear();
-                      filtered = objectbox.searchText(a);
-                    } else {
-                      filtered.clear();
-                    }
-                    setState(() {});
+                ),
+                SizedBox(width: 10.h),
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
                   },
+                  child: HexText(
+                    'Cancel',
+                    fontSize: 16.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              SizedBox(width: 10.h),
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: HexText(
-                  'Cancel',
-                  fontSize: 16.sp,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(width: 25.h),
-            ],
+                SizedBox(width: 25.h),
+              ],
+            ),
           ),
         ),
       ),

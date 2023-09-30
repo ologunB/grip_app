@@ -2,7 +2,6 @@ import 'package:hexcelon/views/bible/bible_home.dart';
 
 import '../../core/storage/local_storage.dart';
 import '../../main.dart';
-import '../create/media.dart';
 import '../profile/creator_profile.dart';
 import '../profile/profile.dart';
 import '../widgets/hex_text.dart';
@@ -49,15 +48,6 @@ class _UserLayoutState extends State<UserLayout> {
             .toList(),
       ),
       backgroundColor: AppColors.white,
-      floatingActionButton: AppCache.getUser()?.user?.role == 'user'
-          ? null
-          : FloatingActionButton(
-              onPressed: () {
-                push(context, const ChooseMediaScreen(), true);
-              },
-              backgroundColor: AppColors.primary,
-              child: Icon(Icons.add_rounded, size: 40.h, color: Colors.white),
-            ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.white,
         selectedItemColor: AppColors.black,

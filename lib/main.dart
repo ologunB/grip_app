@@ -78,7 +78,7 @@ class _AppState extends State<App> {
             navigatorKey: AppNavigator.navKey,
             home: AppCache.getUser() == null
                 ? const OnboardScreen()
-                : const UserLayout()), // AgentMainLayout ClientMainLayout
+                : const UserLayout()),
       ),
     );
   }

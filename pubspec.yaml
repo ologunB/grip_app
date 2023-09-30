@@ -52,6 +52,7 @@ dependencies:
   ffmpeg_kit_flutter_min: ^5.1.0
   firebase_dynamic_links: ^5.3.5
   firebase_core: ^2.15.1
+  like_button: ^2.0.5
   device_info:
 
 dev_dependencies:

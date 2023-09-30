@@ -131,15 +131,14 @@ class ObjectBox {
 
   Verse getOneVerse(String book, int chapter, {int? verse}) {
     Query<Verse> query = _verseBox
-        .query(Verse_.chapter.equals(chapter).and(Verse_.bookName
-            .equals(book)) /*   .and(Verse_.verse.equals(verse ?? 1))*/)
+        .query(Verse_.chapter
+            .equals(chapter)
+            .and(Verse_.bookName.equals(book))
+            .and(Verse_.verse.equals(verse ?? 1)))
         .build();
     List<Verse> all = query.find();
     query.close();
 
-    all.forEach((e) {
-      print(e.verseName);
-    });
     print([book, chapter, verse, all]);
     return all.isEmpty ? Verse('Genesis', '1', '1', '', 1, 1, 1, 1) : all.first;
   }

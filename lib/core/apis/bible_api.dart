@@ -11,12 +11,13 @@ class BibleApi extends BaseAPI {
         onReceiveProgress: (a, b) {
           String abbr = url.split('/').last.split('.').first;
           Map<String, int> present = settingsVM.currentDownloads;
-          int percent = ((a / b) * 100).floor();
+          int percent = ((a / b) * 100).round();
           present.update(abbr, (a) => percent, ifAbsent: () => percent);
           settingsVM.currentDownloads = present;
-          if (percent > 98) present.remove(abbr);
+          if (percent > 99) present.remove(abbr);
           if (percent % 10 == 0) print('$abbr is $percent%');
-          if (percent < 5)  AppCache.setBibleWeights(abbr, b);
+          if (percent < 5) AppCache.setBibleWeights(abbr, b);
+          if (percent == 100) AppCache.setDefaultBible(abbr);
         },
       );
 

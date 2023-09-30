@@ -241,12 +241,29 @@ class _VersesScreenState extends State<VersesScreen> {
                       color: (v.verse == verse && v.chapter == chapter)
                           ? AppColors.primary.withOpacity(.2)
                           : null,
-                      child: HexText(
+                      child: SelectableText(
                         '${v.verse}. ${v.text}',
-                        fontSize: bibleFontSize().sp,
-                        color: Colors.black,
                         key: ValueKey(v.absoluteVerse),
-                        fontWeight: FontWeight.w400,
+                        contextMenuBuilder: (_, EditableTextState a) {
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                color: Colors.white,
+                                child: Text(
+                                  'hjjhjk',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                        style: TextStyle(
+                          fontFamily: 'Nova',
+                          fontSize: bibleFontSize().sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     )
                   ],

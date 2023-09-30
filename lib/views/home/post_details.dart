@@ -1,6 +1,7 @@
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:chewie_audio/chewie_audio.dart';
 import 'package:hexcelon/core/models/login_model.dart';
+import 'package:like_button/like_button.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../core/models/comment_model.dart';
@@ -22,28 +23,32 @@ class MediaItem extends StatefulWidget {
 }
 
 class _MediaItemState extends State<MediaItem> {
-  late VideoPlayerController videoPlayerController;
+  VideoPlayerController? videoPlayerController;
   CustomVideoPlayerController? customVideoPlayerController;
   ChewieAudioController? chewieAudioController;
 
   @override
   void initState() {
     super.initState();
-    videoPlayerController =
-        VideoPlayerController.networkUrl(Uri.parse(widget.post!.file!))
-          ..initialize().then((value) => setState(() {}));
+
     if (widget.post?.fileType == 'video') {
+      videoPlayerController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.post!.file!))
+            ..initialize().then((value) => setState(() {}));
       customVideoPlayerController = CustomVideoPlayerController(
         context: context,
-        videoPlayerController: videoPlayerController,
+        videoPlayerController: videoPlayerController!,
         customVideoPlayerSettings: const CustomVideoPlayerSettings(
           placeholderWidget: CircularProgressIndicator(),
           showSeekButtons: true,
         ),
       );
     } else if (widget.post?.fileType == 'audio') {
+      videoPlayerController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.post!.file!))
+            ..initialize().then((value) => setState(() {}));
       chewieAudioController = ChewieAudioController(
-        videoPlayerController: videoPlayerController,
+        videoPlayerController: videoPlayerController!,
         autoPlay: true,
         looping: false,
         materialProgressColors: ChewieProgressColors(
@@ -65,7 +70,7 @@ class _MediaItemState extends State<MediaItem> {
   @override
   void dispose() {
     super.dispose();
-    videoPlayerController.dispose();
+    videoPlayerController?.dispose();
     customVideoPlayerController?.dispose();
     chewieAudioController?.dispose();
   }
@@ -320,6 +325,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           color: AppColors.white,
                           fontWeight: FontWeight.w800,
                         ),
+                        SizedBox(height: 5.h),
+                        HexText(
+                          '${post.description}',
+                          fontSize: 13.sp,
+                          color: AppColors.white,
+                          maxLines: 3,
+                          fontWeight: FontWeight.w500,
+                        ),
                         SizedBox(height: 22.h),
                         if (post.fileType == 'video') Image.asset('slide'.png)
                       ],
@@ -387,9 +400,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                   (e) => IconButton(
                                     onPressed: () {
                                       if (e == 1) {
-                                        if (post.link != null)
+                                        if (post.link != null) {
                                           Share.share('${post.link}',
-                                              subject: '${post.link}');
+                                              subject: '${post.title}\n');
+                                        }
                                       } else if (e == 2) {
                                         if (bookmarked) {
                                           model.deleteBookmark(post.id);
@@ -414,11 +428,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                             return CommentsDialog(post: post);
                                           },
                                         );
-                                      } else if (e == 4) {
-                                        model.likePost(post.id);
-
-                                        liked = !liked;
-                                        setState(() {});
                                       } else if (e == 5) {
                                         showModalBottomSheet(
                                           backgroundColor: Colors.white,
@@ -437,14 +446,35 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                         );
                                       } else {}
                                     },
-                                    icon: Image.asset(
-                                      e == 4 && liked
-                                          ? 'like'.png
-                                          : e == 2 && bookmarked
-                                              ? 'bookmark'.png
-                                              : 'v$e'.png,
-                                      height: 26.h,
-                                    ),
+                                    icon: e == 4
+                                        ? LikeButton(
+                                            onTap: (a) async {
+                                              model.likePost(post.id);
+                                              liked = !liked;
+                                              setState(() {});
+                                              if (liked) {
+                                                print('vibrate');
+                                                HapticFeedback.mediumImpact();
+                                              }
+                                              return Future.value(liked);
+                                            },
+                                            size: 26.h,
+                                            isLiked: liked,
+                                            likeBuilder: (_) {
+                                              return Image.asset(
+                                                liked ? 'like'.png : 'v4'.png,
+                                                height: 26.h,
+                                              );
+                                            },
+                                          )
+                                        : Image.asset(
+                                            e == 4 && liked
+                                                ? 'like'.png
+                                                : e == 2 && bookmarked
+                                                    ? 'bookmark'.png
+                                                    : 'v$e'.png,
+                                            height: 26.h,
+                                          ),
                                   ),
                                 )
                                 .toList(),

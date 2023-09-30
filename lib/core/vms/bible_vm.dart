@@ -1,7 +1,6 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:device_info/device_info.dart';
+import 'package:hexcelon/core/vms/settings_vm.dart';
+import 'package:hexcelon/views/widgets/hex_text.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:watcher/watcher.dart';
@@ -32,10 +31,12 @@ class BibleViewModel extends BaseModel {
     String path = await devicePath;
     final Directory savedDir = Directory('$path/Bibles');
     final bool dirExists = await savedDir.exists();
-    // savedDir.deleteSync(recursive: true);
+    if (false) {
+      if (dirExists) savedDir.deleteSync(recursive: true);
+      AppCache.setDefaultBible(null);
+    }
     if (!dirExists) savedDir.create();
-    var watcher = DirectoryWatcher(savedDir.path);
-    eventWatcher = watcher.events.listen((we) {
+    eventWatcher = DirectoryWatcher(savedDir.path).events.listen((we) {
       if (we.type == ChangeType.ADD) {
         downloaded.add(we.path.split('/').last);
       } else if (we.type == ChangeType.REMOVE) {
@@ -53,6 +54,12 @@ class BibleViewModel extends BaseModel {
     }
     downloaded =
         savedDir.listSync().map((e) => e.path.split('/').last).toList();
+    if (downloaded.isEmpty) {
+      Version v = Utils.allVersions().firstWhere((e) => e.abbr == 'kjv');
+      Map<String, int> present = settingsVM.currentDownloads;
+      present.update(v.abbr!, (a) => 0, ifAbsent: () => 0);
+      downloadBible(v);
+    }
 
     setBusy(false);
   }

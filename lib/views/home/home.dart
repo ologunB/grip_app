@@ -3,6 +3,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import '../../core/models/post_model.dart';
 import '../../core/vms/post_vm.dart';
+import '../create/media.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
 import 'notification.dart';
@@ -21,6 +22,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+      floatingActionButton: AppCache.getUser()?.user?.role == 'user'
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                push(context, const ChooseMediaScreen(), true);
+              },
+              backgroundColor: AppColors.primary,
+              child: Icon(Icons.add_rounded, size: 40.h, color: Colors.white),
+            ),
       appBar: AppBar(
         elevation: 0,
         centerTitle: false,
@@ -64,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(height: 20.h),
               Row(
                 children: [
                   InkWell(

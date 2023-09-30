@@ -202,7 +202,6 @@ class PostApi extends BaseAPI {
       switch (res.statusCode) {
         case 200:
           List<Post> dirs = [];
-          log(res.data);
           (res.data['data'] ?? []).forEach((a) {
             dirs.add(Post.fromJson(a));
           });
@@ -220,7 +219,6 @@ class PostApi extends BaseAPI {
     String url = 'like';
     try {
       final Response res = await dio().post(url, data: {'postId': id});
-      log(res.data);
       switch (res.statusCode) {
         case 200:
           return res.data['message'];
