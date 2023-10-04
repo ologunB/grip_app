@@ -236,9 +236,9 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
                         },
                         controller: pageController,
                         children: [
-                          ImageVideoAudioPV(userPosts: model.posts, index: 0),
-                          ImageVideoAudioPV(userPosts: model.posts, index: 1),
-                          ImageVideoAudioPV(userPosts: model.posts, index: 2),
+                          ImageVideoAudioPV(model: model, index: 0),
+                          ImageVideoAudioPV(model: model, index: 1),
+                          ImageVideoAudioPV(model: model, index: 2),
                         ],
                       ),
           ),
@@ -267,14 +267,15 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
 }
 
 class ImageVideoAudioPV extends StatelessWidget {
-  const ImageVideoAudioPV({super.key, this.userPosts, required this.index});
-  final List<Post>? userPosts;
+  const ImageVideoAudioPV(
+      {super.key, required this.model, required this.index});
+  final PostViewModel model;
   final int index;
 
   @override
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width - 22.h) / 3;
-    List<Post> posts = userPosts ?? [];
+    List<Post> posts = model.posts ?? [];
     String type = index == 0
         ? 'image'
         : index == 1
@@ -292,12 +293,19 @@ class ImageVideoAudioPV extends StatelessWidget {
               children: posts
                   .map(
                     (e) => InkWell(
-                      onTap: () {
+                      onTap: () async {
                         if (AppCache.getUser()?.user?.id == e.userId) {
                           push(context, MyPostDetailScreen(post: e));
                         } else {
-                          push(context,
+                          Map? d = await push(context,
                               VerticalPageView(post: e, from: 'my-own'));
+
+                          if (d == null) return;
+                          if (d.containsKey('delete')) {
+                            model.posts
+                                ?.removeWhere((a) => a.id == d['delete']);
+                            model.setBusy(false);
+                          }
                         }
                       },
                       child: CachedNetworkImage(

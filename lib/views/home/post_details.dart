@@ -346,8 +346,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                   top: MediaQuery.of(context).padding.top +
                                       34.h),
                               child: InkWell(
-                                onTap: () {
-                                  showModalBottomSheet(
+                                onTap: () async {
+                                  dynamic d = await showModalBottomSheet(
                                     backgroundColor: Colors.white,
                                     context: context,
                                     useRootNavigator: true,
@@ -362,6 +362,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       return EditPostDialog(post: post);
                                     },
                                   );
+                                  if (d == 'deleted') {
+                                    Navigator.pop(context, {'delete': post.id});
+                                  }
+                                  if (d == 'edited') {
+                                    Navigator.pop(context, {'edit': post});
+                                  }
                                 },
                                 child: Image.asset('v0'.png, height: 32.h),
                               ),
@@ -944,7 +950,7 @@ class EditPostDialog extends StatelessWidget {
             onPressed: () async {
               bool a = await model.deletePost(post.id);
               if (a) {
-                Navigator.pop(context);
+                Navigator.pop(context, 'deleted');
                 successSnackBar(context, 'Post has been deleted');
               }
             },

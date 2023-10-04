@@ -140,6 +140,32 @@ class PostViewModel extends BaseModel {
     }
   }
 
+  List? searchResults;
+  int current = 0;
+  List<int> following = [];
+
+  Future<void> search(String q) async {
+    setBusy(true);
+    try {
+      searchResults = await _api.search(q);
+      if (searchResults!.first.isEmpty) {
+        current = 1;
+      } else if (searchResults!.last.isEmpty) {
+        current = 0;
+      }
+      searchResults!.last.forEach((UserModel u) {
+        if (u.isFollow ?? false) {
+          following.add(u.id!);
+        }
+      });
+      setBusy(false);
+    } on GripException catch (e) {
+      error = e.message;
+      setBusy(false);
+      showVMSnackbar(e.message, err: true);
+    }
+  }
+
   late Post post;
   Future<void> getPostDetails(int? id) async {
     if (settingsVM.currentPosts[id] != null) {

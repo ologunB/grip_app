@@ -58,7 +58,6 @@ class BaseAPI {
     try {
       final Response<dynamic> res = await Dio().post<dynamic>(url,
           data: {'refreshToken': AppCache.getUser()?.token});
-      log(res.data);
       log(res.statusCode);
       switch (res.statusCode) {
         case 200:

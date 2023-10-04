@@ -91,6 +91,7 @@ class _VersesScreenState extends State<VersesScreen> {
     });
   }
 
+  String selectedText = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,58 +220,65 @@ class _VersesScreenState extends State<VersesScreen> {
               openFont = false;
               setState(() {});
             },
-            child: ScrollablePositionedList.builder(
-              itemCount: verses.length,
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              itemBuilder: (context, index) {
-                Verse v = verses[index];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 5.h),
-                    if (v.verse == 1) header(v.chapterName),
-                    AnimatedContainer(
-                      padding: EdgeInsets.only(
-                        top: v.verse == 1 ? 5.h : 0.h,
-                        bottom: 5.h,
-                        right: 25.h,
-                        left: 25.h,
-                      ),
-                      duration: const Duration(seconds: 1),
-                      color: (v.verse == verse && v.chapter == chapter)
-                          ? AppColors.primary.withOpacity(.2)
-                          : null,
-                      child: SelectableText(
-                        '${v.verse}. ${v.text}',
-                        key: ValueKey(v.absoluteVerse),
-                        contextMenuBuilder: (_, EditableTextState a) {
-                          return Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                color: Colors.white,
-                                child: Text(
-                                  'hjjhjk',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                        style: TextStyle(
-                          fontFamily: 'Nova',
+            child: SelectionArea(
+              onSelectionChanged: (value) {
+                selectedText = value?.plainText ?? "";
+              },
+              contextMenuBuilder: (context, editableTextState) {
+                final List<ContextMenuButtonItem> buttonItems =
+                    editableTextState.contextMenuButtonItems;
+                buttonItems.removeWhere(
+                    (e) => e.type == ContextMenuButtonType.selectAll);
+                buttonItems.insert(
+                  0,
+                  ContextMenuButtonItem(
+                    label: 'Share Verse(s)',
+                    onPressed: () {
+                      Share.share(selectedText, subject: 'Bible Verse');
+                    },
+                  ),
+                );
+                return AdaptiveTextSelectionToolbar.buttonItems(
+                  anchors: editableTextState.contextMenuAnchors,
+                  buttonItems: buttonItems,
+                );
+              },
+              child: ScrollablePositionedList.builder(
+                itemCount: verses.length,
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemBuilder: (context, index) {
+                  Verse v = verses[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 5.h),
+                      if (v.verse == 1) header(v.chapterName),
+                      AnimatedContainer(
+                        padding: EdgeInsets.only(
+                          top: v.verse == 1 ? 5.h : 0.h,
+                          bottom: 5.h,
+                          right: 25.h,
+                          left: 25.h,
+                        ),
+                        duration: const Duration(seconds: 1),
+                        color: (v.verse == verse && v.chapter == chapter)
+                            ? AppColors.primary.withOpacity(.2)
+                            : null,
+                        child: HexText(
+                          '${v.verse}. ${v.text}',
+                          key: ValueKey(v.absoluteVerse),
                           fontSize: bibleFontSize().sp,
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                         ),
-                      ),
-                    )
-                  ],
-                );
-              },
-              itemScrollController: itemScrollController,
-              itemPositionsListener: itemPositionsListener,
+                      )
+                    ],
+                  );
+                },
+                itemScrollController: itemScrollController,
+                itemPositionsListener: itemPositionsListener,
+              ),
             ),
           ),
           if (currentChapter != null) header(currentChapter!),

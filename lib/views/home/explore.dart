@@ -2,6 +2,7 @@ import '../../core/models/post_model.dart';
 import '../../core/vms/post_vm.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
+import 'home.dart';
 import 'post_details.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -12,102 +13,126 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
+  TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
-      onModelReady: (a) => a.getPosts(type: 'explore'),
-      builder: (_, PostViewModel model, __) => Scaffold(
-        backgroundColor: AppColors.white,
-        appBar: AppBar(
-          elevation: 0,
+      builder: (_, PostViewModel sModel, __) => BaseView<PostViewModel>(
+        onModelReady: (a) => a.getPosts(type: 'explore'),
+        builder: (_, PostViewModel model, __) => Scaffold(
           backgroundColor: AppColors.white,
-          titleSpacing: 20.h,
-          toolbarHeight: 70.h,
-          centerTitle: false,
-          title: Padding(
-            padding: EdgeInsets.only(top: 16.h),
-            child: CupertinoTextField(
-              prefix: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.h),
-                    child: Image.asset(
-                      'search'.png,
-                      height: 24.h,
-                      color: const Color(0xffE0E0E0),
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: AppColors.white,
+            titleSpacing: 20.h,
+            toolbarHeight: 70.h,
+            centerTitle: false,
+            title: Padding(
+              padding: EdgeInsets.only(top: 16.h),
+              child: CupertinoTextField(
+                prefix: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.h),
+                      child: Image.asset(
+                        'search'.png,
+                        height: 16.h,
+                        color: const Color(0xffE0E0E0),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                placeholder: 'Search',
+                placeholderStyle: TextStyle(
+                  fontFamily: 'Nova',
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xffE0E0E0),
+                ),
+                controller: controller,
+                onTapOutside: (_) => Utils.offKeyboard(),
+                padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20.h),
+                  border: Border.all(color: const Color(0xffE0E0E0)),
+                ),
+                maxLines: 1,
+                minLines: 1,
+                onChanged: (a) {
+                  sModel.search(a);
+                  setState(() {});
+                },
               ),
-              placeholder: 'Search',
-              placeholderStyle: TextStyle(
-                fontFamily: 'Nova',
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xffE0E0E0),
-              ),
-              padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20.h),
-                border: Border.all(color: const Color(0xffE0E0E0)),
-              ),
-              maxLines: 3,
-              minLines: 1,
             ),
           ),
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            return model.getPosts(type: 'explore');
-          },
-          color: AppColors.primary,
-          child: ListView(
-            padding: EdgeInsets.all(25.h),
+          body: Stack(
             children: [
-              model.busy
-                  ? model.posts != null
-                      ? StaggeredGrid.count(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 6.h,
-                          crossAxisSpacing: 6.h,
-                          children: model.posts!
-                              .map((e) => ExploreItem(post: e))
-                              .toList(),
-                        )
-                      : Container(
-                          height: 200.h,
-                          alignment: Alignment.center,
-                          child: const HexProgress(text: 'Getting posts'),
-                        )
-                  : model.posts == null
-                      ? Container(
-                          height: 200.h,
-                          alignment: Alignment.center,
-                          child: const HexError(
-                              text: 'Error occurred getting posts'),
-                        )
-                      : model.posts!.isEmpty
-                          ? Container(
-                              height: 200.h,
-                              alignment: Alignment.center,
-                              child: HexText(
-                                'There are no posts at the moment',
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                                align: TextAlign.center,
-                                color: AppColors.black,
-                              ),
-                            )
-                          : StaggeredGrid.count(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 6.h,
-                              crossAxisSpacing: 6.h,
-                              children: model.posts!
-                                  .map((e) => ExploreItem(post: e))
-                                  .toList(),
-                            ),
+              RefreshIndicator(
+                onRefresh: () async {
+                  return model.getPosts(type: 'explore');
+                },
+                color: AppColors.primary,
+                child: ListView(
+                  padding: EdgeInsets.all(25.h),
+                  children: [
+                    model.busy
+                        ? model.posts != null
+                            ? StaggeredGrid.count(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 6.h,
+                                crossAxisSpacing: 6.h,
+                                children: model.posts!
+                                    .map(
+                                      (e) => ExploreItem(
+                                        post: e,
+                                        model: model,
+                                      ),
+                                    )
+                                    .toList(),
+                              )
+                            : Container(
+                                height: 200.h,
+                                alignment: Alignment.center,
+                                child: const HexProgress(text: 'Getting posts'),
+                              )
+                        : model.posts == null
+                            ? Container(
+                                height: 200.h,
+                                alignment: Alignment.center,
+                                child: const HexError(
+                                    text: 'Error occurred getting posts'),
+                              )
+                            : model.posts!.isEmpty
+                                ? Container(
+                                    height: 200.h,
+                                    alignment: Alignment.center,
+                                    child: HexText(
+                                      'There are no posts at the moment',
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                      align: TextAlign.center,
+                                      color: AppColors.black,
+                                    ),
+                                  )
+                                : StaggeredGrid.count(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 6.h,
+                                    crossAxisSpacing: 6.h,
+                                    children: model.posts!
+                                        .map(
+                                          (e) => ExploreItem(
+                                            post: e,
+                                            model: model,
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                  ],
+                ),
+              ),
+              if (controller.text.isNotEmpty) SearchBody(model: sModel),
             ],
           ),
         ),
@@ -117,14 +142,22 @@ class _ExploreScreenState extends State<ExploreScreen> {
 }
 
 class ExploreItem extends StatelessWidget {
-  const ExploreItem({super.key, required this.post});
+  const ExploreItem({super.key, required this.post, required this.model});
+  final PostViewModel model;
 
   final Post post;
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        push(context, VerticalPageView(post: post, from: 'explore'));
+      onTap: () async {
+        Map? d =
+            await push(context, VerticalPageView(post: post, from: 'explore'));
+
+        if (d == null) return;
+        if (d.containsKey('delete')) {
+          model.posts?.removeWhere((e) => e.id == d['delete']);
+          model.setBusy(false);
+        }
       },
       child: Stack(
         alignment: Alignment.bottomCenter,

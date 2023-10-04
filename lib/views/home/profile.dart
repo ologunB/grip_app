@@ -27,6 +27,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
   void initState() {
     controller = TabController(length: 3, vsync: this);
     user = widget.user;
+    selected = user.isFollow ?? false;
 
     if (settingsVM.currentUsers[user.id] != null) {
       user = settingsVM.currentUsers[user.id]!;
@@ -274,14 +275,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                             setState(() {});
                           },
                           controller: pageController,
-                          children: [
-                            ImageVideoAudioPV(
-                                userPosts: pModel.posts, index: 0),
-                            ImageVideoAudioPV(
-                                userPosts: pModel.posts, index: 1),
-                            ImageVideoAudioPV(
-                                userPosts: pModel.posts, index: 2),
-                          ],
+                          children: [0, 1, 2]
+                              .map((i) =>
+                                  ImageVideoAudioPV(model: pModel, index: i))
+                              .toList(),
                         ),
             ),
           ),

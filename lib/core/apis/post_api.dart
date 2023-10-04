@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:hexcelon/core/models/login_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/comment_model.dart';
@@ -312,6 +313,32 @@ class PostApi extends BaseAPI {
             dirs.add(Post.fromJson(a['post']));
           });
           return dirs;
+        default:
+          throw error(res.data);
+      }
+    } catch (e) {
+      log(e);
+      throw GripException(DioErrorUtil.handleError(e));
+    }
+  }
+
+  Future<List> search(String? q) async {
+    String url = 'search?page=1&limit=1000&search=$q';
+    try {
+      final Response res = await dio().get(url);
+      //   log(res.data);
+      switch (res.statusCode) {
+        case 200:
+          List<Post> ps = [];
+          List<UserModel> us = [];
+
+          (res.data['data']['posts'] ?? []).forEach((a) {
+            ps.add(Post.fromJson(a));
+          });
+          (res.data['data']['users'] ?? []).forEach((a) {
+            us.add(UserModel.fromJson(a));
+          });
+          return [ps, us];
         default:
           throw error(res.data);
       }
