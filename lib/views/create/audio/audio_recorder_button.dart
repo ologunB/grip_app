@@ -1,4 +1,5 @@
 import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart' as rec;
 
 import '../../create/create.dart';
 import '../../widgets/hex_text.dart';
@@ -16,7 +17,7 @@ class AudioRecorderButton extends StatefulWidget {
 class _AudioRecorderButtonState extends State<AudioRecorderButton> {
   final sampleTime = const Duration(milliseconds: 100);
   final animTime = const Duration(milliseconds: 200);
-  Record record = Record();
+  var record = rec.AudioRecorder();
   double waveHeight = 0;
   Timer? timer;
   bool get timerIsActive => timer?.isActive ?? false;
@@ -34,7 +35,9 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
     });
 
     record.onStateChanged().listen((state) {
-      if (state == RecordState.stop && mounted) setState(() => waveHeight = 0);
+      if (state == rec.RecordState.stop && mounted) {
+        setState(() => waveHeight = 0);
+      }
     });
     _checkPermission();
 
@@ -222,7 +225,7 @@ class _AudioRecorderButtonState extends State<AudioRecorderButton> {
 
   void _startRecord() async {
     state = FancyRecorderState.recording;
-    record.start();
+    //  record .start();
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       elapsedTime = Duration(seconds: timer.tick);
       if (elapsedTime.inSeconds >= const Duration(minutes: 3).inSeconds) {

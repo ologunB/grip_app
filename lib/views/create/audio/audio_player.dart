@@ -1,7 +1,7 @@
 import '../../widgets/hex_text.dart';
 
 class AudioSlidePlayer extends StatefulWidget {
-  const AudioSlidePlayer({Key? key, required this.path}) : super(key: key);
+  const AudioSlidePlayer({super.key, required this.path});
   final String path;
 
   @override

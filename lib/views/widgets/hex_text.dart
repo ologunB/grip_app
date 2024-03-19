@@ -23,7 +23,6 @@ export 'package:intl/intl.dart' hide TextDirection;
 export 'package:keyboard_attachable/keyboard_attachable.dart';
 export 'package:pinput/pinput.dart';
 export 'package:provider/provider.dart';
-export 'package:record/record.dart';
 export 'package:share_plus/share_plus.dart';
 export 'package:url_launcher/url_launcher_string.dart';
 
@@ -42,7 +41,7 @@ export 'utils.dart';
 class HexText extends StatelessWidget {
   const HexText(
     this.text, {
-    Key? key,
+    super.key,
     this.color,
     this.letterSpacing,
     this.height,
@@ -55,7 +54,7 @@ class HexText extends StatelessWidget {
     this.fontSize = 14,
     this.fontFamily,
     this.fontStyle,
-  }) : super(key: key);
+  });
 
   final String text;
   final Color? color;

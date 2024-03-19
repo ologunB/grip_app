@@ -2,7 +2,7 @@ import 'package:hexcelon/views/create/create.dart';
 import 'package:hexcelon/views/create/video_edit/main.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_editor_plus/image_editor_plus.dart';
-import 'package:image_editor_plus/utils.dart';
+import 'package:image_editor_plus/options.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../widgets/hex_text.dart';
@@ -98,7 +98,7 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
           ),
           Expanded(
               child: currentIndex == 0
-                  ? const AudioRecorder()
+                  ? const GripAudioRecorder()
                   : const PhotoCamera()),
           Container(
             color: const Color(0xff191919),
@@ -247,22 +247,20 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
                                               .pickFiles(type: FileType.audio);
 
                                       if (picker != null) {
-                                        if (mounted) {
-                                          Uint8List? editedImage =
-                                              await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => VideoEditor(
-                                                  file: File(picker
-                                                      .files.first.path!)),
-                                            ),
-                                          );
-                                          if (editedImage != null) {
-                                            push(
-                                                context,
-                                                CreatePostScreen(
-                                                    file: editedImage));
-                                          }
+                                        Uint8List? editedImage =
+                                            await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => VideoEditor(
+                                                file: File(
+                                                    picker.files.first.path!)),
+                                          ),
+                                        );
+                                        if (editedImage != null) {
+                                          push(
+                                              context,
+                                              CreatePostScreen(
+                                                  file: editedImage));
                                         }
                                       }
                                     }
@@ -317,17 +315,9 @@ class _ChooseMediaScreenState extends State<ChooseMediaScreen> {
           MaterialPageRoute(
             builder: (context) => ImageEditor(
               image: flipAndConvertToBytes(File(file.path)),
-              features: const ImageEditorFeatures(
+              imagePickerOption: const ImagePickerOption(
                 captureFromCamera: false,
-                crop: true,
                 pickFromGallery: true,
-                blur: true,
-                brush: true,
-                emoji: true,
-                filters: true,
-                flip: true,
-                rotate: true,
-                text: true,
               ),
             ),
           ),
