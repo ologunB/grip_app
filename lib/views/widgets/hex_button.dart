@@ -3,7 +3,7 @@ import 'hex_text.dart';
 class HexButton extends StatelessWidget {
   const HexButton(
     this.text, {
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.buttonColor,
     required this.textColor,
@@ -16,7 +16,7 @@ class HexButton extends StatelessWidget {
     this.safeArea,
     this.fontWeight,
     this.rightIcon,
-  }) : super(key: key);
+  });
 
   final String text;
   final Function()? onPressed;

@@ -3,6 +3,7 @@ import 'package:chewie_audio/chewie_audio.dart';
 import 'package:hexcelon/core/models/login_model.dart';
 import 'package:like_button/like_button.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:video_player/video_player.dart';
 
 import '../../core/models/comment_model.dart';
 import '../../core/models/post_model.dart';
@@ -23,7 +24,7 @@ class MediaItem extends StatefulWidget {
 }
 
 class _MediaItemState extends State<MediaItem> {
-  VideoPlayerController? videoPlayerController;
+  var videoPlayerController;
   CustomVideoPlayerController? customVideoPlayerController;
   ChewieAudioController? chewieAudioController;
 
@@ -156,14 +157,12 @@ class _VerticalPageViewState extends State<VerticalPageView> {
         currentPost = all[a];
       },
       children: [
-        ...all
-            .map(
-              (e) => PostDetailScreen(
-                post: e,
-                from: widget.from,
-              ),
-            )
-            .toList(),
+        ...all.map(
+          (e) => PostDetailScreen(
+            post: e,
+            from: widget.from,
+          ),
+        ),
         Scaffold(
           body: busy
               ? Center(
@@ -401,89 +400,86 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       .contains(post.bibleBook) &&
                                   int.tryParse(post.bibleChapter ?? '') != null)
                                 5
-                            ]
-                                .map(
-                                  (e) => IconButton(
-                                    onPressed: () {
-                                      if (e == 1) {
-                                        if (post.link != null) {
-                                          Share.share('${post.link}',
-                                              subject: '${post.title}\n');
-                                        }
-                                      } else if (e == 2) {
-                                        if (bookmarked) {
-                                          model.deleteBookmark(post.id);
-                                        } else {
-                                          model.addBookmark(post.id);
-                                        }
-                                        bookmarked = !bookmarked;
-                                        setState(() {});
-                                      } else if (e == 3) {
-                                        showModalBottomSheet(
-                                          backgroundColor: Colors.white,
-                                          context: context,
-                                          useRootNavigator: true,
-                                          isScrollControlled: true,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(50.h),
-                                              topLeft: Radius.circular(50.h),
-                                            ),
-                                          ),
-                                          builder: (c) {
-                                            return CommentsDialog(post: post);
-                                          },
-                                        );
-                                      } else if (e == 5) {
-                                        showModalBottomSheet(
-                                          backgroundColor: Colors.white,
-                                          context: context,
-                                          useRootNavigator: true,
-                                          isScrollControlled: true,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(50.h),
-                                              topLeft: Radius.circular(50.h),
-                                            ),
-                                          ),
-                                          builder: (c) {
-                                            return DevotionalDialog(post: post);
-                                          },
-                                        );
-                                      } else {}
-                                    },
-                                    icon: e == 4
-                                        ? LikeButton(
-                                            onTap: (a) async {
-                                              model.likePost(post.id);
-                                              liked = !liked;
-                                              setState(() {});
-                                              if (liked) {
-                                                print('vibrate');
-                                                HapticFeedback.mediumImpact();
-                                              }
-                                              return Future.value(liked);
-                                            },
-                                            size: 26.h,
-                                            isLiked: liked,
-                                            likeBuilder: (_) {
-                                              return Image.asset(
-                                                liked ? 'like'.png : 'v4'.png,
-                                                height: 26.h,
-                                              );
-                                            },
-                                          )
-                                        : Image.asset(
-                                            e == 4 && liked
-                                                ? 'like'.png
-                                                : e == 2 && bookmarked
-                                                    ? 'bookmark'.png
-                                                    : 'v$e'.png,
+                            ].map(
+                              (e) => IconButton(
+                                onPressed: () {
+                                  if (e == 1) {
+                                    if (post.link != null) {
+                                      Share.share('${post.link}',
+                                          subject: '${post.title}\n');
+                                    }
+                                  } else if (e == 2) {
+                                    if (bookmarked) {
+                                      model.deleteBookmark(post.id);
+                                    } else {
+                                      model.addBookmark(post.id);
+                                    }
+                                    bookmarked = !bookmarked;
+                                    setState(() {});
+                                  } else if (e == 3) {
+                                    showModalBottomSheet(
+                                      backgroundColor: Colors.white,
+                                      context: context,
+                                      useRootNavigator: true,
+                                      isScrollControlled: true,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(50.h),
+                                          topLeft: Radius.circular(50.h),
+                                        ),
+                                      ),
+                                      builder: (c) {
+                                        return CommentsDialog(post: post);
+                                      },
+                                    );
+                                  } else if (e == 5) {
+                                    showModalBottomSheet(
+                                      backgroundColor: Colors.white,
+                                      context: context,
+                                      useRootNavigator: true,
+                                      isScrollControlled: true,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(50.h),
+                                          topLeft: Radius.circular(50.h),
+                                        ),
+                                      ),
+                                      builder: (c) {
+                                        return DevotionalDialog(post: post);
+                                      },
+                                    );
+                                  } else {}
+                                },
+                                icon: e == 4
+                                    ? LikeButton(
+                                        onTap: (a) async {
+                                          model.likePost(post.id);
+                                          liked = !liked;
+                                          setState(() {});
+                                          if (liked) {
+                                            HapticFeedback.mediumImpact();
+                                          }
+                                          return Future.value(liked);
+                                        },
+                                        size: 26.h,
+                                        isLiked: liked,
+                                        likeBuilder: (_) {
+                                          return Image.asset(
+                                            liked ? 'like'.png : 'v4'.png,
                                             height: 26.h,
-                                          ),
-                                  ),
-                                )
-                                .toList(),
+                                          );
+                                        },
+                                      )
+                                    : Image.asset(
+                                        e == 4 && liked
+                                            ? 'like'.png
+                                            : e == 2 && bookmarked
+                                                ? 'bookmark'.png
+                                                : 'v$e'.png,
+                                        height: 26.h,
+                                      ),
+                              ),
+                            ),
                           ],
                         ),
                       ),

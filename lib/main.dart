@@ -47,10 +47,7 @@ class _AppState extends State<App> {
       Post p = Post.fromJson(jsonDecode(d['data']!));
       if (p.title == null) return;
       push(AppNavigator.navKey.currentContext!, PostDetailScreen(post: p));
-    }).onError((error) {
-      print('onLink error');
-      print(error.message);
-    });
+    }).onError((_) {});
   }
 
   @override

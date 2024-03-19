@@ -73,7 +73,8 @@ class _VideoEditorState extends State<VideoEditor> {
     await ExportService.runFFmpegCommand(
       await config.getExecuteConfig(),
       onProgress: (stats) {
-        _exportingProgress.value = config.getFFmpegProgress(stats.getTime());
+        _exportingProgress.value =
+            config.getFFmpegProgress(stats.getTime().toInt());
       },
       onError: (e, s) => _showErrorSnackBar("Error on export video :("),
       onCompleted: (file) async {
@@ -87,8 +88,8 @@ class _VideoEditorState extends State<VideoEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         backgroundColor: Colors.black,
         body: _controller.initialized

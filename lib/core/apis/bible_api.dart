@@ -15,7 +15,7 @@ class BibleApi extends BaseAPI {
           present.update(abbr, (a) => percent, ifAbsent: () => percent);
           settingsVM.currentDownloads = present;
           if (percent > 99) present.remove(abbr);
-          if (percent % 10 == 0) print('$abbr is $percent%');
+          if (percent % 10 == 0) log('$abbr is $percent%');
           if (percent < 5) AppCache.setBibleWeights(abbr, b);
           if (percent == 100) AppCache.setDefaultBible(abbr);
         },

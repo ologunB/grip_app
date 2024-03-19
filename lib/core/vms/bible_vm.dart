@@ -31,10 +31,7 @@ class BibleViewModel extends BaseModel {
     String path = await devicePath;
     final Directory savedDir = Directory('$path/Bibles');
     final bool dirExists = await savedDir.exists();
-    if (false) {
-      if (dirExists) savedDir.deleteSync(recursive: true);
-      AppCache.setDefaultBible(null);
-    }
+
     if (!dirExists) savedDir.create();
     eventWatcher = DirectoryWatcher(savedDir.path).events.listen((we) {
       if (we.type == ChangeType.ADD) {

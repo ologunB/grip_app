@@ -159,7 +159,6 @@ class PostApi extends BaseAPI {
 
   Future<Post> getPostDetails(int? id) async {
     String url = 'post/$id';
-    print(url);
     try {
       final Response res = await dio().get(url);
       switch (res.statusCode) {
@@ -176,7 +175,6 @@ class PostApi extends BaseAPI {
 
   Future<List<Post>> getPosts({String? type}) async {
     String url = 'post/$type';
-    print(url);
     try {
       final Response res = await dio().get(url);
       switch (res.statusCode) {
@@ -197,7 +195,6 @@ class PostApi extends BaseAPI {
 
   Future<List<Post>> getNextPosts(int? id, String? type) async {
     String url = 'post/prev/$id/$type?page=1&limit=10';
-    print(url);
     try {
       final Response res = await dio().get(url);
       switch (res.statusCode) {
