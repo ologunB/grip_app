@@ -65,7 +65,6 @@ class _AppState extends State<App> {
             title: 'Grip',
             theme: ThemeData(
               brightness: Brightness.light,
-              fontFamily: 'Nova',
               visualDensity: VisualDensity.adaptivePlatformDensity,
               textTheme:
                   GoogleFonts.interTextTheme(Theme.of(context).textTheme),

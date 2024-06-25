@@ -286,7 +286,7 @@ class ImageVideoAudioPV extends StatelessWidget {
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.h),
       child: posts.isEmpty
-          ? empty('${(type).toTitleCase()}s are Empty')
+          ? EmptyOne('${(type).toTitleCase()}s are Empty')
           : Wrap(
               spacing: 2.h,
               runSpacing: 2.h,

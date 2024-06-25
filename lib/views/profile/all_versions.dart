@@ -36,7 +36,7 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
       onModelReady: (a) => a.watchBibles(),
       dispose: (a) => a.dispose(),
       builder: (_, BibleViewModel model, __) => Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: context.bgColor,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,12 +48,12 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
                   child: Row(
                     children: [
                       ModalRoute.of(context)?.settings.arguments == true
-                          ? const CloseButton(color: Colors.black)
-                          : const BackButton(color: Colors.black),
+                          ? CloseButton(color: context.textColor)
+                          : BackButton(color: context.textColor),
                       HexText(
                         'Bible',
                         fontSize: 28.sp,
-                        color: AppColors.black,
+                        color: context.textColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ],
@@ -83,17 +83,16 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
                             children: [
                               HexText(
                                 v.abbr!.toUpperCase(),
-                                fontSize: 16.sp,
-                                color: AppColors.black,
-                                fontWeight: FontWeight.w600,
+                                style: AppThemes.bibleTitle
+                                    .copyWith(color: context.textColor),
                               ),
                               SizedBox(height: 8.h),
                               HexText(
                                 v.name!.toUpperCase(),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
-                                fontSize: 14.sp,
-                                color: AppColors.black,
+                                style: AppThemes.bibleVersionText
+                                    .copyWith(color: context.textColor),
                               ),
                             ],
                           ),
@@ -171,11 +170,12 @@ class _DownloadButtonState extends State<DownloadButton> {
                   center: HexText(
                     '${snapshot.data?[v.abbr]}%',
                     fontSize: 12.sp,
-                    color: AppColors.secondary,
+                    color: context.primary,
                     fontWeight: FontWeight.bold,
                     align: TextAlign.center,
                   ),
-                  progressColor: AppColors.secondary,
+                  progressColor: context.primary,
+                  backgroundColor: context.bgColor,
                 ),
               )
             : TextButton(
@@ -195,11 +195,11 @@ class _DownloadButtonState extends State<DownloadButton> {
                           : !isChosen
                               ? 'Choose'
                               : 'Chosen',
-                      fontSize: 16.sp,
+                      fontSize: 14.sp,
                       color: isChosen && isDownload
                           ? Colors.green
-                          : AppColors.secondary,
-                      fontWeight: FontWeight.bold,
+                          : context.primary,
+                      fontWeight: FontWeight.w600,
                       align: TextAlign.center,
                     ),
                   ],

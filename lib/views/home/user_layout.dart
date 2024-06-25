@@ -47,9 +47,9 @@ class _UserLayoutState extends State<UserLayout> {
             )
             .toList(),
       ),
-      backgroundColor: AppColors.white,
+      backgroundColor: context.bgColor,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: context.bgColor,
         selectedItemColor: AppColors.black,
         unselectedItemColor: const Color(0xffB5B5B5),
         iconSize: 20.h,

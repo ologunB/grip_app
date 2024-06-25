@@ -18,22 +18,20 @@ class _NotificationScreenState extends State<NotificationScreen> {
       onModelReady: (a) => a.getNotifications(),
       builder: (_, PostViewModel model, __) => RefreshIndicator(
         onRefresh: () async {
-          return model.getNotifications();
+          return await model.getNotifications();
         },
         color: AppColors.secondary,
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: context.bgColor,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: context.bgColor,
             elevation: 0,
             centerTitle: true,
             title: HexText(
               'Notifications',
-              fontSize: 20.sp,
-              color: AppColors.black,
-              fontWeight: FontWeight.w600,
+              style: AppThemes.taskBarTitle.copyWith(color: context.textColor),
             ),
-            iconTheme: const IconThemeData(color: AppColors.secondary),
+            iconTheme: IconThemeData(color: context.primary),
           ),
           body: model.busy
               ? Container(
@@ -52,20 +50,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset('empty'.png, height: 150.h),
+                            Image.asset(
+                              'empty'.png,
+                              height: 150.h,
+                              color: context.primary,
+                            ),
                             Row(children: [SizedBox(height: 20.h)]),
                             HexText(
                               'No Notification',
-                              fontSize: 28.sp,
-                              color: AppColors.secondary,
-                              fontWeight: FontWeight.w700,
+                              style: AppThemes.header2
+                                  .copyWith(color: context.primary),
                               align: TextAlign.center,
                             ),
                             SizedBox(height: 15.h),
                             HexText(
-                              'You do not have any notification\nat this time',
-                              fontSize: 16.sp,
-                              color: AppColors.black,
+                              'You do not have any\nnotification at this time',
+                              style: AppThemes.subHeading16
+                                  .copyWith(color: context.textColor),
                               align: TextAlign.center,
                             ),
                             SizedBox(height: 75.h),
@@ -77,7 +78,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             SizedBox(height: 30.h),
                             ListView.separated(
                               separatorBuilder: (_, __) => Padding(
-                                padding: EdgeInsets.symmetric(vertical: 25.h),
+                                padding: EdgeInsets.symmetric(vertical: 20.h),
                                 child: Divider(
                                   height: 0.h,
                                   thickness: 1.h,
@@ -98,16 +99,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       children: [
                                         HexText(
                                           '${co?.message}',
-                                          fontSize: 16.sp,
-                                          color: AppColors.black,
-                                          fontWeight: FontWeight.w500,
+                                          style: AppThemes.profileNameL
+                                              .copyWith(
+                                                  color: context.textColor),
                                         ),
                                         SizedBox(height: 5.h),
                                         HexText(
                                           timeago.format(
                                               DateTime.parse(co!.createdAt!)),
-                                          fontSize: 14.sp,
-                                          color: AppColors.black,
+                                          style: AppThemes.commentText
+                                              .copyWith(color: context.primary),
                                         ),
                                       ],
                                     )

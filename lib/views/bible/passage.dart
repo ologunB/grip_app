@@ -17,15 +17,15 @@ class PassageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width - 147.h) / 5;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.bgColor,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: context.primary),
         title: HexText(
           name,
           fontSize: 20.sp,
-          color: AppColors.black,
+          color: context.textColor,
           fontWeight: FontWeight.w600,
         ),
         elevation: 0,
@@ -63,7 +63,7 @@ class PassageScreen extends StatelessWidget {
                         child: HexText(
                           '$e',
                           fontSize: 16.sp,
-                          color: Colors.black,
+                          color: context.textColor,
                           align: TextAlign.center,
                           fontWeight: FontWeight.bold,
                         ),

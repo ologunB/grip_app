@@ -95,7 +95,7 @@ class _VersesScreenState extends State<VersesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgColor,
       appBar: PreferredSize(
         preferredSize: Size(0, 70.h),
         child: SafeArea(
@@ -107,7 +107,9 @@ class _VersesScreenState extends State<VersesScreen> {
                 IntrinsicHeight(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xffEAEAEA),
+                      color: context.isLight
+                          ? const Color(0xffEAEAEA)
+                          : AppColors.darkGrey,
                       borderRadius: BorderRadius.circular(40.h),
                     ),
                     child: Row(
@@ -115,7 +117,7 @@ class _VersesScreenState extends State<VersesScreen> {
                         InkWell(
                           onTap: () async {
                             dynamic a = await showModalBottomSheet(
-                              backgroundColor: Colors.white,
+                              backgroundColor: context.bgColor,
                               context: context,
                               useRootNavigator: true,
                               isScrollControlled: true,
@@ -149,14 +151,14 @@ class _VersesScreenState extends State<VersesScreen> {
                                 HexText(
                                   book,
                                   fontSize: 16.sp,
-                                  color: Colors.black,
+                                  color: context.textColor,
                                   fontWeight: FontWeight.normal,
                                 ),
                                 SizedBox(width: 10.h),
                                 Image.asset(
                                   'down'.png,
                                   height: 32.h,
-                                  color: AppColors.black,
+                                  color: context.primary,
                                 ),
                               ],
                             ),
@@ -168,7 +170,7 @@ class _VersesScreenState extends State<VersesScreen> {
                           child: HexText(
                             'Books',
                             fontSize: 16.sp,
-                            color: Colors.black,
+                            color: context.textColor,
                             fontWeight: FontWeight.normal,
                           ),
                         ),
@@ -185,6 +187,7 @@ class _VersesScreenState extends State<VersesScreen> {
                   child: Image.asset(
                     'aa'.png,
                     height: 32.h,
+                    color: context.textColor,
                   ),
                 ),
                 SizedBox(width: 24.h),
@@ -203,7 +206,7 @@ class _VersesScreenState extends State<VersesScreen> {
                   child: Image.asset(
                     'search'.png,
                     height: 32.h,
-                    color: AppColors.black,
+                    color: context.textColor,
                   ),
                 ),
                 SizedBox(width: 25.h),
@@ -234,6 +237,7 @@ class _VersesScreenState extends State<VersesScreen> {
                   ContextMenuButtonItem(
                     label: 'Share Verse(s)',
                     onPressed: () {
+                      editableTextState.hideToolbar();
                       Share.share(selectedText, subject: 'Bible Verse');
                     },
                   ),
@@ -269,7 +273,7 @@ class _VersesScreenState extends State<VersesScreen> {
                           '${v.verse}. ${v.text}',
                           key: ValueKey(v.absoluteVerse),
                           fontSize: bibleFontSize().sp,
-                          color: Colors.black,
+                          color: context.textColor,
                           fontWeight: FontWeight.w400,
                         ),
                       )
@@ -284,7 +288,7 @@ class _VersesScreenState extends State<VersesScreen> {
           if (currentChapter != null) header(currentChapter!),
           if (openFont)
             Container(
-              color: Colors.white,
+              color: context.bgColor,
               padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 10.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -294,7 +298,7 @@ class _VersesScreenState extends State<VersesScreen> {
                       Expanded(
                         child: Slider(
                           value: AppCache.getBibleFont(),
-                          activeColor: AppColors.secondary,
+                          activeColor: context.primary,
                           onChanged: (double value) {
                             setState(() {
                               AppCache.setBibleFont(value);
@@ -303,7 +307,7 @@ class _VersesScreenState extends State<VersesScreen> {
                         ),
                       ),
                       CloseButton(
-                        color: Colors.red,
+                        color: AppColors.red,
                         onPressed: () {
                           openFont = false;
                           setState(() {});
@@ -336,17 +340,18 @@ class _VersesScreenState extends State<VersesScreen> {
       children: [
         Container(
           margin: EdgeInsets.only(top: 3.h),
-          padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 6.h),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color:
+                context.isLight ? const Color(0xffEAEAEA) : AppColors.darkGrey,
             borderRadius: BorderRadius.circular(8.h),
           ),
           child: HexText(
             a,
             fontSize: bibleFontSize().sp,
-            color: Colors.black,
+            color: context.textColor,
             align: TextAlign.center,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
@@ -382,7 +387,7 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     align: TextAlign.center,
-                    color: AppColors.black,
+                    color: context.textColor,
                   ),
                 ),
                 Align(

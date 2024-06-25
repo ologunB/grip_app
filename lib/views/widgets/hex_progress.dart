@@ -15,7 +15,7 @@ class HexProgress extends StatelessWidget {
           width: size.h,
           child: CircularProgressIndicator(
             strokeWidth: 3.h,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.black),
+            valueColor: AlwaysStoppedAnimation<Color>(context.textColor),
           ),
         ),
         SizedBox(height: 10.h),
@@ -25,7 +25,7 @@ class HexProgress extends StatelessWidget {
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             align: TextAlign.center,
-            color: AppColors.black,
+            color: context.textColor,
           ),
       ],
     );
@@ -50,7 +50,7 @@ class HexError extends StatelessWidget {
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             align: TextAlign.center,
-            color: AppColors.red,
+            color: context.textColor,
           ),
       ],
     );

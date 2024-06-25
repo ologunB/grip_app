@@ -20,15 +20,15 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
       onModelReady: (a) => a.watchBibles(),
       dispose: (a) => a.dispose(),
       builder: (_, BibleViewModel model, __) => Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: context.bgColor,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: context.bgColor,
           centerTitle: true,
-          iconTheme: const IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: context.primary),
           title: HexText(
             'Bibles',
             fontSize: 20.sp,
-            color: AppColors.black,
+            color: context.textColor,
             fontWeight: FontWeight.w600,
           ),
           elevation: 0,
@@ -56,17 +56,15 @@ class _AllVersionScreenState extends State<AllVersionScreen> {
                     children: [
                       HexText(
                         v.abbr!.toUpperCase(),
-                        fontSize: 16.sp,
-                        color: AppColors.black,
-                        fontWeight: FontWeight.w600,
+                        style: AppThemes.bibleTitle
+                            .copyWith(color: context.textColor),
                       ),
                       SizedBox(height: 8.h),
                       HexText(
                         v.name!.toUpperCase(),
-                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
-                        fontSize: 14.sp,
-                        color: AppColors.black,
+                        style: AppThemes.bibleVersionText
+                            .copyWith(color: context.textColor),
                       ),
                     ],
                   ),

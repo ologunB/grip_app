@@ -1,3 +1,4 @@
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcelon/core/apis/base_api.dart';
 
 import '../../core/storage/model.dart';
@@ -17,7 +18,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgColor,
       appBar: PreferredSize(
         preferredSize: Size(0, 60.h),
         child: Padding(
@@ -36,7 +37,7 @@ class _SearchPageState extends State<SearchPage> {
                           child: Image.asset(
                             'search'.png,
                             height: 24.h,
-                            color: const Color(0xffE0E0E0),
+                            color: context.primary,
                           ),
                         ),
                       ],
@@ -45,18 +46,18 @@ class _SearchPageState extends State<SearchPage> {
                     placeholder: 'Search',
                     textInputAction: TextInputAction.search,
                     controller: controller,
-                    placeholderStyle: TextStyle(
-                      fontFamily: 'Nova',
+                    style: GoogleFonts.inter(color: context.textColor),
+                    placeholderStyle: GoogleFonts.inter(
                       fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xffE0E0E0),
+                      fontWeight: FontWeight.w500,
+                      color: context.textColor,
                     ),
                     padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(20.h),
                       border: Border.all(
-                        color: const Color(0xffE0E0E0),
+                        color: context.textColor,
                       ),
                     ),
                     maxLines: 3,
@@ -73,28 +74,27 @@ class _SearchPageState extends State<SearchPage> {
                     },
                   ),
                 ),
-                SizedBox(width: 10.h),
-                InkWell(
-                  onTap: () {
+                TextButton(
+                  onPressed: () {
                     Navigator.pop(context);
                   },
                   child: HexText(
                     'Cancel',
                     fontSize: 16.sp,
-                    color: Colors.black,
+                    color: context.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(width: 25.h),
+                SizedBox(width: 16.h),
               ],
             ),
           ),
         ),
       ),
       body: controller.text.isEmpty
-          ? empty('Search through the scriptures')
+          ? const EmptyOne('Search through the scriptures')
           : filtered.isEmpty
-              ? empty('No verse mentions "${controller.text}"')
+              ? EmptyOne('No verse mentions "${controller.text}"')
               : ListView.separated(
                   itemCount: filtered.length,
                   shrinkWrap: true,
@@ -134,7 +134,7 @@ class _SearchPageState extends State<SearchPage> {
         style: TextStyle(
           fontFamily: 'Nova',
           fontSize: 16.sp,
-          color: AppColors.black,
+          color: context.textColor,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -149,7 +149,7 @@ class _SearchPageState extends State<SearchPage> {
     TextStyle style = TextStyle(
       fontFamily: 'Nova',
       fontSize: 16.sp,
-      color: AppColors.black,
+      color: context.textColor,
       fontWeight: FontWeight.w400,
     );
     ht.split('<highlight>').forEach((segment) {
@@ -160,7 +160,7 @@ class _SearchPageState extends State<SearchPage> {
             text: parts.first,
             style: style.copyWith(
               backgroundColor: AppColors.secondary.withOpacity(.2),
-              color: AppColors.secondary,
+              color: context.primary,
             ),
           ),
         );
@@ -176,21 +176,30 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
-Widget empty(String a) {
-  return Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset('empty'.png, height: 100.h, color: Colors.black),
-        HexText(
-          a,
-          fontSize: 18.sp,
-          color: AppColors.black,
-          fontWeight: FontWeight.w700,
-          align: TextAlign.center,
-        ),
-      ],
-    ),
-  );
+class EmptyOne extends StatelessWidget {
+  const EmptyOne(
+    this.a, {
+    super.key,
+  });
+  final String a;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset('empty'.png, height: 100.h, color: context.textColor),
+          HexText(
+            a,
+            fontSize: 18.sp,
+            color: context.textColor,
+            fontWeight: FontWeight.w700,
+            align: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
 }
