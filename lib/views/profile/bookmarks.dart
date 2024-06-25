@@ -21,17 +21,17 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
         onRefresh: () async {
           return model.getBookmarks();
         },
-        color: AppColors.secondary,
+        color: context.primary,
         child: Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: context.bgColor,
             appBar: AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: context.bgColor,
               centerTitle: true,
-              iconTheme: const IconThemeData(color: Colors.black),
+              iconTheme: IconThemeData(color: context.primary),
               title: HexText(
                 'Bookmarks',
                 fontSize: 16.sp,
-                color: AppColors.black,
+                color: context.textColor,
                 fontWeight: FontWeight.w500,
               ),
               elevation: 0,
@@ -54,7 +54,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                             child: HexText(
                               'Empty Bookmarks',
                               fontSize: 16.sp,
-                              color: AppColors.black,
+                              color: context.textColor,
                               fontWeight: FontWeight.bold,
                             ),
                           )
@@ -115,14 +115,16 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                             HexText(
                                               '${co?.title}',
                                               fontSize: 16.sp,
-                                              color: AppColors.black,
+                                              color: context.textColor,
                                               fontWeight: FontWeight.bold,
                                             ),
                                             SizedBox(height: 8.h),
                                             HexText(
                                               '${co?.description}',
                                               fontSize: 14.sp,
-                                              color: AppColors.black,
+                                              color: context.primary,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                               fontWeight: FontWeight.normal,
                                             ),
                                           ],
@@ -133,7 +135,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                         timeago.format(
                                             DateTime.parse(co!.createdAt!)),
                                         fontSize: 14.sp,
-                                        color: AppColors.black,
+                                        color: context.primary,
                                         fontWeight: FontWeight.normal,
                                       ),
                                     ],

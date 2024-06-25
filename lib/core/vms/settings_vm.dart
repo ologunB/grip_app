@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:hexcelon/core/apis/base_api.dart';
 
@@ -52,6 +53,19 @@ class SettingsVM {
   set currentBible(String? i) {
     _currentBible = i;
     _inMainBible.add(i);
+  }
+
+  final StreamController<String> _brightnessController =
+      StreamController<String>.broadcast();
+  Sink<String> get _inMainBrightness => _brightnessController.sink;
+  Stream<String> get outMainBrightness => _brightnessController.stream;
+  String _currentBrightness =
+      PlatformDispatcher.instance.platformBrightness.name;
+  String get currentBrightness => _currentBrightness;
+
+  set currentBrightness(String i) {
+    _currentBrightness = i;
+    _inMainBrightness.add(i);
   }
 }
 

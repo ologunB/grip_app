@@ -195,7 +195,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   InkWell(
                                     onTap: () async {
                                       dynamic a = await showModalBottomSheet(
-                                        backgroundColor: Colors.white,
+                                        backgroundColor: context.sheetBG,
                                         context: context,
                                         useRootNavigator: true,
                                         isScrollControlled: true,

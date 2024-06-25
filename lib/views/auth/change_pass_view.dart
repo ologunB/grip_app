@@ -81,11 +81,11 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
               SizedBox(height: 50.h),
               HexButton(
                 'Set Password',
+                buttonColor: AppColors.secondary,
                 height: 48,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
-                textColor: context.bgColor,
-                buttonColor: context.primary,
+                textColor: AppColors.white,
                 borderRadius: 4.h,
                 busy: model.busy,
                 onPressed: () async {

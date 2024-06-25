@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:hexcelon/core/models/login_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -12,6 +14,7 @@ class AppCache {
   static const String userKey = 'userKey';
   static const String bibleKey = 'bibleKey';
   static const String bibleFontKey = 'bibleFontKey';
+  static const String darkModeKey = 'darkModeKey';
   static const String bibleWeightKey = 'bibleWeighttKey';
 
   static Future<void> init() async {
@@ -32,6 +35,19 @@ class AppCache {
     dynamic data = getBibleWeights();
     data.update(name, (a) => value, ifAbsent: () => value);
     _defaultBox.put(bibleWeightKey, data);
+  }
+
+  static String getDarkMode() {
+    final brightness = PlatformDispatcher.instance.platformBrightness;
+
+    // print(brightness.name);
+    return _defaultBox.get(darkModeKey, defaultValue: brightness.name);
+  }
+
+  static Future<void> setDarkMode() async {
+    String mode = getDarkMode() == 'dark' ? 'light' : 'dark';
+    settingsVM.currentBrightness = mode;
+    await _defaultBox.put(darkModeKey, mode);
   }
 
   static double getBibleFont() {

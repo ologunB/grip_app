@@ -1,3 +1,4 @@
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcelon/views/bible/bible_home.dart';
 
 import '../../core/storage/local_storage.dart';
@@ -26,6 +27,7 @@ class _UserLayoutState extends State<UserLayout> {
       ];
 
   int currentIndex = 0;
+
   @override
   void initState() {
     navigatorKeys = List.generate(5, (index) => GlobalKey<NavigatorState>());
@@ -50,17 +52,15 @@ class _UserLayoutState extends State<UserLayout> {
       backgroundColor: context.bgColor,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: context.bgColor,
-        selectedItemColor: AppColors.black,
+        selectedItemColor: context.primary,
         unselectedItemColor: const Color(0xffB5B5B5),
         iconSize: 20.h,
-        selectedLabelStyle: TextStyle(
-          fontFamily: 'Nova',
+        selectedLabelStyle: GoogleFonts.inter(
           fontSize: 12.sp,
           fontWeight: FontWeight.bold,
-          color: AppColors.black,
+          color: context.primary,
         ),
-        unselectedLabelStyle: TextStyle(
-          fontFamily: 'Nova',
+        unselectedLabelStyle: GoogleFonts.inter(
           fontSize: 12.sp,
           fontWeight: FontWeight.w400,
           color: const Color(0xffB5B5B5),
@@ -93,7 +93,7 @@ class _UserLayoutState extends State<UserLayout> {
                     'h${a}1'.png,
                     height: 24.h,
                     width: 24.h,
-                    color: AppColors.black,
+                    color: context.primary,
                   ),
                 ),
                 label: ['Home', 'Bible', '', 'Explore', 'Profile'][a],

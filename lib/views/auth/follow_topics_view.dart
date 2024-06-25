@@ -139,14 +139,14 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
   }
 
   Widget item(Category e) {
-    bool contains = selected.contains(e.name);
+    bool contains = selected.contains(e.name?.toLowerCase());
 
     return InkWell(
       onTap: () {
         if (contains) {
-          selected.remove(e.name);
+          selected.remove(e.name!.toLowerCase());
         } else {
-          selected.add(e.name!);
+          selected.add(e.name!.toLowerCase());
         }
         setState(() {});
       },

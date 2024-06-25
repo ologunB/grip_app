@@ -112,10 +112,10 @@ class _OnboardScreenState extends State<OnboardScreen> {
                       decoration: BoxDecoration(
                         color: context.isLight
                             ? (index == i
-                                ? AppColors.secondary
+                                ? AppColors.primary30
                                 : AppColors.secondary30)
                             : index == i
-                                ? AppColors.secondary
+                                ? AppColors.primary
                                 : AppColors.secondary,
                         borderRadius: BorderRadius.circular(30.h),
                       ),
@@ -130,13 +130,13 @@ class _OnboardScreenState extends State<OnboardScreen> {
           padding: EdgeInsets.symmetric(horizontal: 20.h),
           child: HexButton(
             'Create Account',
-            buttonColor: AppColors.secondary,
+            buttonColor: AppColors.primary,
             height: 48,
             fontSize: 14.sp,
             safeArea: false,
             fontWeight: FontWeight.w400,
             textColor: AppColors.black,
-            borderColor: AppColors.secondary,
+            borderColor: AppColors.primary,
             borderRadius: 10.h,
             onPressed: () {
               push(context, const SignupScreen());

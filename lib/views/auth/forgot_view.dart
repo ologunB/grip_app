@@ -45,13 +45,13 @@ class _ForgotScreenState extends State<ForgotScreen> {
               SizedBox(height: 50.h),
               HexButton(
                 'Submit',
-                buttonColor: const Color(0xff2F2F2F),
+                buttonColor: AppColors.secondary,
                 height: 48,
                 fontSize: 14.sp,
-                borderRadius: 4.h,
                 fontWeight: FontWeight.w400,
-                busy: model.busy,
                 textColor: AppColors.white,
+                borderRadius: 4.h,
+                busy: model.busy,
                 onPressed: () {
                   autoValidate = true;
                   setState(() {});

@@ -27,32 +27,31 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         autovalidateMode:
             autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: context.bgColor,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: context.bgColor,
             centerTitle: true,
-            iconTheme: const IconThemeData(color: Colors.black),
+            iconTheme: IconThemeData(color: context.primary),
             title: HexText(
               'Change Password',
               fontSize: 16.sp,
-              color: AppColors.black,
+              color: context.textColor,
               fontWeight: FontWeight.normal,
             ),
             elevation: 0,
           ),
           bottomSheet: Container(
-            color: Colors.white,
+            color: context.bgColor,
             padding: EdgeInsets.all(25.h),
             child: HexButton(
               'Change Password',
-              buttonColor: AppColors.black,
-              height: 60,
-              fontSize: 16.sp,
+              buttonColor: AppColors.secondary,
+              height: 48,
+              fontSize: 14.sp,
               busy: model.busy,
               fontWeight: FontWeight.w400,
               textColor: AppColors.white,
-              borderColor: Colors.transparent,
-              borderRadius: 10.h,
+              borderRadius: 4.h,
               onPressed: () async {
                 autoValidate = true;
                 setState(() {});
@@ -148,7 +147,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             child: HexText(
                               'Forgot Password?',
                               fontSize: 14.sp,
-                              color: AppColors.secondary,
+                              color: context.primary,
                               fontWeight: FontWeight.w800,
                             ),
                           ),

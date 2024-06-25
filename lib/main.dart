@@ -1,11 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hexcelon/views/auth/signup_view.dart';
+import 'package:hexcelon/views/auth/onboard_view.dart';
 
 import 'core/models/navigator.dart';
 import 'core/models/post_model.dart';
 import 'core/storage/local_storage.dart';
+import 'core/vms/settings_vm.dart';
 import 'firebase_options.dart';
 import 'locator.dart';
 import 'views/create/media.dart';
@@ -38,6 +39,9 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   void initState() {
+    settingsVM.outMainBrightness.listen((e) {
+      setState(() {});
+    });
     super.initState();
     initDynamicLinks();
   }
@@ -64,11 +68,13 @@ class _AppState extends State<App> {
             debugShowCheckedModeBanner: false,
             title: 'Grip',
             theme: ThemeData(
-              brightness: Brightness.light,
+              brightness: AppCache.getDarkMode() == 'dark'
+                  ? Brightness.dark
+                  : Brightness.light,
               visualDensity: VisualDensity.adaptivePlatformDensity,
               textTheme:
                   GoogleFonts.interTextTheme(Theme.of(context).textTheme),
-              //   colorScheme: const ColorScheme.dark(surface: Colors.transparent),
+              //    colorScheme: const ColorScheme.dark(surface: Colors.transparent),
               primaryColor: AppColors.secondary,
               tabBarTheme: const TabBarTheme(
                 indicator: UnderlineTabIndicator(
@@ -78,7 +84,7 @@ class _AppState extends State<App> {
             ),
             navigatorKey: AppNavigator.navKey,
             home: AppCache.getUser() == null
-                ? const SignupScreen()
+                ? const OnboardScreen()
                 : const UserLayout()),
       ),
     );

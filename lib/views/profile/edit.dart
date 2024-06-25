@@ -41,19 +41,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       onTap: Utils.offKeyboard,
       child: BaseView<AuthViewModel>(
         builder: (_, AuthViewModel model, __) => Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: context.bgColor,
           extendBodyBehindAppBar: true,
           bottomNavigationBar: Container(
             padding: EdgeInsets.all(25.h),
-            color: Colors.white,
+            color: context.bgColor,
             child: HexButton(
               'Update',
-              buttonColor: AppColors.black,
-              height: 60,
-              fontSize: 16.sp,
+              buttonColor: AppColors.secondary,
+              height: 48,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w400,
               textColor: AppColors.white,
-              borderColor: Colors.transparent,
               borderRadius: 10.h,
               busy: model.busy,
               onPressed: () {
@@ -67,8 +66,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           appBar: AppBar(
             elevation: 0,
-            backgroundColor: Colors.white,
-            iconTheme: const IconThemeData(color: AppColors.secondary),
+            backgroundColor: context.bgColor,
+            iconTheme: IconThemeData(color: context.primary),
           ),
           body: SafeArea(
             child: SingleChildScrollView(
@@ -91,7 +90,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           setState(() {});
                         } else {
                           dynamic a = await showModalBottomSheet(
-                              backgroundColor: Colors.white,
+                              backgroundColor: context.sheetBG,
                               context: context,
                               useRootNavigator: true,
                               isScrollControlled: true,
@@ -114,7 +113,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         file != null ? 'Confirm' : 'Change Picture',
                         fontSize: 14.sp,
                         align: TextAlign.center,
-                        color: AppColors.secondary,
+                        color: context.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -164,7 +163,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         children: [
                           Icon(
                             Icons.arrow_forward_ios_rounded,
-                            color: AppColors.secondary,
+                            color: context.primary,
                             size: 24.h,
                           )
                         ],
@@ -214,7 +213,7 @@ class SelectPhoto extends StatelessWidget {
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
                 align: TextAlign.center,
-                color: AppColors.black,
+                color: context.textColor,
               ),
             ),
             Align(
@@ -227,6 +226,7 @@ class SelectPhoto extends StatelessWidget {
                   'close'.png,
                   height: 24.h,
                   width: 24.h,
+                  color: context.textColor,
                 ),
               ),
             ),
@@ -248,10 +248,10 @@ class SelectPhoto extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 20.h),
             child: HexText(
               'Take a Photo',
-              fontSize: 14.sp,
               align: TextAlign.center,
-              color: AppColors.secondary,
-              fontWeight: FontWeight.w700,
+              style: AppThemes.buttonText.copyWith(
+                color: context.textColor,
+              ),
             ),
           ),
         ),
@@ -270,21 +270,20 @@ class SelectPhoto extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 20.h),
             child: HexText(
               'Choose from Gallery',
-              fontSize: 14.sp,
               align: TextAlign.center,
-              color: AppColors.secondary,
-              fontWeight: FontWeight.w700,
+              style: AppThemes.buttonText.copyWith(
+                color: context.textColor,
+              ),
             ),
           ),
         ),
         HexButton(
           'Cancel',
-          buttonColor: AppColors.white,
-          height: 55,
+          buttonColor: AppColors.secondary,
+          height: 48,
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
-          textColor: AppColors.red,
-          borderColor: AppColors.grey,
+          textColor: AppColors.white,
           borderRadius: 10.h,
           onPressed: () {
             Navigator.pop(context);

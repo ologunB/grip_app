@@ -82,7 +82,7 @@ class HexField extends StatelessWidget {
               labelText!,
               fontSize: 16.sp,
               fontWeight: FontWeight.w500,
-              color: color ?? AppColors.black,
+              color: color ?? context.primary,
             ),
           ),
         TextFormField(

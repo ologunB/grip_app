@@ -109,11 +109,11 @@ class _SignupScreenState extends State<SignupScreen> {
               SizedBox(height: 30.h),
               HexButton(
                 'Create Account',
-                buttonColor: context.primary,
+                buttonColor: AppColors.secondary,
                 height: 48,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
-                textColor: context.bgColor,
+                textColor: AppColors.white,
                 borderRadius: 10.h,
                 safeArea: false,
                 busy: model.busy,

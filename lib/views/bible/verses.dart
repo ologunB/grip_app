@@ -117,7 +117,7 @@ class _VersesScreenState extends State<VersesScreen> {
                         InkWell(
                           onTap: () async {
                             dynamic a = await showModalBottomSheet(
-                              backgroundColor: context.bgColor,
+                              backgroundColor: context.sheetBG,
                               context: context,
                               useRootNavigator: true,
                               isScrollControlled: true,

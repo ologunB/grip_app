@@ -20,62 +20,74 @@ class _ExploreScreenState extends State<ExploreScreen> {
       builder: (_, PostViewModel sModel, __) => BaseView<PostViewModel>(
         onModelReady: (a) => a.getPosts(type: 'explore'),
         builder: (_, PostViewModel model, __) => Scaffold(
-          backgroundColor: AppColors.white,
+          backgroundColor: context.bgColor,
           appBar: AppBar(
-            elevation: 0,
-            backgroundColor: AppColors.white,
-            titleSpacing: 20.h,
-            toolbarHeight: 70.h,
-            centerTitle: false,
-            title: Padding(
-              padding: EdgeInsets.only(top: 16.h),
-              child: CupertinoTextField(
-                prefix: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.h),
-                      child: Image.asset(
-                        'search'.png,
-                        height: 16.h,
-                        color: const Color(0xffE0E0E0),
+              elevation: 0,
+              backgroundColor: context.bgColor,
+              titleSpacing: 20.h,
+              toolbarHeight: 120.h,
+              centerTitle: false,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 14.h),
+                  HexText(
+                    'Explore',
+                    style: AppThemes.header1.copyWith(color: context.textColor),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 16.h),
+                    child: CupertinoTextField(
+                      prefix: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.h),
+                            child: Image.asset(
+                              'search'.png,
+                              height: 16.h,
+                              color: context.primary,
+                            ),
+                          ),
+                        ],
                       ),
+                      placeholder: 'Search',
+                      placeholderStyle: TextStyle(
+                        fontSize: 14.sp,
+                        color: context.textColor,
+                      ),
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: context.textColor,
+                      ),
+                      controller: controller,
+                      onTapOutside: (_) => Utils.offKeyboard(),
+                      padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(10.h),
+                        border: Border.all(color: const Color(0xffE0E0E0)),
+                      ),
+                      maxLines: 1,
+                      minLines: 1,
+                      onChanged: (a) {
+                        sModel.search(a);
+                        setState(() {});
+                      },
                     ),
-                  ],
-                ),
-                placeholder: 'Search',
-                placeholderStyle: TextStyle(
-                  fontFamily: 'Nova',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xffE0E0E0),
-                ),
-                controller: controller,
-                onTapOutside: (_) => Utils.offKeyboard(),
-                padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(20.h),
-                  border: Border.all(color: const Color(0xffE0E0E0)),
-                ),
-                maxLines: 1,
-                minLines: 1,
-                onChanged: (a) {
-                  sModel.search(a);
-                  setState(() {});
-                },
-              ),
-            ),
-          ),
+                  ),
+                ],
+              )),
           body: Stack(
             children: [
               RefreshIndicator(
                 onRefresh: () async {
                   return model.getPosts(type: 'explore');
                 },
-                color: AppColors.secondary,
+                color: context.primary,
                 child: ListView(
-                  padding: EdgeInsets.all(25.h),
+                  padding: EdgeInsets.all(20.h),
                   children: [
                     model.busy
                         ? model.posts != null
@@ -113,7 +125,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
                                       align: TextAlign.center,
-                                      color: AppColors.black,
+                                      color: context.textColor,
                                     ),
                                   )
                                 : StaggeredGrid.count(
@@ -213,7 +225,7 @@ class ExploreItem extends StatelessWidget {
                     HexText(
                       '${post.user?.username}',
                       fontSize: 14.sp,
-                      color: AppColors.white,
+                      color: context.textColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ],

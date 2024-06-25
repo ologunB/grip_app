@@ -1,7 +1,7 @@
 import 'hex_text.dart';
 
 class HexProgress extends StatelessWidget {
-  const HexProgress({this.size = 20, super.key, this.text});
+  const HexProgress({this.size = 16, super.key, this.text});
 
   final double size;
   final String? text;

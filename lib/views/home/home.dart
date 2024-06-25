@@ -23,160 +23,222 @@ class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
   TextEditingController controller = TextEditingController();
 
+  bool showSearch = false;
   @override
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
       builder: (_, PostViewModel sModel, __) => Scaffold(
-          backgroundColor: AppColors.white,
+          backgroundColor: context.bgColor,
           floatingActionButton: AppCache.getUser()?.user?.role == 'user'
               ? null
               : FloatingActionButton(
                   onPressed: () {
                     push(context, const ChooseMediaScreen(), true);
                   },
-                  backgroundColor: AppColors.secondary,
-                  child:
-                      Icon(Icons.add_rounded, size: 40.h, color: Colors.white),
-                ),
-          appBar: AppBar(
-            elevation: 0,
-            centerTitle: false,
-            backgroundColor: AppColors.white,
-            titleSpacing: 25.h,
-            toolbarHeight: 70.h,
-            title: Padding(
-              padding: EdgeInsets.only(top: 20.h),
-              child: CupertinoTextField(
-                onTapOutside: (_) => Utils.offKeyboard(),
-                prefix: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.h),
-                      child: Image.asset(
-                        'search'.png,
-                        height: 16.h,
-                        color: const Color(0xffE0E0E0),
-                      ),
-                    ),
-                  ],
-                ),
-                placeholder: 'Search',
-                placeholderStyle: TextStyle(
-                  fontFamily: 'Nova',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xffE0E0E0),
-                ),
-                controller: controller,
-                padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(20.h),
-                  border: Border.all(color: const Color(0xffE0E0E0)),
-                ),
-                maxLines: 1,
-                minLines: 1,
-                onChanged: (a) {
-                  sModel.search(a);
-                  setState(() {});
-                },
-              ),
-            ),
-            actions: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 20.h),
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          push(context, const NotificationScreen());
-                        },
-                        borderRadius: BorderRadius.circular(50.h),
-                        child: Image.asset('h1'.png, height: 44.h),
-                      ),
-                      SizedBox(width: 25.h),
-                    ],
-                  )
-                ],
-              )
-            ],
-          ),
-          body: Stack(
-            children: [
-              Column(
-                children: [
-                  SizedBox(height: 5.h),
-                  Row(
-                    children: [
-                      SizedBox(width: 15.h),
-                      TextButton(
-                        onPressed: () {
-                          setState(() => index = 0);
-                        },
-                        child: HexText(
-                          'Recent Posts',
-                          fontSize: 20.sp,
-                          color: index == 0
-                              ? Colors.black
-                              : const Color(0xffC6C6C6),
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      SizedBox(width: 10.h),
-                      TextButton(
-                        onPressed: () {
-                          setState(() => index = 1);
-                        },
-                        child: HexText(
-                          'Recommended',
-                          fontSize: 20.sp,
-                          color: index == 1
-                              ? Colors.black
-                              : const Color(0xffC6C6C6),
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
+                  backgroundColor: context.primary,
+                  child: Icon(
+                    Icons.add_rounded,
+                    size: 40.h,
+                    color: context.bgColor,
                   ),
-                  Expanded(
-                    child: IndexedStack(
-                      index: index,
-                      children: [
-                        BaseView<PostViewModel>(
-                          onModelReady: (a) => a.getPosts(
-                              type: 'recent/${AppCache.getUser()?.user?.id}'),
-                          builder: (_, PostViewModel model, __) =>
-                              RefreshIndicator(
-                            onRefresh: () async {
-                              return model.getPosts(
-                                  type:
-                                      'recent/${AppCache.getUser()?.user?.id}');
-                            },
-                            color: AppColors.secondary,
-                            child: body(model),
+                ),
+          appBar: !showSearch
+              ? null
+              : AppBar(
+                  elevation: 0,
+                  centerTitle: false,
+                  backgroundColor: context.bgColor,
+                  titleSpacing: 16.h,
+                  toolbarHeight: 70.h,
+                  title: Padding(
+                    padding: EdgeInsets.only(top: 20.h),
+                    child: CupertinoTextField(
+                      onTapOutside: (_) => Utils.offKeyboard(),
+                      prefix: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.h),
+                            child: Image.asset('search'.png,
+                                height: 16.h, color: context.primary),
                           ),
+                        ],
+                      ),
+                      placeholder: 'Search',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: context.textColor,
+                      ),
+                      placeholderStyle: TextStyle(
+                        fontSize: 14.sp,
+                        color: context.textColor,
+                      ),
+                      controller: controller,
+                      padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(6.h),
+                        border: Border.all(
+                          color: const Color(0xffE0E0E0),
                         ),
-                        BaseView<PostViewModel>(
-                          onModelReady: (a) => a.getPosts(type: 'recommended'),
-                          builder: (_, PostViewModel model, __) =>
-                              RefreshIndicator(
-                            onRefresh: () async {
-                              return model.getPosts(type: 'recommended');
-                            },
-                            color: AppColors.secondary,
-                            child: body(model),
-                          ),
+                      ),
+                      maxLines: 1,
+                      minLines: 1,
+                      onChanged: (a) {
+                        sModel.search(a);
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  actions: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20.h),
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                showSearch = false;
+                                setState(() {});
+                              },
+                              borderRadius: BorderRadius.circular(50.h),
+                              child: Icon(
+                                Icons.close,
+                                color: context.textColor,
+                              ),
+                            ),
+                            SizedBox(width: 12.h),
+                            InkWell(
+                              onTap: () {
+                                push(context, const NotificationScreen());
+                              },
+                              borderRadius: BorderRadius.circular(50.h),
+                              child: Image.asset(
+                                'notification'.png,
+                                height: 24.h,
+                                color: context.textColor,
+                              ),
+                            ),
+                            SizedBox(width: 16.h),
+                          ],
                         )
                       ],
+                    )
+                  ],
+                ),
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(height: 5.h),
+                    Row(
+                      children: [
+                        SizedBox(width: 15.h),
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              setState(() => index = 0);
+                            },
+                            child: HexText(
+                              'Recent Posts',
+                              style: AppThemes.tabHeader.copyWith(
+                                color: index == 0
+                                    ? context.primary
+                                    : const Color(0xffC6C6C6),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              setState(() => index = 1);
+                            },
+                            child: HexText(
+                              'Recommended',
+                              style: AppThemes.tabHeader.copyWith(
+                                color: index == 1
+                                    ? context.primary
+                                    : const Color(0xffC6C6C6),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 15.h),
+                        if (!showSearch)
+                          Padding(
+                            padding: EdgeInsets.only(right: 16.h),
+                            child: InkWell(
+                              onTap: () {
+                                showSearch = true;
+                                setState(() {});
+                              },
+                              borderRadius: BorderRadius.circular(50.h),
+                              child: Image.asset(
+                                'search'.png,
+                                height: 24.h,
+                                color: context.textColor,
+                              ),
+                            ),
+                          ),
+                        if (!showSearch)
+                          Padding(
+                            padding: EdgeInsets.only(right: 16.h),
+                            child: InkWell(
+                              onTap: () {
+                                push(context, const NotificationScreen());
+                              },
+                              borderRadius: BorderRadius.circular(50.h),
+                              child: Image.asset(
+                                'notification'.png,
+                                height: 24.h,
+                                color: context.textColor,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                  )
-                ],
-              ),
-              if (controller.text.isNotEmpty) SearchBody(model: sModel),
-            ],
+                    Expanded(
+                      child: IndexedStack(
+                        index: index,
+                        children: [
+                          BaseView<PostViewModel>(
+                            onModelReady: (a) => a.getPosts(
+                                type: 'recent/${AppCache.getUser()?.user?.id}'),
+                            builder: (_, PostViewModel model, __) =>
+                                RefreshIndicator(
+                              onRefresh: () async {
+                                return model.getPosts(
+                                    type:
+                                        'recent/${AppCache.getUser()?.user?.id}');
+                              },
+                              color: AppColors.secondary,
+                              child: body(model),
+                            ),
+                          ),
+                          BaseView<PostViewModel>(
+                            onModelReady: (a) =>
+                                a.getPosts(type: 'recommended'),
+                            builder: (_, PostViewModel model, __) =>
+                                RefreshIndicator(
+                              onRefresh: () async {
+                                return model.getPosts(type: 'recommended');
+                              },
+                              color: AppColors.secondary,
+                              child: body(model),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                if (controller.text.isNotEmpty) SearchBody(model: sModel),
+              ],
+            ),
           )),
     );
   }
@@ -354,7 +416,7 @@ class _SearchBodyState extends State<SearchBody> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: context.bgColor,
       child: ListView(
         children: [
           model.busy
@@ -384,7 +446,7 @@ class _SearchBodyState extends State<SearchBody> {
                                 'Posts',
                                 fontSize: 20.sp,
                                 color: model.current == 0
-                                    ? Colors.black
+                                    ? context.textColor
                                     : const Color(0xffC6C6C6),
                                 fontWeight: FontWeight.w800,
                               ),
@@ -398,7 +460,7 @@ class _SearchBodyState extends State<SearchBody> {
                                 'Users',
                                 fontSize: 20.sp,
                                 color: model.current == 1
-                                    ? Colors.black
+                                    ? context.textColor
                                     : const Color(0xffC6C6C6),
                                 fontWeight: FontWeight.w800,
                               ),
@@ -413,7 +475,7 @@ class _SearchBodyState extends State<SearchBody> {
                                     child: HexText(
                                       'Posts with query are empty',
                                       fontSize: 16.sp,
-                                      color: Colors.black,
+                                      color: context.textColor,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   )
@@ -439,7 +501,7 @@ class _SearchBodyState extends State<SearchBody> {
                                     child: HexText(
                                       'Users with query are empty',
                                       fontSize: 16.sp,
-                                      color: Colors.black,
+                                      color: context.textColor,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   )
@@ -488,7 +550,7 @@ class _SearchBodyState extends State<SearchBody> {
                                                     HexText(
                                                       '${co.username}',
                                                       fontSize: 16.sp,
-                                                      color: AppColors.black,
+                                                      color: context.textColor,
                                                       fontWeight:
                                                           FontWeight.w500,
                                                     ),
@@ -496,7 +558,7 @@ class _SearchBodyState extends State<SearchBody> {
                                                     HexText(
                                                       'Followers: ${co.followersCount ?? 0} Following: ${co.followingCount ?? 0}',
                                                       fontSize: 14.sp,
-                                                      color: AppColors.black,
+                                                      color: context.textColor,
                                                     ),
                                                   ],
                                                 ),
@@ -526,14 +588,14 @@ class _SearchBodyState extends State<SearchBody> {
                                                     decoration: BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              15.h),
+                                                              4.h),
                                                       border: Border.all(
                                                           width: 1.h,
                                                           color: const Color(
                                                               0xff717171)),
                                                       color: !contains
                                                           ? Colors.transparent
-                                                          : AppColors.black,
+                                                          : context.textColor,
                                                     ),
                                                     child: HexText(
                                                       contains
@@ -541,7 +603,7 @@ class _SearchBodyState extends State<SearchBody> {
                                                           : 'Follow',
                                                       fontSize: 12.sp,
                                                       color: contains
-                                                          ? Colors.white
+                                                          ? context.bgColor
                                                           : const Color(
                                                               0xff717171),
                                                       align: TextAlign.center,

@@ -32,6 +32,8 @@ extension ColorExtension on BuildContext {
 
   Color get textColor => isLight ? AppColors.black : AppColors.white;
   Color get bgColor => isLight ? AppColors.lightModeBG : AppColors.darkModeBG;
+  Color get sheetBG =>
+      isLight ? AppColors.lightModeBG : AppColors.bottomSheetBG;
   Color get primary => isLight ? AppColors.secondary : AppColors.primary;
 
   String get transformaSans => 'TransformaSans';

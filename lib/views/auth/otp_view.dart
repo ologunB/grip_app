@@ -59,13 +59,13 @@ class _OTPScreenState extends State<OTPScreen> {
               SizedBox(height: 50.h),
               HexButton(
                 'Submit',
-                buttonColor: context.primary,
+                buttonColor: AppColors.secondary,
                 height: 48,
                 fontSize: 14.sp,
-                busy: model.busy,
                 fontWeight: FontWeight.w400,
-                textColor: context.bgColor,
+                textColor: AppColors.white,
                 borderRadius: 4.h,
+                busy: model.busy,
                 onPressed: () {
                   autoValidate = true;
                   setState(() {});
