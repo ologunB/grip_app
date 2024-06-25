@@ -159,8 +159,8 @@ class _SearchPageState extends State<SearchPage> {
           TextSpan(
             text: parts.first,
             style: style.copyWith(
-              backgroundColor: AppColors.primary.withOpacity(.2),
-              color: AppColors.primary,
+              backgroundColor: AppColors.secondary.withOpacity(.2),
+              color: AppColors.secondary,
             ),
           ),
         );

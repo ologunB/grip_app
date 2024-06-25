@@ -21,7 +21,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
         onRefresh: () async {
           return model.getBookmarks();
         },
-        color: AppColors.primary,
+        color: AppColors.secondary,
         child: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(

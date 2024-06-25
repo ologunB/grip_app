@@ -13,9 +13,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryBG,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryBG,
+        backgroundColor: AppColors.white,
         elevation: 0,
         centerTitle: true,
         title: HexText(
@@ -119,7 +119,7 @@ class _InputWidgetState extends State<InputWidget> {
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.primary),
+        border: Border.all(color: AppColors.secondary),
       ),
       maxLines: 3,
       minLines: 1,
@@ -185,8 +185,9 @@ class ChatBubble extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(10.h),
                     decoration: BoxDecoration(
-                      color:
-                          isMine ? const Color(0xffF0F2F5) : AppColors.primary,
+                      color: isMine
+                          ? const Color(0xffF0F2F5)
+                          : AppColors.secondary,
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(12),
                         topRight: const Radius.circular(12),

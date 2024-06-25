@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 '@${AppCache.getUser()?.user?.username}',
                 fontSize: 16.sp,
                 align: TextAlign.center,
-                color: AppColors.primary,
+                color: AppColors.secondary,
                 fontWeight: FontWeight.bold,
               ),
               SizedBox(height: 21.h),
@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         HexText(
                           'Following',
                           fontSize: 16.sp,
-                          color: AppColors.grey200,
+                          color: AppColors.grey2,
                           fontWeight: FontWeight.w600,
                         ),
                       ],
@@ -105,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           HexText(
                             'Following',
                             fontSize: 16.sp,
-                            color: AppColors.grey200,
+                            color: AppColors.grey2,
                             fontWeight: FontWeight.w600,
                           ),
                         ],

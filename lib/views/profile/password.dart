@@ -148,7 +148,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             child: HexText(
                               'Forgot Password?',
                               fontSize: 14.sp,
-                              color: AppColors.primary,
+                              color: AppColors.secondary,
                               fontWeight: FontWeight.w800,
                             ),
                           ),

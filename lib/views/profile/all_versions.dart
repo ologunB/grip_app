@@ -171,11 +171,11 @@ class _DownloadButtonState extends State<DownloadButton> {
                   center: HexText(
                     '${snapshot.data?[v.abbr]}%',
                     fontSize: 12.sp,
-                    color: AppColors.primary,
+                    color: AppColors.secondary,
                     fontWeight: FontWeight.bold,
                     align: TextAlign.center,
                   ),
-                  progressColor: AppColors.primary,
+                  progressColor: AppColors.secondary,
                 ),
               )
             : TextButton(
@@ -198,7 +198,7 @@ class _DownloadButtonState extends State<DownloadButton> {
                       fontSize: 16.sp,
                       color: isChosen && isDownload
                           ? Colors.green
-                          : AppColors.primary,
+                          : AppColors.secondary,
                       fontWeight: FontWeight.bold,
                       align: TextAlign.center,
                     ),

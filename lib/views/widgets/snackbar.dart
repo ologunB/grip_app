@@ -48,7 +48,7 @@ void successSnackBar(BuildContext context, String title) {
       children: [
         Icon(
           Icons.check_circle_outline_rounded,
-          color: AppColors.primary,
+          color: AppColors.secondary,
           size: 22.h,
         ),
         const Spacer(),
@@ -57,7 +57,7 @@ void successSnackBar(BuildContext context, String title) {
           child: Icon(
             Icons.close,
             size: 20.h,
-            color: AppColors.primary,
+            color: AppColors.secondary,
           ),
         )
       ],
@@ -65,12 +65,12 @@ void successSnackBar(BuildContext context, String title) {
     messageText: HexText(
       title,
       fontSize: 15.sp,
-      color: AppColors.primary,
+      color: AppColors.secondary,
       fontWeight: FontWeight.w600,
     ),
     borderRadius: BorderRadius.circular(8.h),
     margin: EdgeInsets.all(16.h),
-    borderColor: AppColors.primary,
+    borderColor: AppColors.secondary,
     flushbarStyle: FlushbarStyle.FLOATING,
     flushbarPosition: FlushbarPosition.TOP,
     duration: const Duration(seconds: 4),

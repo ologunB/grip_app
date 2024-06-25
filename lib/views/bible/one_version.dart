@@ -206,7 +206,7 @@ class ChapterItem extends StatelessWidget {
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 25.h),
-        color: presentValue ? AppColors.primary.withOpacity(.2) : null,
+        color: presentValue ? AppColors.secondary.withOpacity(.2) : null,
         child: Row(
           children: [
             Column(

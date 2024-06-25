@@ -144,7 +144,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
                                   HexText(
                                     'Follow',
                                     fontSize: 16.sp,
-                                    color: AppColors.grey200,
+                                    color: AppColors.grey2,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ],
@@ -179,7 +179,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
                                   HexText(
                                     'Following',
                                     fontSize: 16.sp,
-                                    color: AppColors.grey200,
+                                    color: AppColors.grey2,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ],
@@ -206,7 +206,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
                   padding: EdgeInsets.zero,
                   controller: controller,
                   dividerColor: CupertinoColors.systemGrey5,
-                  indicatorColor: AppColors.primary,
+                  indicatorColor: AppColors.secondary,
                   unselectedLabelColor: CupertinoColors.systemGrey,
                   tabs: [item(0), item(1), item(2)],
                 ),
@@ -464,15 +464,15 @@ class MyPostDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryBG,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryBG,
+        backgroundColor: AppColors.white,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
         title: HexText(
           '@${AppCache.getUser()?.user?.username}',
           fontSize: 16.sp,
-          color: AppColors.primary,
+          color: AppColors.secondary,
           fontWeight: FontWeight.w700,
         ),
         elevation: 0,

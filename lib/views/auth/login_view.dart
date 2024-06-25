@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: [
               HexField(
-                hintText: 'Email',
+                hintText: 'you@example.com',
                 textInputType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 controller: email,
@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 30.h),
               HexField(
-                hintText: 'Password',
+                hintText: '********',
                 textInputType: TextInputType.text,
                 textInputAction: TextInputAction.done,
                 controller: password,
@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   return Utils.isValidPassword(a);
                 },
               ),
-              SizedBox(height: 30.h),
+              SizedBox(height: 16.h),
               Row(
                 children: [
                   InkWell(
@@ -80,23 +80,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: HexText(
                       'Forgot Password?',
                       fontSize: 14.sp,
-                      color: AppColors.primary,
+                      color: context.textColor,
                       align: TextAlign.center,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 45.h),
+              SizedBox(height: 50.h),
               HexButton(
                 'Log in',
-                buttonColor: AppColors.black,
-                height: 60,
-                fontSize: 16.sp,
+                buttonColor: AppColors.secondary,
+                height: 48,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
                 textColor: AppColors.white,
-                borderColor: AppColors.black,
-                borderRadius: 10.h,
+                borderColor: AppColors.secondary,
+                borderRadius: 4.h,
+                safeArea: false,
                 busy: model.busy,
                 onPressed: () {
                   autoValidate = true;
@@ -113,15 +114,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 16.h),
               HexText(
                 'or sign in with',
                 fontSize: 14.sp,
-                color: Colors.black,
+                color: context.textColor,
                 align: TextAlign.center,
                 fontWeight: FontWeight.normal,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 16.h),
               Row(
                 children: [
                   Expanded(
@@ -132,12 +133,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [Image.asset('google'.png, height: 25.h)],
                       ),
                       buttonColor: AppColors.white,
-                      height: 60,
-                      fontSize: 16.sp,
+                      height: 48,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
                       textColor: AppColors.black,
-                      borderColor: AppColors.grey,
-                      borderRadius: 10.h,
+                      borderColor: AppColors.white,
+                      borderRadius: 4.h,
                       onPressed: () {
                         model.signInWithGoogle();
                       },
@@ -160,12 +161,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                           ),
                           buttonColor: AppColors.black,
-                          height: 60,
-                          fontSize: 16.sp,
+                          height: 48,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           textColor: AppColors.white,
                           borderColor: AppColors.black,
-                          borderRadius: 10.h,
+                          borderRadius: 4.h,
                           onPressed: () {
                             model.signInApple();
                           },
@@ -174,14 +175,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                 ],
               ),
-              SizedBox(height: 50.h),
+              SizedBox(height: 70.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   HexText(
                     'Don’t have an account? ',
                     fontSize: 14.sp,
-                    color: AppColors.black,
+                    color: AppColors.grey2,
                     fontWeight: FontWeight.w500,
                   ),
                   InkWell(
@@ -191,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: HexText(
                       'Sign up',
                       fontSize: 14.sp,
-                      color: AppColors.primary,
+                      color: context.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

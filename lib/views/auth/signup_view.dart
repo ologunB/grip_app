@@ -49,7 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               SizedBox(height: 20.h),
               HexField(
-                hintText: 'Email',
+                hintText: 'Email address',
                 textInputType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 controller: email,
@@ -83,18 +83,22 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                     child: Row(
                       children: [
-                        Image.asset('tick$tick'.png, height: 24.h),
+                        Image.asset(
+                          'tick$tick'.png,
+                          height: 24.h,
+                          color: context.primary,
+                        ),
                         SizedBox(width: 16.h),
                         HexText(
                           'I agree to the ',
                           fontSize: 14.sp,
-                          color: Colors.black,
+                          color: AppColors.grey2,
                           fontWeight: FontWeight.normal,
                         ),
                         HexText(
                           'terms of use',
                           fontSize: 14.sp,
-                          color: AppColors.primary,
+                          color: context.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ],
@@ -105,13 +109,13 @@ class _SignupScreenState extends State<SignupScreen> {
               SizedBox(height: 30.h),
               HexButton(
                 'Create Account',
-                buttonColor: AppColors.black,
-                height: 60,
-                fontSize: 16.sp,
+                buttonColor: context.primary,
+                height: 48,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
-                textColor: AppColors.white,
-                borderColor: Colors.transparent,
+                textColor: context.bgColor,
                 borderRadius: 10.h,
+                safeArea: false,
                 busy: model.busy,
                 onPressed: () {
                   autoValidate = true;
@@ -136,7 +140,7 @@ class _SignupScreenState extends State<SignupScreen> {
               HexText(
                 'or sign up with',
                 fontSize: 14.sp,
-                color: Colors.black,
+                color: AppColors.grey2,
                 align: TextAlign.center,
                 fontWeight: FontWeight.normal,
               ),
@@ -151,12 +155,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         children: [Image.asset('google'.png, height: 25.h)],
                       ),
                       buttonColor: AppColors.white,
-                      height: 60,
-                      fontSize: 16.sp,
+                      height: 48,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
                       textColor: AppColors.black,
-                      borderColor: AppColors.grey,
-                      borderRadius: 10.h,
+                      borderColor: AppColors.white,
+                      borderRadius: 4.h,
                       onPressed: () {
                         model.signInWithGoogle();
                       },
@@ -179,12 +183,12 @@ class _SignupScreenState extends State<SignupScreen> {
                             ],
                           ),
                           buttonColor: AppColors.black,
-                          height: 60,
-                          fontSize: 16.sp,
+                          height: 48,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           textColor: AppColors.white,
                           borderColor: AppColors.black,
-                          borderRadius: 10.h,
+                          borderRadius: 4.h,
                           onPressed: () {
                             model.signInApple();
                           },
@@ -200,7 +204,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   HexText(
                     'Already have an account? ',
                     fontSize: 14.sp,
-                    color: AppColors.grey,
+                    color: AppColors.grey2,
                     fontWeight: FontWeight.normal,
                   ),
                   InkWell(
@@ -210,7 +214,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: HexText(
                       'Log in',
                       fontSize: 14.sp,
-                      color: AppColors.primary,
+                      color: context.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

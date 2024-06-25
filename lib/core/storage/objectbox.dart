@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:hexcelon/core/apis/base_api.dart';
+import 'package:hexcelon/views/widgets/hex_text.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../views/widgets/utils.dart';
 import 'model.dart';
 import 'objectbox.g.dart';
 
@@ -41,8 +39,8 @@ class ObjectBox {
     String devicePath = (await getApplicationDocumentsDirectory()).path;
     final File savedFile = File('$devicePath/Bibles/$version');
 
-    final String _ = await savedFile.readAsString();
-    final List books = jsonDecode(_)['books'];
+    final String s = await savedFile.readAsString();
+    final List books = jsonDecode(s)['books'];
     Map<String, dynamic> all = {};
 
     for (dynamic b in books) {
@@ -70,7 +68,7 @@ class ObjectBox {
     }
     Utils.allBooks = all;
     await _verseBox.putManyAsync(verses);
-    print(
+    debugPrint(
         'Run time is ${DateTime.now().difference(now).inMilliseconds} for ${books.length} books');
   }
 
@@ -139,7 +137,7 @@ class ObjectBox {
     List<Verse> all = query.find();
     query.close();
 
-    print([book, chapter, verse, all]);
+    debugPrint([book, chapter, verse, all].toString());
     return all.isEmpty ? Verse('Genesis', '1', '1', '', 1, 1, 1, 1) : all.first;
   }
 }

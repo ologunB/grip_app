@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 export 'dart:async';
 export 'dart:convert';
@@ -54,6 +55,7 @@ class HexText extends StatelessWidget {
     this.fontSize = 14,
     this.fontFamily,
     this.fontStyle,
+    this.style,
   });
 
   final String text;
@@ -69,26 +71,36 @@ class HexText extends StatelessWidget {
   final FontStyle? fontStyle;
   final FontWeight? fontWeight;
   final bool blur;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      textAlign: align,
-      maxLines: maxLines,
-      overflow: overflow,
-      softWrap: true,
-      style: TextStyle(
-        fontFamily: 'Nova',
-        color: color,
-        letterSpacing: letterSpacing,
-        fontSize: fontSize,
-        height: height,
-        fontStyle: fontStyle,
-        fontWeight: fontWeight,
-        decoration: decoration,
-      ),
-    );
+    return Text(text,
+        textAlign: align,
+        maxLines: maxLines,
+        overflow: overflow,
+        softWrap: true,
+        style: style ??
+            (fontFamily != null
+                ? TextStyle(
+                    fontFamily: fontFamily,
+                    color: color,
+                    letterSpacing: letterSpacing,
+                    fontSize: fontSize,
+                    height: height,
+                    fontStyle: fontStyle,
+                    fontWeight: fontWeight,
+                    decoration: decoration,
+                  )
+                : GoogleFonts.inter(
+                    color: color,
+                    letterSpacing: letterSpacing,
+                    fontSize: fontSize,
+                    height: height,
+                    fontStyle: fontStyle,
+                    fontWeight: fontWeight,
+                    decoration: decoration,
+                  )));
   }
 }
 

@@ -40,45 +40,50 @@ class _OnboardScreenState extends State<OnboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(index == 0
-          ? 0xffD7E2FF
-          : index == 1
-              ? 0xffCCFFDC
-              : 0xffFDFBC2),
-      body: Stack(
-        children: [
-          PageView(
-            controller: controller,
-            onPageChanged: (a) => setState(() => index = a),
-            children: [0, 1, 2]
-                .map(
-                  (e) => Column(
-                    children: [
-                      SizedBox(height: 120.h),
-                      HexText(
-                        b[e],
-                        fontSize: 28.sp,
-                        color: Colors.black,
-                        align: TextAlign.center,
-                        fontWeight: FontWeight.w900,
-                      ),
-                      SizedBox(height: 30.h),
-                      Expanded(child: Image.asset('onboard$e'.png)),
-                      SizedBox(height: 60.h),
-                      Visibility(
-                        visible: false,
-                        maintainState: true,
-                        maintainAnimation: true,
-                        maintainSize: true,
-                        child: bottom(),
-                      )
-                    ],
-                  ),
-                )
-                .toList(),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('auth-${context.themeName}-bg'.png),
           ),
-          Align(alignment: Alignment.bottomCenter, child: bottom()),
-        ],
+        ),
+        child: Stack(
+          children: [
+            PageView(
+              controller: controller,
+              onPageChanged: (a) => setState(() => index = a),
+              children: [0, 1, 2]
+                  .map(
+                    (e) => Column(
+                      children: [
+                        SizedBox(height: 100.h),
+                        HexText(
+                          b[e],
+                          fontSize: 32.sp,
+                          color: context.textColor,
+                          align: TextAlign.center,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: context.transformaSans,
+                        ),
+                        SizedBox(height: 30.h),
+                        SizedBox(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20.h),
+                            child: Image.asset(
+                              'onboard$e'.png,
+                              height: 350.h,
+                              fit: BoxFit.cover,
+                              width: 225.h,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                  .toList(),
+            ),
+            Align(alignment: Alignment.bottomCenter, child: bottom()),
+          ],
+        ),
       ),
     );
   }
@@ -87,17 +92,51 @@ class _OnboardScreenState extends State<OnboardScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        Container(
+          height: 14.h,
+          alignment: Alignment.center,
+          child: ListView.builder(
+              itemCount: b.length,
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, i) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      width: index != i ? 20.h : 80.h,
+                      height: 6.h,
+                      margin: EdgeInsets.all(3.h),
+                      decoration: BoxDecoration(
+                        color: context.isLight
+                            ? (index == i
+                                ? AppColors.secondary
+                                : AppColors.secondary30)
+                            : index == i
+                                ? AppColors.secondary
+                                : AppColors.secondary,
+                        borderRadius: BorderRadius.circular(30.h),
+                      ),
+                      padding: EdgeInsets.all(3.h),
+                    )
+                  ],
+                );
+              }),
+        ),
+        SizedBox(height: 40.h),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25.h),
+          padding: EdgeInsets.symmetric(horizontal: 20.h),
           child: HexButton(
             'Create Account',
-            buttonColor: AppColors.black,
-            height: 60,
-            fontSize: 16.sp,
+            buttonColor: AppColors.secondary,
+            height: 48,
+            fontSize: 14.sp,
             safeArea: false,
             fontWeight: FontWeight.w400,
-            textColor: Colors.white,
-            borderColor: AppColors.black,
+            textColor: AppColors.black,
+            borderColor: AppColors.secondary,
             borderRadius: 10.h,
             onPressed: () {
               push(context, const SignupScreen());
@@ -106,16 +145,16 @@ class _OnboardScreenState extends State<OnboardScreen> {
         ),
         SizedBox(height: 16.h),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25.h),
+          padding: EdgeInsets.symmetric(horizontal: 20.h),
           child: HexButton(
             'Log in',
-            buttonColor: Colors.white,
-            height: 60,
+            buttonColor: AppColors.secondary,
+            height: 48,
             safeArea: false,
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
-            textColor: AppColors.black,
-            borderColor: Colors.transparent,
+            textColor: AppColors.white,
+            borderColor: AppColors.secondary,
             borderRadius: 10.h,
             onPressed: () {
               push(context, const LoginScreen());
@@ -123,15 +162,49 @@ class _OnboardScreenState extends State<OnboardScreen> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 28.h),
+          padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 28.h),
           child: SafeArea(
             top: false,
-            child: HexText(
-              'By continuing, you agree to grip product’s data policy, cookie policy, terms and supplemental conditions',
-              fontSize: 16.sp,
-              color: Colors.black,
-              align: TextAlign.center,
-              fontWeight: FontWeight.w400,
+            child: Text.rich(
+              textAlign: TextAlign.center,
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'By proceeding, I accept the terms for ',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: context.textColor,
+                      fontFamily: context.transformaSans,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'GRIP Services',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: context.transformaSans,
+                      color: context.textColor,
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' and confirm that I have read ',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontFamily: context.transformaSans,
+                      color: context.textColor,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'GRIP’s Privacy Policy. ',
+                    style: TextStyle(
+                      fontFamily: context.transformaSans,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
+                      color: context.textColor,
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

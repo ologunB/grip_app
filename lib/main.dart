@@ -1,11 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcelon/views/auth/signup_view.dart';
 
 import 'core/models/navigator.dart';
 import 'core/models/post_model.dart';
 import 'core/storage/local_storage.dart';
+import 'firebase_options.dart';
 import 'locator.dart';
-import 'views/auth/onboard_view.dart';
 import 'views/create/media.dart';
 import 'views/home/post_details.dart';
 import 'views/home/user_layout.dart';
@@ -15,7 +17,7 @@ List<GlobalKey<NavigatorState>> navigatorKeys = [];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   setupLocator();
@@ -62,10 +64,13 @@ class _AppState extends State<App> {
             debugShowCheckedModeBanner: false,
             title: 'Grip',
             theme: ThemeData(
+              brightness: Brightness.light,
               fontFamily: 'Nova',
-              colorScheme:
-                  const ColorScheme.dark(background: Colors.transparent),
-              primaryColor: AppColors.primary,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+              textTheme:
+                  GoogleFonts.interTextTheme(Theme.of(context).textTheme),
+              //   colorScheme: const ColorScheme.dark(surface: Colors.transparent),
+              primaryColor: AppColors.secondary,
               tabBarTheme: const TabBarTheme(
                 indicator: UnderlineTabIndicator(
                   borderSide: BorderSide(color: Colors.white),
@@ -74,7 +79,7 @@ class _AppState extends State<App> {
             ),
             navigatorKey: AppNavigator.navKey,
             home: AppCache.getUser() == null
-                ? const OnboardScreen()
+                ? const SignupScreen()
                 : const UserLayout()),
       ),
     );

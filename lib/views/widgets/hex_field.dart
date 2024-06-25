@@ -1,3 +1,5 @@
+import 'package:google_fonts/google_fonts.dart';
+
 import 'hex_text.dart';
 
 class HexField extends StatelessWidget {
@@ -64,7 +66,7 @@ class HexField extends StatelessWidget {
     InputBorder border = OutlineInputBorder(
       borderSide: BorderSide(
         width: 1.h,
-        color: borderColor ?? const Color(0xffE0E0E0),
+        color: borderColor ?? context.textColor,
       ),
       borderRadius: BorderRadius.circular(10.h),
     );
@@ -95,25 +97,23 @@ class HexField extends StatelessWidget {
           maxLength: maxLength,
           inputFormatters: inputFormatters,
           textInputAction: textInputAction,
-          style: TextStyle(
-            fontFamily: 'Nova',
-            color: AppColors.black,
+          style: GoogleFonts.inter(
+            color: context.textColor,
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
           ),
           readOnly: readOnly,
           decoration: InputDecoration(
             counterStyle: const TextStyle(fontSize: 0),
-            prefix: SizedBox(width: 25.h),
+            prefix: SizedBox(width: 20.h),
             contentPadding:
                 EdgeInsets.symmetric(vertical: maxLines != null ? 10 : 0.h),
             suffix: suffix,
             suffixIcon: suffixIcon,
             hintText: hintText,
-            hintStyle: TextStyle(
-              fontFamily: 'Nova',
-              color: hintColor ?? const Color(0xFF9E9E9E),
-              fontSize: 16.sp,
+            hintStyle: GoogleFonts.inter(
+              color: hintColor ?? AppColors.grey,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w400,
             ),
             border: border,

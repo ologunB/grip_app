@@ -68,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.white,
-            iconTheme: const IconThemeData(color: AppColors.primary),
+            iconTheme: const IconThemeData(color: AppColors.secondary),
           ),
           body: SafeArea(
             child: SingleChildScrollView(
@@ -114,7 +114,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         file != null ? 'Confirm' : 'Change Picture',
                         fontSize: 14.sp,
                         align: TextAlign.center,
-                        color: AppColors.primary,
+                        color: AppColors.secondary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -164,7 +164,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         children: [
                           Icon(
                             Icons.arrow_forward_ios_rounded,
-                            color: AppColors.primary,
+                            color: AppColors.secondary,
                             size: 24.h,
                           )
                         ],
@@ -250,7 +250,7 @@ class SelectPhoto extends StatelessWidget {
               'Take a Photo',
               fontSize: 14.sp,
               align: TextAlign.center,
-              color: AppColors.primary,
+              color: AppColors.secondary,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -272,7 +272,7 @@ class SelectPhoto extends StatelessWidget {
               'Choose from Gallery',
               fontSize: 14.sp,
               align: TextAlign.center,
-              color: AppColors.primary,
+              color: AppColors.secondary,
               fontWeight: FontWeight.w700,
             ),
           ),

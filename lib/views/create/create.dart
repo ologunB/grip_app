@@ -59,7 +59,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              iconTheme: const IconThemeData(color: AppColors.primary),
+              iconTheme: const IconThemeData(color: AppColors.secondary),
             ),
             bottomNavigationBar: Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 10.h),

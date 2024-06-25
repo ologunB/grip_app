@@ -1,5 +1,5 @@
-import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:chewie_audio/chewie_audio.dart';
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:hexcelon/core/models/login_model.dart';
 import 'package:like_button/like_button.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -24,8 +24,8 @@ class MediaItem extends StatefulWidget {
 }
 
 class _MediaItemState extends State<MediaItem> {
-  var videoPlayerController;
-  CustomVideoPlayerController? customVideoPlayerController;
+  VideoPlayerController? videoPlayerController;
+  FlickManager? flickManager;
   ChewieAudioController? chewieAudioController;
 
   @override
@@ -36,14 +36,8 @@ class _MediaItemState extends State<MediaItem> {
       videoPlayerController =
           VideoPlayerController.networkUrl(Uri.parse(widget.post!.file!))
             ..initialize().then((value) => setState(() {}));
-      customVideoPlayerController = CustomVideoPlayerController(
-        context: context,
-        videoPlayerController: videoPlayerController!,
-        customVideoPlayerSettings: const CustomVideoPlayerSettings(
-          placeholderWidget: CircularProgressIndicator(),
-          showSeekButtons: true,
-        ),
-      );
+      flickManager =
+          FlickManager(videoPlayerController: videoPlayerController!);
     } else if (widget.post?.fileType == 'audio') {
       videoPlayerController =
           VideoPlayerController.networkUrl(Uri.parse(widget.post!.file!))
@@ -55,14 +49,14 @@ class _MediaItemState extends State<MediaItem> {
         materialProgressColors: ChewieProgressColors(
           backgroundColor: Colors.grey,
           handleColor: AppColors.white,
-          bufferedColor: AppColors.primaryBG,
-          playedColor: AppColors.primary,
+          bufferedColor: AppColors.white,
+          playedColor: AppColors.secondary,
         ),
         cupertinoProgressColors: ChewieProgressColors(
           backgroundColor: Colors.grey,
           handleColor: AppColors.white,
-          bufferedColor: AppColors.primaryBG,
-          playedColor: AppColors.primary,
+          bufferedColor: AppColors.white,
+          playedColor: AppColors.secondary,
         ),
       );
     }
@@ -72,7 +66,7 @@ class _MediaItemState extends State<MediaItem> {
   void dispose() {
     super.dispose();
     videoPlayerController?.dispose();
-    customVideoPlayerController?.dispose();
+    flickManager?.dispose();
     chewieAudioController?.dispose();
   }
 
@@ -96,9 +90,7 @@ class _MediaItemState extends State<MediaItem> {
               ? ChewieAudio(
                   controller: chewieAudioController!,
                 )
-              : CustomVideoPlayer(
-                  customVideoPlayerController: customVideoPlayerController!,
-                ),
+              : FlickVideoPlayer(flickManager: flickManager!),
     );
   }
 }
@@ -194,7 +186,7 @@ class _VerticalPageViewState extends State<VerticalPageView> {
                       const Spacer(),
                       Icon(
                         Icons.check_circle,
-                        color: AppColors.primary,
+                        color: AppColors.secondary,
                         size: 50.h,
                       ),
                       SizedBox(height: 20.h),
@@ -586,7 +578,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
               )
             : RawScrollbar(
                 controller: controller2,
-                thumbColor: AppColors.primary.withOpacity(.5),
+                thumbColor: AppColors.secondary.withOpacity(.5),
                 radius: const Radius.circular(8),
                 crossAxisMargin: 2,
                 thumbVisibility: true,

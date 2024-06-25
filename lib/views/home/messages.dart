@@ -12,17 +12,17 @@ class _MessagesScreenState extends State<MessagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryBG,
+      backgroundColor: AppColors.white,
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.secondary,
         child: Image.asset(
           'add'.png,
           height: 24.h,
         ),
       ),
       appBar: AppBar(
-        backgroundColor: AppColors.primaryBG,
+        backgroundColor: AppColors.white,
         elevation: 0,
         centerTitle: true,
         title: HexText(
@@ -103,7 +103,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               alignment: Alignment.center,
                               width: 24.h,
                               decoration: BoxDecoration(
-                                color: AppColors.primary,
+                                color: AppColors.secondary,
                                 borderRadius: BorderRadius.circular(30.h),
                               ),
                               child: HexText(

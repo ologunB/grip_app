@@ -62,7 +62,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
               transitionBetweenRoutes: false,
               backgroundColor: Colors.white,
               border: Border.all(color: Colors.white),
-              leading: const BackButton(color: AppColors.primary),
+              leading: const BackButton(color: AppColors.secondary),
             ),
             backgroundColor: Colors.white,
             child: NestedScrollView(
@@ -110,7 +110,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                                     HexText(
                                       'Post',
                                       fontSize: 16.sp,
-                                      color: AppColors.grey200,
+                                      color: AppColors.grey2,
                                       fontWeight: FontWeight.w600,
                                     ),
                                     SizedBox(height: 8.h),
@@ -141,7 +141,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                                     HexText(
                                       'Followers',
                                       fontSize: 16.sp,
-                                      color: AppColors.grey200,
+                                      color: AppColors.grey2,
                                       fontWeight: FontWeight.w600,
                                     ),
                                     SizedBox(height: 8.h),
@@ -167,7 +167,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                                     HexText(
                                       'Following',
                                       fontSize: 16.sp,
-                                      color: AppColors.grey200,
+                                      color: AppColors.grey2,
                                       fontWeight: FontWeight.w600,
                                     ),
                                     SizedBox(height: 8.h),
@@ -246,7 +246,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                     padding: EdgeInsets.zero,
                     controller: controller,
                     dividerColor: CupertinoColors.systemGrey5,
-                    indicatorColor: AppColors.primary,
+                    indicatorColor: AppColors.secondary,
                     unselectedLabelColor: CupertinoColors.systemGrey,
                     tabs: [item(0), item(1), item(2)],
                   ),

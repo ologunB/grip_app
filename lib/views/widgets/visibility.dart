@@ -20,7 +20,7 @@ class GripVisibility extends StatelessWidget {
               hideText
                   ? Icons.visibility_off_outlined
                   : Icons.visibility_outlined,
-              color: AppColors.black,
+              color: context.textColor,
               size: 22.h,
             ),
           )

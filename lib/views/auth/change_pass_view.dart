@@ -28,6 +28,7 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
         'change',
         'Enter new password',
       ],
+      other: true,
       body: BaseView<AuthViewModel>(
         builder: (_, AuthViewModel model, __) => Form(
           key: formKey,
@@ -40,7 +41,7 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
               HexField(
                 hintText: 'Password',
                 textInputType: TextInputType.text,
-                textInputAction: TextInputAction.done,
+                textInputAction: TextInputAction.next,
                 controller: password,
                 obscureText: hideText,
                 suffix: GripVisibility(
@@ -80,13 +81,12 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
               SizedBox(height: 50.h),
               HexButton(
                 'Set Password',
-                height: 60,
-                fontSize: 16.sp,
+                height: 48,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
-                textColor: AppColors.white,
-                buttonColor: AppColors.black,
-                borderColor: Colors.transparent,
-                borderRadius: 10.h,
+                textColor: context.bgColor,
+                buttonColor: context.primary,
+                borderRadius: 4.h,
                 busy: model.busy,
                 onPressed: () async {
                   autoValidate = true;

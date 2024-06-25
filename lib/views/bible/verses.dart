@@ -44,7 +44,7 @@ class _VersesScreenState extends State<VersesScreen> {
     if (li.firstWhereOrNull((e) => e.index == 10) != null) {
       List<Verse> data = objectbox.get2ChaptersBefore(prevChapter);
       if (data.isNotEmpty) {
-        print("Close to top, first chapter is ${data.first.chapterName}");
+        debugPrint("Close to top, first chapter is ${data.first.chapterName}");
         prevChapter = prevChapter - 2;
         verses.addAll(data);
         verses = verses.toSet().toList();
@@ -57,7 +57,7 @@ class _VersesScreenState extends State<VersesScreen> {
     if (li.firstWhereOrNull((e) => e.index == verses.length - 10) != null) {
       List<Verse> data = objectbox.get2ChaptersAfter(nextChapter);
       if (data.isNotEmpty) {
-        print("Close to bottom, last chapter is ${data.last.chapterName}");
+        debugPrint("Close to bottom, last chapter is ${data.last.chapterName}");
         nextChapter = nextChapter + 2;
         verses.addAll(data);
         verses = verses.toSet().toList();
@@ -263,7 +263,7 @@ class _VersesScreenState extends State<VersesScreen> {
                         ),
                         duration: const Duration(seconds: 1),
                         color: (v.verse == verse && v.chapter == chapter)
-                            ? AppColors.primary.withOpacity(.2)
+                            ? AppColors.secondary.withOpacity(.2)
                             : null,
                         child: HexText(
                           '${v.verse}. ${v.text}',
@@ -294,7 +294,7 @@ class _VersesScreenState extends State<VersesScreen> {
                       Expanded(
                         child: Slider(
                           value: AppCache.getBibleFont(),
-                          activeColor: AppColors.primary,
+                          activeColor: AppColors.secondary,
                           onChanged: (double value) {
                             setState(() {
                               AppCache.setBibleFont(value);

@@ -20,7 +20,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         onRefresh: () async {
           return model.getNotifications();
         },
-        color: AppColors.primary,
+        color: AppColors.secondary,
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
@@ -33,7 +33,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               color: AppColors.black,
               fontWeight: FontWeight.w600,
             ),
-            iconTheme: const IconThemeData(color: AppColors.primary),
+            iconTheme: const IconThemeData(color: AppColors.secondary),
           ),
           body: model.busy
               ? Container(
@@ -57,7 +57,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             HexText(
                               'No Notification',
                               fontSize: 28.sp,
-                              color: AppColors.primary,
+                              color: AppColors.secondary,
                               fontWeight: FontWeight.w700,
                               align: TextAlign.center,
                             ),

@@ -25,6 +25,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
         'forgot',
         'Confirm your email to recover your\npassword',
       ],
+      other: true,
       body: BaseView<AuthViewModel>(
         builder: (_, AuthViewModel model, __) => Form(
           key: formKey,
@@ -35,7 +36,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               HexField(
-                hintText: 'Email',
+                hintText: 'you@example.com',
                 textInputType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 controller: email,
@@ -43,22 +44,19 @@ class _ForgotScreenState extends State<ForgotScreen> {
               ),
               SizedBox(height: 50.h),
               HexButton(
-                'Reset',
-                buttonColor: AppColors.black,
-                borderColor: Colors.transparent,
-                height: 60,
-                fontSize: 16.sp,
-                borderRadius: 10.h,
+                'Submit',
+                buttonColor: const Color(0xff2F2F2F),
+                height: 48,
+                fontSize: 14.sp,
+                borderRadius: 4.h,
                 fontWeight: FontWeight.w400,
                 busy: model.busy,
                 textColor: AppColors.white,
                 onPressed: () {
                   autoValidate = true;
                   setState(() {});
-
                   if (formKey.currentState!.validate()) {
                     Utils.offKeyboard();
-
                     model.forgotPassword(email.text);
                   }
                 },

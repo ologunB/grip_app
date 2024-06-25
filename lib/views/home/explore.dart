@@ -73,7 +73,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 onRefresh: () async {
                   return model.getPosts(type: 'explore');
                 },
-                color: AppColors.primary,
+                color: AppColors.secondary,
                 child: ListView(
                   padding: EdgeInsets.all(25.h),
                   children: [

@@ -29,6 +29,7 @@ class _OTPScreenState extends State<OTPScreen> {
         'done',
         'Enter the Verification code you just\nreceived',
       ],
+      other: true,
       body: BaseView<AuthViewModel>(
         builder: (_, AuthViewModel model, __) => Form(
           key: formKey,
@@ -58,14 +59,13 @@ class _OTPScreenState extends State<OTPScreen> {
               SizedBox(height: 50.h),
               HexButton(
                 'Submit',
-                buttonColor: AppColors.black,
-                borderColor: Colors.transparent,
-                height: 60,
-                fontSize: 16.sp,
+                buttonColor: context.primary,
+                height: 48,
+                fontSize: 14.sp,
                 busy: model.busy,
                 fontWeight: FontWeight.w400,
-                textColor: AppColors.white,
-                borderRadius: 10.h,
+                textColor: context.bgColor,
+                borderRadius: 4.h,
                 onPressed: () {
                   autoValidate = true;
                   setState(() {});
@@ -74,12 +74,16 @@ class _OTPScreenState extends State<OTPScreen> {
                     Utils.offKeyboard();
 
                     if (widget.email == null) {
-                      model.verify({"id": login?.user?.id, "code": code.text.trim()});
+                      model.verify(
+                          {"id": login?.user?.id, "code": code.text.trim()});
                     } else {
                       push(
                         context,
                         ChangePassScreen(
-                          data: {'email': widget.email, 'code': code.text.trim()},
+                          data: {
+                            'email': widget.email,
+                            'code': code.text.trim()
+                          },
                         ),
                       );
                     }
@@ -99,7 +103,7 @@ class _OTPScreenState extends State<OTPScreen> {
                           HexText(
                             'Didnt get OTP? ',
                             fontSize: 14.sp,
-                            color: AppColors.grey,
+                            color: AppColors.grey2,
                             fontWeight: FontWeight.normal,
                           ),
                           InkWell(
@@ -109,7 +113,7 @@ class _OTPScreenState extends State<OTPScreen> {
                             child: HexText(
                               'Resend',
                               fontSize: 14.sp,
-                              color: AppColors.primary,
+                              color: context.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

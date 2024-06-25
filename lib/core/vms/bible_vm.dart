@@ -1,4 +1,4 @@
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:hexcelon/core/vms/settings_vm.dart';
 import 'package:hexcelon/views/widgets/hex_text.dart';
 import 'package:path_provider/path_provider.dart';
@@ -86,7 +86,7 @@ class BibleViewModel extends BaseModel {
         return true;
       }
     }
-    return false;
+    return true;
   }
 
   Future<void> downloadBible(Version v) async {

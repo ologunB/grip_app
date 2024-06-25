@@ -59,7 +59,8 @@ class HexPinField extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(15.h),
-              border: Border.all(color: color ?? AppColors.primary, width: 1.h),
+              border:
+                  Border.all(color: color ?? AppColors.secondary, width: 1.h),
             ),
             textStyle: TextStyle(
               fontFamily: 'Avenir',
@@ -73,7 +74,8 @@ class HexPinField extends StatelessWidget {
             width: 63.h,
             decoration: BoxDecoration(
               color: Colors.transparent,
-              border: Border.all(color: color ?? AppColors.primary, width: 1.h),
+              border:
+                  Border.all(color: color ?? AppColors.secondary, width: 1.h),
               borderRadius: BorderRadius.circular(15.h),
             ),
             textStyle: TextStyle(
@@ -90,7 +92,7 @@ class HexPinField extends StatelessWidget {
               color: Colors.transparent,
               border: Border.all(
                   color: color?.withOpacity(.2) ??
-                      AppColors.primary.withOpacity(.2),
+                      AppColors.secondary.withOpacity(.2),
                   width: 1.h),
               borderRadius: BorderRadius.circular(15.h),
             ),

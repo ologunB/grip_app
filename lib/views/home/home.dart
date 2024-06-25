@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     push(context, const ChooseMediaScreen(), true);
                   },
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColors.secondary,
                   child:
                       Icon(Icons.add_rounded, size: 40.h, color: Colors.white),
                 ),
@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   type:
                                       'recent/${AppCache.getUser()?.user?.id}');
                             },
-                            color: AppColors.primary,
+                            color: AppColors.secondary,
                             child: body(model),
                           ),
                         ),
@@ -166,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             onRefresh: () async {
                               return model.getPosts(type: 'recommended');
                             },
-                            color: AppColors.primary,
+                            color: AppColors.secondary,
                             child: body(model),
                           ),
                         )
