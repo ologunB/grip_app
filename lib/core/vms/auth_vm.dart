@@ -18,16 +18,12 @@ class AuthViewModel extends BaseModel {
   String? error;
 
   LoginModel? loginResponse;
-  void setLoginResponse(LoginModel e) {
-    loginResponse = e;
-    notifyListeners();
-  }
 
   Future<void> signup(Map<String, dynamic> a) async {
     setBusy(true);
     try {
       LoginModel res = await _api.signup(a);
-      vmContext.read<AuthViewModel>().setLoginResponse(res);
+      vmContext.read<AuthViewModel>().loginResponse = res;
       push(vmContext, const OTPScreen());
       showVMSnackbar('Verify your account');
       setBusy(false);
@@ -46,7 +42,6 @@ class AuthViewModel extends BaseModel {
       user?.user?.verificationStatus = true;
       AppCache.setUser(user!);
       pushAndRemoveUntil(vmContext, const UserLayout());
-      push(vmContext, const FollowTopicsScreen());
       showVMSnackbar('Account has been verified successfully');
       setBusy(false);
     } on GripException catch (e) {
@@ -102,7 +97,7 @@ class AuthViewModel extends BaseModel {
       LoginModel res = await _api.login(a);
       if (!res.user!.verificationStatus!) {
         await resendOTP(res.user!.email);
-        vmContext.read<AuthViewModel>().setLoginResponse(res);
+        vmContext.read<AuthViewModel>().loginResponse = res;
         push(vmContext, const OTPScreen());
       } else {
         AppCache.setUser(res);
@@ -188,6 +183,11 @@ class AuthViewModel extends BaseModel {
         u.isFollow = true;
         present.update(a!, (a) => u, ifAbsent: () => u);
       }
+      var login = AppCache.getUser();
+      var user = login?.user;
+      user?.followingCount = (int.parse(user.followingCount!) + 1).toString();
+      login?.user = user;
+      AppCache.setUser(login!);
       setBusy(false);
       return true;
     } on GripException catch (e) {
@@ -208,6 +208,11 @@ class AuthViewModel extends BaseModel {
         u.isFollow = false;
         present.update(a!, (a) => u, ifAbsent: () => u);
       }
+      var login = AppCache.getUser();
+      var user = login?.user;
+      user?.followingCount = (int.parse(user.followingCount!) - 1).toString();
+      login?.user = user;
+      AppCache.setUser(login!);
       setBusy(false);
       return true;
     } on GripException catch (e) {

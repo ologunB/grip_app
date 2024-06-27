@@ -1,3 +1,5 @@
+import 'package:google_fonts/google_fonts.dart';
+
 import '../widgets/hex_text.dart';
 import 'login_view.dart';
 import 'signup_view.dart';
@@ -112,7 +114,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                       decoration: BoxDecoration(
                         color: context.isLight
                             ? (index == i
-                                ? AppColors.primary30
+                                ? AppColors.secondary
                                 : AppColors.secondary30)
                             : index == i
                                 ? AppColors.primary
@@ -137,7 +139,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
             fontWeight: FontWeight.w400,
             textColor: AppColors.black,
             borderColor: AppColors.primary,
-            borderRadius: 10.h,
+            borderRadius: 4.h,
             onPressed: () {
               push(context, const SignupScreen());
             },
@@ -155,7 +157,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
             fontWeight: FontWeight.w400,
             textColor: AppColors.white,
             borderColor: AppColors.secondary,
-            borderRadius: 10.h,
+            borderRadius: 4.h,
             onPressed: () {
               push(context, const LoginScreen());
             },
@@ -171,33 +173,29 @@ class _OnboardScreenState extends State<OnboardScreen> {
                 children: [
                   TextSpan(
                     text: 'By proceeding, I accept the terms for ',
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       color: context.textColor,
-                      fontFamily: context.transformaSans,
                     ),
                   ),
                   TextSpan(
                     text: 'GRIP Services',
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      fontFamily: context.transformaSans,
                       color: context.textColor,
                     ),
                   ),
                   TextSpan(
                     text: ' and confirm that I have read ',
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
-                      fontFamily: context.transformaSans,
                       color: context.textColor,
                     ),
                   ),
                   TextSpan(
                     text: 'GRIP’s Privacy Policy. ',
-                    style: TextStyle(
-                      fontFamily: context.transformaSans,
+                    style: GoogleFonts.inter(
                       fontWeight: FontWeight.bold,
                       fontSize: 14.sp,
                       color: context.textColor,

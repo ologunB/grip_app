@@ -1,11 +1,13 @@
 import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:hexcelon/core/models/login_model.dart';
+import 'package:hexcelon/views/auth/follow_people_view.dart';
 import 'package:hexcelon/views/home/profile.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../core/models/post_model.dart';
 import '../../core/vms/auth_vm.dart';
 import '../../core/vms/post_vm.dart';
+import '../auth/follow_topics_view.dart';
 import '../create/media.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
@@ -24,10 +26,25 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController controller = TextEditingController();
 
   bool showSearch = false;
+
+  UserModel? get user => AppCache.getUser()?.user;
+  @override
+  void initState() {
+    AuthViewModel().update({});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (user?.categories?.isEmpty ?? true) {
+        push(context, const FollowTopicsScreen());
+      } else if (user?.followingCount == '0') {
+        push(context, const FollowPeopleScreen());
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseView<PostViewModel>(
-      builder: (_, PostViewModel sModel, __) => Scaffold(
+      builder: (_, sModel, __) => Scaffold(
           backgroundColor: context.bgColor,
           floatingActionButton: AppCache.getUser()?.user?.role == 'user'
               ? null
@@ -101,6 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             InkWell(
                               onTap: () {
                                 showSearch = false;
+                                controller.clear();
                                 setState(() {});
                               },
                               borderRadius: BorderRadius.circular(50.h),
@@ -137,33 +155,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       children: [
                         SizedBox(width: 15.h),
-                        Expanded(
-                          child: TextButton(
-                            onPressed: () {
-                              setState(() => index = 0);
-                            },
-                            child: HexText(
-                              'Recent Posts',
-                              style: AppThemes.tabHeader.copyWith(
-                                color: index == 0
-                                    ? context.primary
-                                    : const Color(0xffC6C6C6),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: TextButton(
-                            onPressed: () {
-                              setState(() => index = 1);
-                            },
-                            child: HexText(
-                              'Recommended',
-                              style: AppThemes.tabHeader.copyWith(
-                                color: index == 1
-                                    ? context.primary
-                                    : const Color(0xffC6C6C6),
-                              ),
+                        ...[0, 1].map(
+                          (i) => Expanded(
+                            child: Column(
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() => index = i);
+                                  },
+                                  child: HexText(
+                                    ['Recent Posts', 'Recommended'][i],
+                                    style: AppThemes.tabHeader.copyWith(
+                                      color: index == i
+                                          ? context.primary
+                                          : const Color(0xffC6C6C6),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 3.h,
+                                  width: 40.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.h),
+                                    color: index == i
+                                        ? context.primary
+                                        : Colors.transparent,
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                         ),
@@ -201,21 +220,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                       ],
                     ),
+                    SizedBox(height: 24.h),
                     Expanded(
                       child: IndexedStack(
                         index: index,
                         children: [
                           BaseView<PostViewModel>(
-                            onModelReady: (a) => a.getPosts(
-                                type: 'recent/${AppCache.getUser()?.user?.id}'),
+                            onModelReady: (a) =>
+                                a.getPosts(type: 'recent/${user?.id}'),
                             builder: (_, PostViewModel model, __) =>
                                 RefreshIndicator(
                               onRefresh: () async {
                                 return model.getPosts(
-                                    type:
-                                        'recent/${AppCache.getUser()?.user?.id}');
+                                    type: 'recent/${user?.id}');
                               },
-                              color: AppColors.secondary,
+                              color: context.primary,
                               child: body(model),
                             ),
                           ),
@@ -227,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onRefresh: () async {
                                 return model.getPosts(type: 'recommended');
                               },
-                              color: AppColors.secondary,
+                              color: context.primary,
                               child: body(model),
                             ),
                           )
@@ -305,7 +324,6 @@ class HomeItem extends StatelessWidget {
     return InkWell(
       onTap: () async {
         Map? d = await push(context, VerticalPageView(post: post, from: from));
-
         if (d == null) return;
         if (d.containsKey('delete')) {
           model.posts?.removeWhere((a) => a.id == d['delete']);
@@ -340,7 +358,7 @@ class HomeItem extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 20.h),
+              padding: EdgeInsets.symmetric(horizontal: 16.h, vertical: 20.h),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -350,10 +368,14 @@ class HomeItem extends StatelessWidget {
                     '${post.title}',
                     fontSize: 12.sp,
                     color: AppColors.white,
+                    maxLines: 2,
+                    fontFamily: context.transformaSans,
+                    overflow: TextOverflow.ellipsis,
                     fontWeight: FontWeight.w800,
                   ),
                   SizedBox(height: 7.h),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CircleAvatar(
                         radius: 11.h,
@@ -368,23 +390,39 @@ class HomeItem extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 7.h),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          HexText(
-                            '${post.user?.username}',
-                            fontSize: 10.sp,
-                            color: AppColors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          SizedBox(height: 1.h),
-                          HexText(
-                            timeago.format(DateTime.parse(post.createdAt!)),
-                            fontSize: 8.sp,
-                            color: AppColors.white,
-                          ),
-                        ],
-                      )
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            HexText(
+                              '${post.user?.username}',
+                              style: AppThemes.profileNameS
+                                  .copyWith(color: AppColors.white),
+                            ),
+                            SizedBox(height: 1.h),
+                            HexText(
+                              timeago.format(DateTime.parse(post.createdAt!)),
+                              style: AppThemes.time
+                                  .copyWith(color: AppColors.primary),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 7.h),
+                      Image.asset(
+                        'heart'.png,
+                        height: 12.h,
+                        width: 12.h,
+                        color: AppColors.primary,
+                      ),
+                      SizedBox(width: 7.h),
+                      HexText(
+                        '${post.likeCount}',
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                        fontFamily: context.transformaSans,
+                        fontSize: 10.sp,
+                      ),
                     ],
                   ),
                 ],
@@ -446,7 +484,7 @@ class _SearchBodyState extends State<SearchBody> {
                                 'Posts',
                                 fontSize: 20.sp,
                                 color: model.current == 0
-                                    ? context.textColor
+                                    ? context.primary
                                     : const Color(0xffC6C6C6),
                                 fontWeight: FontWeight.w800,
                               ),
@@ -460,7 +498,7 @@ class _SearchBodyState extends State<SearchBody> {
                                 'Users',
                                 fontSize: 20.sp,
                                 color: model.current == 1
-                                    ? context.textColor
+                                    ? context.primary
                                     : const Color(0xffC6C6C6),
                                 fontWeight: FontWeight.w800,
                               ),

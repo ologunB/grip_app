@@ -27,7 +27,7 @@ class _OTPScreenState extends State<OTPScreen> {
       title: const [
         'Verify your email',
         'done',
-        'Enter the Verification code you just\nreceived',
+        'Enter the Verification code\nyou just received',
       ],
       other: true,
       body: BaseView<AuthViewModel>(
@@ -108,7 +108,12 @@ class _OTPScreenState extends State<OTPScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              rModel.resendOTP(login?.user?.email);
+                              if (widget.email != null) {
+                                rModel.forgotPassword(widget.email,
+                                    refresh: true);
+                              } else {
+                                rModel.resendOTP(login?.user?.email);
+                              }
                             },
                             child: HexText(
                               'Resend',

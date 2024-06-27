@@ -123,8 +123,8 @@ class _VersesScreenState extends State<VersesScreen> {
                               isScrollControlled: true,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(50.h),
-                                  topLeft: Radius.circular(50.h),
+                                  topRight: Radius.circular(30.h),
+                                  topLeft: Radius.circular(30.h),
                                 ),
                               ),
                               builder: (c) {
@@ -396,7 +396,12 @@ class _SelectChapterDialogState extends State<SelectChapterDialog> {
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: Image.asset('close'.png, height: 24.h, width: 24.h),
+                    child: Image.asset(
+                      'close'.png,
+                      height: 24.h,
+                      width: 24.h,
+                      color: context.textColor,
+                    ),
                   ),
                 ),
               ],

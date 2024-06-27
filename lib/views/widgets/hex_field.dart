@@ -80,8 +80,8 @@ class HexField extends StatelessWidget {
             padding: EdgeInsets.only(top: 13.h, bottom: 7.h),
             child: HexText(
               labelText!,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
               color: color ?? context.primary,
             ),
           ),
@@ -105,9 +105,9 @@ class HexField extends StatelessWidget {
           readOnly: readOnly,
           decoration: InputDecoration(
             counterStyle: const TextStyle(fontSize: 0),
-            prefix: SizedBox(width: 20.h),
+            prefix: SizedBox(width: 16.h),
             contentPadding:
-                EdgeInsets.symmetric(vertical: maxLines != null ? 10 : 0.h),
+                EdgeInsets.symmetric(vertical: maxLines != null ? 10.h : 0.h),
             suffix: suffix,
             suffixIcon: suffixIcon,
             hintText: hintText,
@@ -125,7 +125,7 @@ class HexField extends StatelessWidget {
           ),
           onTap: onTap,
           obscureText: obscureText,
-          obscuringCharacter: '●',
+          obscuringCharacter: '•',
           controller: controller,
           textAlign: textAlign ?? TextAlign.start,
           keyboardType: textInputType,

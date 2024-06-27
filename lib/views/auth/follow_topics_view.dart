@@ -58,10 +58,9 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
                             if (updateUser) {
                               bool a =
                                   await cModel.update({'category': selected});
-                              if (a) {
-                                pushReplacement(
-                                    context, const FollowPeopleScreen());
-                              }
+                              if (!a) return;
+                              Navigator.pop(context, selected);
+                              push(context, const FollowPeopleScreen());
                             } else {
                               Navigator.pop(context, selected);
                             }
@@ -156,13 +155,12 @@ class _FollowTopicsScreenState extends State<FollowTopicsScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.h),
           border: Border.all(
-              width: 1.h,
-              color: contains
-                  ? AppColors.primary
-                  : (context.isLight ? AppColors.darkGrey : AppColors.grey2)),
-          color: !contains
-              ? Colors.transparent
-              : (context.isLight ? AppColors.black : AppColors.secondary),
+            width: 1.h,
+            color: contains
+                ? AppColors.primary
+                : (context.isLight ? AppColors.darkGrey : AppColors.grey2),
+          ),
+          color: !contains ? Colors.transparent : AppColors.secondary,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

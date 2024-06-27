@@ -30,16 +30,17 @@ class _VersesScreenState extends State<VersesScreen> {
   @override
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width - 147.h) / 5;
+    bool isVerse = widget.type == 'verse';
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.bgColor,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: context.primary),
         title: HexText(
-          widget.type == 'verse' ? 'Choose Verse' : 'Choose Chapter',
+          isVerse ? 'Choose Verse' : 'Choose Chapter',
           fontSize: 20.sp,
-          color: AppColors.black,
+          color: context.textColor,
           fontWeight: FontWeight.w600,
         ),
         elevation: 0,
@@ -52,14 +53,14 @@ class _VersesScreenState extends State<VersesScreen> {
               spacing: 24.h,
               runSpacing: 24.h,
               children: List.generate(
-                      widget.type == 'verse'
-                          ? widget.value[int.parse(widget.data[1])]
+                      isVerse
+                          ? widget.value[int.parse(widget.data[1]) - 1]
                           : widget.value.length,
                       (i) => i + 1)
                   .map(
                     (e) => InkWell(
                       onTap: () {
-                        if (widget.type == 'verse') {
+                        if (isVerse) {
                           data.insert(2, e.toString());
                           for (dynamic _ in List.filled(widget.popNumber, 0)) {
                             Navigator.pop(context, data);
@@ -92,7 +93,7 @@ class _VersesScreenState extends State<VersesScreen> {
                         child: HexText(
                           '$e',
                           fontSize: 16.sp,
-                          color: Colors.black,
+                          color: context.textColor,
                           align: TextAlign.center,
                           fontWeight: FontWeight.bold,
                         ),

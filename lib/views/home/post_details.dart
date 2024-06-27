@@ -1,5 +1,6 @@
 import 'package:chewie_audio/chewie_audio.dart';
 import 'package:flick_video_player/flick_video_player.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcelon/core/models/login_model.dart';
 import 'package:like_button/like_button.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -47,16 +48,16 @@ class _MediaItemState extends State<MediaItem> {
         autoPlay: true,
         looping: false,
         materialProgressColors: ChewieProgressColors(
-          backgroundColor: Colors.grey,
-          handleColor: AppColors.white,
-          bufferedColor: AppColors.white,
-          playedColor: AppColors.secondary,
+          backgroundColor: AppColors.grey,
+          handleColor: context.bgColor,
+          bufferedColor: context.bgColor,
+          playedColor: context.primary,
         ),
         cupertinoProgressColors: ChewieProgressColors(
-          backgroundColor: Colors.grey,
-          handleColor: AppColors.white,
-          bufferedColor: AppColors.white,
-          playedColor: AppColors.secondary,
+          backgroundColor: AppColors.grey,
+          handleColor: context.bgColor,
+          bufferedColor: context.bgColor,
+          playedColor: context.primary,
         ),
       );
     }
@@ -129,14 +130,14 @@ class _VerticalPageViewState extends State<VerticalPageView> {
   Future<void> _loadMoreContent() async {
     if (busy) return;
     busy = true;
-    setState(() {});
+    if (mounted) setState(() {});
     List<Post> newOnes =
         (await PostViewModel().getNextPosts(currentPost.id, widget.from)) ?? [];
 
     all.addAll(newOnes);
     busy = false;
 
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -160,8 +161,7 @@ class _VerticalPageViewState extends State<VerticalPageView> {
               ? Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 3.h,
-                    valueColor:
-                        const AlwaysStoppedAnimation<Color>(AppColors.white),
+                    valueColor: AlwaysStoppedAnimation<Color>(context.bgColor),
                   ),
                 )
               : Center(
@@ -177,7 +177,7 @@ class _VerticalPageViewState extends State<VerticalPageView> {
                               child: Image.asset(
                                 'close'.png,
                                 height: 32.h,
-                                color: Colors.white,
+                                color: AppColors.white,
                               ),
                             ),
                           ),
@@ -186,15 +186,15 @@ class _VerticalPageViewState extends State<VerticalPageView> {
                       const Spacer(),
                       Icon(
                         Icons.check_circle,
-                        color: AppColors.secondary,
+                        color: context.primary,
                         size: 50.h,
                       ),
                       SizedBox(height: 20.h),
                       HexText(
                         'You are all caught up',
                         fontSize: 20.sp,
-                        color: AppColors.white,
-                        fontWeight: FontWeight.bold,
+                        color: context.textColor,
+                        fontWeight: FontWeight.w600,
                       ),
                       const Spacer(),
                     ],
@@ -254,7 +254,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     return BaseView<PostViewModel>(
       onModelReady: (a) => a.getPostDetails(widget.post.id),
       builder: (_, PostViewModel model, __) => Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.black,
         body: Stack(
           children: [
             MediaItem(post: post),
@@ -293,16 +293,18 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 children: [
                                   HexText(
                                     '${post.user?.username}',
-                                    fontSize: 20.sp,
-                                    color: AppColors.white,
-                                    fontWeight: FontWeight.bold,
+                                    style: AppThemes.profileNameXL
+                                        .copyWith(color: AppColors.white),
                                   ),
                                   SizedBox(height: 1.h),
                                   HexText(
                                     timeago.format(
                                         DateTime.parse(post.createdAt!)),
-                                    fontSize: 15.sp,
-                                    color: AppColors.white,
+                                    style: GoogleFonts.nunito(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 15.sp,
+                                    ),
                                   ),
                                 ],
                               )
@@ -339,7 +341,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               child: InkWell(
                                 onTap: () async {
                                   dynamic d = await showModalBottomSheet(
-                                    backgroundColor: Colors.white,
+                                    backgroundColor: context.sheetBG,
                                     context: context,
                                     useRootNavigator: true,
                                     isScrollControlled: true,
@@ -410,14 +412,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     setState(() {});
                                   } else if (e == 3) {
                                     showModalBottomSheet(
-                                      backgroundColor: Colors.white,
+                                      backgroundColor: context.sheetBG,
                                       context: context,
                                       useRootNavigator: true,
                                       isScrollControlled: true,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(50.h),
-                                          topLeft: Radius.circular(50.h),
+                                          topRight: Radius.circular(30.h),
+                                          topLeft: Radius.circular(30.h),
                                         ),
                                       ),
                                       builder: (c) {
@@ -426,7 +428,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     );
                                   } else if (e == 5) {
                                     showModalBottomSheet(
-                                      backgroundColor: Colors.white,
+                                      backgroundColor: context.sheetBG,
                                       context: context,
                                       useRootNavigator: true,
                                       isScrollControlled: true,
@@ -532,6 +534,14 @@ class _CommentsDialogState extends State<CommentsDialog> {
         onModelReady: (m) => m.getComments(post.id),
         builder: (_, PostViewModel model, __) => Container(
           //  height: MediaQuery.of(context).size.height * .8,
+          decoration: BoxDecoration(
+            color: context.sheetBG,
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(30.h),
+              topLeft: Radius.circular(30.h),
+            ),
+          ),
+
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * .7,
           ),
@@ -573,7 +583,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   align: TextAlign.center,
-                  color: AppColors.black,
+                  color: context.textColor,
                 ),
               )
             : RawScrollbar(
@@ -601,7 +611,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
         Column(
           children: [
             Container(
-              color: Colors.white,
+              color: context.sheetBG,
               padding: EdgeInsets.only(top: 12.h, bottom: 6.h),
               child: Stack(
                 children: [
@@ -613,7 +623,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
                           height: 8.h,
                           width: 70.h,
                           decoration: BoxDecoration(
-                              color: Colors.grey.withOpacity(.5),
+                              color: AppColors.grey.withOpacity(.5),
                               borderRadius: BorderRadius.circular(12.h)),
                         ),
                         SizedBox(height: 10.h),
@@ -622,7 +632,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           align: TextAlign.center,
-                          color: AppColors.black,
+                          color: context.textColor,
                         ),
                       ],
                     ),
@@ -635,8 +645,12 @@ class _CommentsDialogState extends State<CommentsDialog> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child:
-                            Image.asset('close'.png, height: 20.h, width: 20.h),
+                        child: Image.asset(
+                          'close'.png,
+                          height: 20.h,
+                          width: 20.h,
+                          color: context.textColor,
+                        ),
                       ),
                     ),
                   ),
@@ -648,56 +662,60 @@ class _CommentsDialogState extends State<CommentsDialog> {
         Align(
           alignment: Alignment.bottomCenter,
           child: SafeArea(
-            child: SafeArea(
-              child: Container(
-                color: Colors.white,
-                padding: EdgeInsets.only(right: 10.h, left: 10.h, bottom: 5.h),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CupertinoTextField(
-                        padding: EdgeInsets.all(15.h),
-                        placeholderStyle: TextStyle(
-                          fontFamily: 'Nova',
-                          fontSize: 14.sp,
-                          color: AppColors.grey,
-                        ),
-                        placeholder: 'Leave a comment',
-                        controller: controller,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: const Color(0xffE0E0E0),
-                            width: 1.h,
-                          ),
+            child: Container(
+              color: context.sheetBG,
+              padding: EdgeInsets.only(right: 10.h, left: 10.h, bottom: 5.h),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CupertinoTextField(
+                      padding: EdgeInsets.all(15.h),
+                      placeholderStyle: TextStyle(
+                        fontFamily: 'Nova',
+                        fontSize: 14.sp,
+                        color: AppColors.grey,
+                      ),
+                      style:
+                          TextStyle(fontSize: 14.sp, color: context.textColor),
+                      placeholder: 'Leave a comment',
+                      controller: controller,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: const Color(0xffE0E0E0),
+                          width: 1.h,
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.h),
-                    InkWell(
-                      onTap: () async {
-                        if (controller.text.trim().isEmpty) {
-                          return;
-                        }
-                        model.createComment({
-                          'postId': post.id,
-                          'comment': controller.text.trim(),
-                        });
-                        setState(() {});
+                  ),
+                  SizedBox(width: 12.h),
+                  InkWell(
+                    onTap: () async {
+                      if (controller.text.trim().isEmpty) {
+                        return;
+                      }
+                      model.createComment({
+                        'postId': post.id,
+                        'comment': controller.text.trim(),
+                      });
+                      setState(() {});
 
-                        controller.clear();
-                        scrollController.animateTo(
-                          scrollController.position.maxScrollExtent + 60.h,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.linear,
-                        );
-                        setState(() {});
-                      },
-                      borderRadius: BorderRadius.circular(30.h),
-                      child: Image.asset('send'.png, height: 50.h),
+                      controller.clear();
+                      scrollController.animateTo(
+                        scrollController.position.maxScrollExtent + 60.h,
+                        duration: const Duration(seconds: 1),
+                        curve: Curves.linear,
+                      );
+                      setState(() {});
+                    },
+                    borderRadius: BorderRadius.circular(30.h),
+                    child: Image.asset(
+                      'send'.png,
+                      height: 50.h,
+                      color: context.textColor,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -720,7 +738,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
           borderRadius: BorderRadius.circular(40.h),
           child: CircleAvatar(
             radius: 16.h,
-            backgroundColor: Colors.white,
+            backgroundColor: context.textColor,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(40.h),
               child: UserImage(
@@ -739,7 +757,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
               HexText(
                 '${c.user?.username}',
                 fontSize: 13.sp,
-                color: AppColors.grey,
+                color: AppColors.grey2,
                 fontWeight: FontWeight.w600,
               ),
               SizedBox(height: 5.h),
@@ -750,7 +768,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
                     child: HexText(
                       '${c.comment}',
                       fontSize: 13.sp,
-                      color: AppColors.black,
+                      color: context.textColor,
                       maxLines: 4,
                     ),
                   ),
@@ -759,7 +777,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
                     timeago.format(DateTime.parse(c.createdAt!),
                         locale: 'en_short'),
                     fontSize: 15.sp,
-                    color: AppColors.grey,
+                    color: context.primary,
                   ),
                 ],
               ),
@@ -772,6 +790,9 @@ class _CommentsDialogState extends State<CommentsDialog> {
           children: [
             BaseView<PostViewModel>(
               builder: (_, PostViewModel model, __) => IconButton(
+                style: const ButtonStyle(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
                 onPressed: () {
                   model.likeComment(c.postId, c.id);
                   Comment? old = cModel.comments![c.id];
@@ -787,7 +808,7 @@ class _CommentsDialogState extends State<CommentsDialog> {
                 icon: Image.asset(
                   (c.isLike! ? 'like' : 'v4').png,
                   height: 20.h,
-                  color: c.isLike! ? null : Colors.grey,
+                  color: c.isLike! ? null : AppColors.grey,
                 ),
               ),
             ),
@@ -822,7 +843,7 @@ class DevotionalDialog extends StatelessWidget {
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
               align: TextAlign.center,
-              color: AppColors.black,
+              color: context.textColor,
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -834,6 +855,7 @@ class DevotionalDialog extends StatelessWidget {
                   'close'.png,
                   height: 24.h,
                   width: 24.h,
+                  color: context.textColor,
                 ),
               ),
             ),
@@ -843,7 +865,7 @@ class DevotionalDialog extends StatelessWidget {
         HexText(
           '${post.bibleBook} ${post.bibleChapter}:${post.bibleVerse}',
           fontSize: 14.sp,
-          color: AppColors.black,
+          color: context.textColor,
           fontWeight: FontWeight.bold,
         ),
         SizedBox(height: 12.h),
@@ -853,7 +875,7 @@ class DevotionalDialog extends StatelessWidget {
                   verse: int.parse(post.bibleVerse!))
               .text,
           fontSize: 14.sp,
-          color: AppColors.black,
+          color: context.textColor,
         ),
         SizedBox(height: 150.h),
       ],
@@ -878,9 +900,9 @@ class EditPostDialog extends StatelessWidget {
               alignment: Alignment.center,
               child: HexText(
                 'Post',
-                fontSize: 14.sp,
+                fontSize: 16.sp,
                 align: TextAlign.center,
-                color: AppColors.black,
+                color: context.textColor,
               ),
             ),
             Align(
@@ -893,6 +915,7 @@ class EditPostDialog extends StatelessWidget {
                   'close'.png,
                   height: 24.h,
                   width: 24.h,
+                  color: context.textColor,
                 ),
               ),
             ),
@@ -902,14 +925,13 @@ class EditPostDialog extends StatelessWidget {
         BaseView<PostViewModel>(
           builder: (_, PostViewModel model, __) => HexButton(
             'Edit Post',
-            buttonColor: AppColors.black,
-            height: 55,
+            buttonColor: AppColors.secondary,
+            height: 48,
             safeArea: false,
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             textColor: AppColors.white,
-            borderColor: AppColors.black,
-            borderRadius: 10.h,
+            borderRadius: 4.h,
             busy: model.busy,
             onPressed: () async {
               dynamic data = await push(context, CreatePostScreen(post: post));
@@ -928,12 +950,12 @@ class EditPostDialog extends StatelessWidget {
           builder: (_, PostViewModel model, __) => HexButton(
             'Delete Post',
             buttonColor: AppColors.white,
-            height: 55,
+            height: 48,
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             textColor: AppColors.red,
             borderColor: AppColors.grey,
-            borderRadius: 10.h,
+            borderRadius: 4.h,
             busy: model.busy,
             onPressed: () async {
               bool a = await model.deletePost(post.id);

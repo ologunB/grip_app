@@ -31,7 +31,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 12.h),
                   HexText(
                     'Explore',
                     style: AppThemes.header1.copyWith(color: context.textColor),

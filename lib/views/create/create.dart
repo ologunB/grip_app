@@ -54,10 +54,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         builder: (_, PostViewModel pModel, __) => GestureDetector(
           onTap: Utils.offKeyboard,
           child: Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: context.bgColor,
             extendBodyBehindAppBar: true,
             appBar: AppBar(
-              backgroundColor: Colors.transparent,
+              backgroundColor: context.bgColor,
               elevation: 0,
               iconTheme: const IconThemeData(color: AppColors.secondary),
             ),
@@ -65,12 +65,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 10.h),
               child: HexButton(
                 post != null ? 'Update Post' : 'Publish Post',
-                buttonColor: AppColors.black,
-                height: 60,
-                fontSize: 16.sp,
+                buttonColor: AppColors.secondary,
+                height: 48,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
                 textColor: AppColors.white,
-                borderColor: AppColors.black,
                 borderRadius: 10.h,
                 busy: pModel.busy,
                 onPressed: () async {
@@ -156,7 +155,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                     InkWell(
                                       onTap: () async {
                                         showModalBottomSheet(
-                                          backgroundColor: Colors.white,
+                                          backgroundColor: context.sheetBG,
                                           context: context,
                                           useRootNavigator: true,
                                           isScrollControlled: true,
@@ -181,7 +180,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(20.h),
-                                          color: AppColors.grey,
+                                          color: AppColors.grey2,
                                         ),
                                         child: HexText(
                                           'Preview',
@@ -225,7 +224,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(20.h),
-                                        color: AppColors.grey,
+                                        color: AppColors.grey2,
                                       ),
                                       child: HexText(
                                         coverPic == null ? 'Choose' : 'Edit',
@@ -259,18 +258,26 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       padding: EdgeInsets.symmetric(vertical: 5.h),
                       child: Row(
                         children: [
-                          Image.asset('categories'.png, height: 24.h),
+                          Image.asset(
+                            'categories'.png,
+                            height: 24.h,
+                            color: context.primary,
+                          ),
                           SizedBox(width: 10.h),
                           HexText(
                             'Select Categories (Post topics)',
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.black,
+                            color: context.primary,
                           ),
                           const Spacer(),
                           RotatedBox(
                             quarterTurns: !hideCategories ? 2 : 0,
-                            child: Image.asset('down'.png, height: 24.h),
+                            child: Image.asset(
+                              'down'.png,
+                              height: 24.h,
+                              color: context.primary,
+                            ),
                           ),
                         ],
                       ),
@@ -279,10 +286,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   SizedBox(height: 10.h),
                   hideCategories
                       ? HexText(
-                          categories.join(', '),
+                          categories
+                              .map((e) => e.name?.toTitleCase())
+                              .join(', '),
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w400,
-                          color: AppColors.black,
+                          color: context.textColor,
                         )
                       : aModel.busy
                           ? const Center(child: HexProgress())
@@ -308,24 +317,24 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                           setState(() {});
                                         },
                                         borderRadius:
-                                            BorderRadius.circular(6.h),
+                                            BorderRadius.circular(20.h),
                                         child: Container(
-                                          height: 45.h,
+                                          height: 50.h,
                                           padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  contains ? 10.h : 22.h),
+                                              horizontal: 18.h),
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(20.h),
                                             border: Border.all(
-                                              width: 1.h,
-                                              color: contains
-                                                  ? AppColors.black
-                                                  : const Color(0xff868686),
-                                            ),
+                                                width: 1.h,
+                                                color: contains
+                                                    ? AppColors.primary
+                                                    : (context.isLight
+                                                        ? AppColors.darkGrey
+                                                        : AppColors.grey2)),
                                             color: !contains
                                                 ? Colors.transparent
-                                                : AppColors.black,
+                                                : AppColors.secondary,
                                           ),
                                           child: Column(
                                             mainAxisAlignment:
@@ -335,24 +344,18 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   HexText(
-                                                    e.name!,
-                                                    fontSize: 12.sp,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: contains
-                                                        ? Colors.white
-                                                        : const Color(
-                                                            0xff868686),
+                                                    '#${e.name?.toTitleCase()}',
+                                                    style: AppThemes.pillText
+                                                        .copyWith(
+                                                      color: contains
+                                                          ? AppColors.white
+                                                          : (context.isLight
+                                                              ? AppColors.black
+                                                              : const Color(
+                                                                  0xff868686)),
+                                                    ),
                                                     align: TextAlign.center,
                                                   ),
-                                                  if (contains)
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10.h),
-                                                      child: Image.asset(
-                                                        'mark'.png,
-                                                        height: 16.h,
-                                                      ),
-                                                    )
                                                 ],
                                               )
                                             ],
@@ -381,7 +384,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           'Scripture Reference (Optional)',
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.black,
+                          color: context.primary,
                         ),
                       ),
                       const Spacer(),
@@ -391,7 +394,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               'Clear',
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w500,
-                              color: AppColors.black,
+                              color: AppColors.grey2,
                             ),
                             onPressed: () {
                               book.clear();
@@ -407,11 +410,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     textInputAction: TextInputAction.next,
                     controller: book,
                     readOnly: true,
-                    suffix: Column(
+                    suffixIcon: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(right: 12.h),
-                          child: Image.asset('down'.png, height: 24.h),
+                          child: Image.asset(
+                            'down'.png,
+                            height: 24.h,
+                            color: context.primary,
+                          ),
                         )
                       ],
                     ),
@@ -433,11 +441,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     textInputAction: TextInputAction.next,
                     controller: chapter,
                     readOnly: true,
-                    suffix: Column(
+                    suffixIcon: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(right: 12.h),
-                          child: Image.asset('down'.png, height: 24.h),
+                          child: Image.asset(
+                            'down'.png,
+                            height: 24.h,
+                            color: context.primary,
+                          ),
                         )
                       ],
                     ),
@@ -495,11 +508,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         setState(() {});
                       }
                     },
-                    suffix: Column(
+                    suffixIcon: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(right: 12.h),
-                          child: Image.asset('down'.png, height: 24.h),
+                          child: Image.asset(
+                            'down'.png,
+                            height: 24.h,
+                            color: context.primary,
+                          ),
                         )
                       ],
                     ),
@@ -553,7 +571,7 @@ class PreviewPhoto extends StatelessWidget {
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   align: TextAlign.center,
-                  color: AppColors.black,
+                  color: context.textColor,
                 ),
               ),
             ),
@@ -569,6 +587,7 @@ class PreviewPhoto extends StatelessWidget {
                     'close'.png,
                     height: 24.h,
                     width: 24.h,
+                    color: context.textColor,
                   ),
                 ),
               ),

@@ -353,13 +353,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
       decoration: BoxDecoration(
         color: context.sheetBG,
         borderRadius: BorderRadius.only(
-          topRight: Radius.circular(50.h),
-          topLeft: Radius.circular(50.h),
+          topRight: Radius.circular(30.h),
+          topLeft: Radius.circular(30.h),
         ),
       ),
       child: ListView(
         shrinkWrap: true,
-        padding: EdgeInsets.symmetric(vertical: 40.h),
+        padding: EdgeInsets.symmetric(vertical: 20.h),
         physics: const ClampingScrollPhysics(),
         children: [
           Stack(

@@ -16,18 +16,18 @@ class _ChooseBookScreenState extends State<ChooseBookScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.bgColor,
         elevation: 0,
         centerTitle: true,
         title: HexText(
           'Bible',
           fontSize: 20.sp,
-          color: AppColors.black,
+          color: context.textColor,
           fontWeight: FontWeight.w600,
         ),
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: context.primary),
       ),
       body: Column(
         children: [
@@ -35,54 +35,43 @@ class _ChooseBookScreenState extends State<ChooseBookScreen> {
             padding: EdgeInsets.all(8.h),
             margin: EdgeInsets.symmetric(horizontal: 25.h),
             decoration: BoxDecoration(
-              color: const Color(0xffAEAEAE).withOpacity(.1),
+              color: context.primary.withOpacity(.3),
               borderRadius: BorderRadius.circular(16.h),
             ),
             child: Row(
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      controller.jumpToPage(0);
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 15.h),
-                      decoration: BoxDecoration(
-                        color: index == 0 ? Colors.black : Colors.transparent,
-                        borderRadius: BorderRadius.circular(10.h),
-                      ),
-                      child: HexText(
-                        'Old Testament',
-                        fontSize: 12.sp,
-                        color: index == 1 ? Colors.black : Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      controller.jumpToPage(1);
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 15.h),
-                      decoration: BoxDecoration(
-                        color: index == 1 ? Colors.black : Colors.transparent,
-                        borderRadius: BorderRadius.circular(10.h),
-                      ),
-                      child: HexText(
-                        'New Testament',
-                        fontSize: 12.sp,
-                        color: index == 0 ? Colors.black : Colors.white,
-                        fontWeight: FontWeight.w600,
+              children: [0, 1]
+                  .map(
+                    (i) => Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          controller.jumpToPage(i);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(vertical: 15.h),
+                          decoration: BoxDecoration(
+                            color: index == i
+                                ? context.primary
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(10.h),
+                          ),
+                          child: HexText(
+                            '${i == 0 ? 'Old' : 'New'} Testament',
+                            fontSize: 12.sp,
+                            color: index == i
+                                ? (context.isLight
+                                    ? AppColors.white
+                                    : AppColors.secondary)
+                                : (context.isLight
+                                    ? AppColors.secondary
+                                    : AppColors.white),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
+                  )
+                  .toList(),
             ),
           ),
           Expanded(

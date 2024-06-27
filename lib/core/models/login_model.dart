@@ -79,8 +79,8 @@ class UserModel {
     googleId = json['googleId'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    followersCount = json['followersCount'];
-    followingCount = json['followingCount'];
+    followersCount = json['followersCount'] ?? '0';
+    followingCount = json['followingCount'] ?? '0';
     isFollow = json['isFollow'];
     categories = [];
     json['categories']?.forEach((v) {

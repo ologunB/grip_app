@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-bool get creator => false;
+bool get creator => true;
 
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController password = TextEditingController(
@@ -197,6 +197,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(height: 71.h),
+              Image.asset(
+                'logo20'.png,
+                height: 53.h,
               ),
               SizedBox(height: 21.h),
             ],

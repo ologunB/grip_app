@@ -1,4 +1,3 @@
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcelon/core/apis/base_api.dart';
 
 import '../../core/storage/model.dart';
@@ -29,38 +28,37 @@ class _SearchPageState extends State<SearchPage> {
                 SizedBox(width: 25.h),
                 Expanded(
                   child: CupertinoTextField(
+                    onTapOutside: (_) => Utils.offKeyboard(),
                     prefix: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.h),
-                          child: Image.asset(
-                            'search'.png,
-                            height: 24.h,
-                            color: context.primary,
-                          ),
+                          child: Image.asset('search'.png,
+                              height: 16.h, color: context.primary),
                         ),
                       ],
                     ),
-                    autofocus: true,
                     placeholder: 'Search',
-                    textInputAction: TextInputAction.search,
-                    controller: controller,
-                    style: GoogleFonts.inter(color: context.textColor),
-                    placeholderStyle: GoogleFonts.inter(
+                    style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                       color: context.textColor,
                     ),
+                    placeholderStyle: TextStyle(
+                      fontSize: 14.sp,
+                      color: context.textColor,
+                    ),
+                    controller: controller,
                     padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
                     decoration: BoxDecoration(
                       color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(20.h),
+                      borderRadius: BorderRadius.circular(6.h),
                       border: Border.all(
-                        color: context.textColor,
+                        color: const Color(0xffE0E0E0),
                       ),
                     ),
-                    maxLines: 3,
+                    maxLines: 1,
                     minLines: 1,
                     onChanged: (a) {
                       a = a.trim();

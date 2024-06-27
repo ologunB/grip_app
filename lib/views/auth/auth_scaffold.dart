@@ -12,7 +12,6 @@ class AuthScaffold extends StatelessWidget {
     return GestureDetector(
       onTap: Utils.offKeyboard,
       child: Scaffold(
-        extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: true,
         backgroundColor: context.bgColor,
         appBar: AppBar(

@@ -23,7 +23,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
       title: const [
         'Recover Your Password',
         'forgot',
-        'Confirm your email to recover your\npassword',
+        'Confirm your email to\nrecover your password',
       ],
       other: true,
       body: BaseView<AuthViewModel>(

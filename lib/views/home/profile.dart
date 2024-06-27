@@ -53,6 +53,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
 
   @override
   Widget build(BuildContext context) {
+    Color color = context.isLight ? AppColors.secondary : AppColors.grey;
     return BaseView<AuthViewModel>(
       builder: (_, AuthViewModel aModel, __) => BaseView<PostViewModel>(
         onModelReady: (a) => a.getPosts(type: 'recent/${widget.user.id}'),
@@ -60,17 +61,17 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
           child: CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBar(
               transitionBetweenRoutes: false,
-              backgroundColor: Colors.white,
-              border: Border.all(color: Colors.white),
-              leading: const BackButton(color: AppColors.secondary),
+              backgroundColor: context.bgColor,
+              border: Border.all(color: context.bgColor),
+              leading: BackButton(color: context.primary),
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: context.bgColor,
             child: NestedScrollView(
               headerSliverBuilder: (_, __) => [
                 SliverList.list(
                   children: [
                     Container(
-                      color: Colors.white,
+                      color: context.bgColor,
                       child: Column(
                         children: [
                           ClipRRect(
@@ -86,17 +87,17 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                             '${user.username}',
                             fontSize: 18.sp,
                             align: TextAlign.center,
-                            color: AppColors.black,
+                            color: context.textColor,
                             fontWeight: FontWeight.w800,
                           ),
                           SizedBox(height: 4.h),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 38.h),
                             child: HexText(
-                              '${user.categories?.map((e) => e.name).toList().join('# ')}',
+                              '${user.categories?.map((e) => '#${e.name?.toLowerCase()}').toList().join(' ')}',
                               fontSize: 16.sp,
                               align: TextAlign.center,
-                              color: AppColors.black,
+                              color: AppColors.grey2,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -105,27 +106,30 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Column(
-                                  children: [
-                                    HexText(
-                                      'Post',
-                                      fontSize: 16.sp,
-                                      color: AppColors.grey2,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    SizedBox(height: 8.h),
-                                    SizedBox(
-                                      height: 25.h,
-                                      child: pModel.busy
-                                          ? HexProgress(size: 14.sp)
-                                          : HexText(
-                                              '${pModel.posts?.length ?? 0}',
-                                              fontSize: 16.sp,
-                                              color: AppColors.black,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                    ),
-                                  ],
+                                SizedBox(width: 20.h),
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      HexText(
+                                        'Post',
+                                        fontSize: 16.sp,
+                                        color: context.textColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      SizedBox(
+                                        height: 25.h,
+                                        child: pModel.busy
+                                            ? HexProgress(size: 14.sp)
+                                            : HexText(
+                                                '${pModel.posts?.length ?? 0}',
+                                                fontSize: 16.sp,
+                                                color: context.primary,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 Padding(
                                   padding:
@@ -136,22 +140,24 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                                     thickness: 1.h,
                                   ),
                                 ),
-                                Column(
-                                  children: [
-                                    HexText(
-                                      'Followers',
-                                      fontSize: 16.sp,
-                                      color: AppColors.grey2,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    SizedBox(height: 8.h),
-                                    HexText(
-                                      '${user.followersCount ?? 0}',
-                                      fontSize: 16.sp,
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ],
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      HexText(
+                                        'Followers',
+                                        fontSize: 16.sp,
+                                        color: context.textColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      HexText(
+                                        '${user.followersCount ?? 0}',
+                                        fontSize: 16.sp,
+                                        color: context.primary,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 Padding(
                                   padding:
@@ -162,23 +168,26 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                                     thickness: 1.h,
                                   ),
                                 ),
-                                Column(
-                                  children: [
-                                    HexText(
-                                      'Following',
-                                      fontSize: 16.sp,
-                                      color: AppColors.grey2,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    SizedBox(height: 8.h),
-                                    HexText(
-                                      '${user.followingCount ?? 0}',
-                                      fontSize: 16.sp,
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ],
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      HexText(
+                                        'Following',
+                                        fontSize: 16.sp,
+                                        color: context.textColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      HexText(
+                                        '${user.followingCount ?? 0}',
+                                        fontSize: 16.sp,
+                                        color: context.primary,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                SizedBox(width: 20.h),
                               ],
                             ),
                           ),
@@ -203,24 +212,20 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                                     borderRadius: BorderRadius.circular(15.h),
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 50.h, vertical: 13.h),
+                                          horizontal: 24.h, vertical: 8.h),
                                       decoration: BoxDecoration(
                                         borderRadius:
-                                            BorderRadius.circular(10.h),
+                                            BorderRadius.circular(4.h),
                                         border: Border.all(
-                                          width: 1.h,
-                                          color: AppColors.black,
-                                        ),
+                                            width: 1.h, color: color),
                                         color: selected
-                                            ? Colors.transparent
-                                            : AppColors.black,
+                                            ? AppColors.secondary
+                                            : Colors.transparent,
                                       ),
                                       child: HexText(
                                         selected ? 'Following' : 'Follow',
-                                        fontSize: 12.sp,
-                                        color: !selected
-                                            ? Colors.white
-                                            : AppColors.black,
+                                        fontSize: 14.sp,
+                                        color: selected ? Colors.white : color,
                                         align: TextAlign.center,
                                       ),
                                     ),
@@ -241,12 +246,12 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
                   expandedHeight: 40,
                   collapsedHeight: 40,
                   elevation: 0,
-                  backgroundColor: Colors.white,
+                  backgroundColor: context.bgColor,
                   flexibleSpace: TabBar(
                     padding: EdgeInsets.zero,
                     controller: controller,
                     dividerColor: CupertinoColors.systemGrey5,
-                    indicatorColor: AppColors.secondary,
+                    indicatorColor: context.primary,
                     unselectedLabelColor: CupertinoColors.systemGrey,
                     tabs: [item(0), item(1), item(2)],
                   ),
@@ -300,6 +305,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen>
           'm$i${i == controller.index ? 1 : 0}'.png,
           height: 24.h,
           width: 24.h,
+          color: i == controller.index ? context.primary : context.textColor,
         ),
       ),
     );

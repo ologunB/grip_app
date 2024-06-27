@@ -92,14 +92,19 @@ class _SignupScreenState extends State<SignupScreen> {
                         HexText(
                           'I agree to the ',
                           fontSize: 14.sp,
-                          color: AppColors.grey2,
+                          color: context.textColor,
                           fontWeight: FontWeight.normal,
                         ),
-                        HexText(
-                          'terms of use',
-                          fontSize: 14.sp,
-                          color: context.primary,
-                          fontWeight: FontWeight.bold,
+                        InkWell(
+                          onTap: () {
+                            // launchUrlString('urlString');
+                          },
+                          child: HexText(
+                            'terms of use',
+                            fontSize: 14.sp,
+                            color: context.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
