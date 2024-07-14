@@ -1,14 +1,13 @@
-import 'package:dio/dio.dart';
+import '../apis/base_api.dart';
 
 class DioErrorUtil {
   static String handleError(dynamic error) {
-    String errorDescription = '';
+    String errorDescription = 'An error happened';
     if (error is DioException) {
-      errorDescription = 'No internet connection';
-    } else if (error is DioExceptionType) {
-      switch (error) {
+      errorDescription = error.message ?? '';
+      switch (error.type) {
         case DioExceptionType.cancel:
-          errorDescription = 'Request to API server was cancelled';
+          errorDescription = 'Request to server was cancelled';
           break;
         case DioExceptionType.connectionTimeout:
           errorDescription = 'Slow Connection';
@@ -17,24 +16,21 @@ class DioErrorUtil {
           errorDescription = 'No internet connection';
           break;
         case DioExceptionType.receiveTimeout:
-          errorDescription = 'Receive timeout in connection with API server';
+          errorDescription = 'Failed to receive data from server';
           break;
         case DioExceptionType.sendTimeout:
-          errorDescription = 'Send timeout in connection with API server';
+          errorDescription = 'Failed to send data to server';
           break;
-
         case DioExceptionType.badCertificate:
-          errorDescription = 'Bad Certificate';
+          errorDescription = 'Server Bad Certificate';
           break;
         case DioExceptionType.badResponse:
           errorDescription = 'Bad Response';
           break;
         case DioExceptionType.connectionError:
-          errorDescription = 'Connection Error';
+          errorDescription = 'Bad internet connection, failed to connect';
           break;
       }
-    } else if (error is TypeError) {
-      errorDescription = error.stackTrace.toString();
     } else {
       errorDescription = error.toString();
     }

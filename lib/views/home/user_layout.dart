@@ -36,70 +36,79 @@ class _UserLayoutState extends State<UserLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
-        children: screens
-            .map(
-              (e) => Navigator(
-                key: navigatorKeys[screens.indexOf(e)],
-                onGenerateRoute: (settings) =>
-                    MaterialPageRoute(builder: (context) => e),
-              ),
-            )
-            .toList(),
-      ),
-      backgroundColor: context.bgColor,
-      bottomNavigationBar: BottomNavigationBar(
+    return PopScope(
+      canPop: currentIndex == 0,
+      onPopInvoked: (a) {
+        if (currentIndex != 0) {
+          currentIndex = 0;
+          setState(() {});
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: currentIndex,
+          children: screens
+              .map(
+                (e) => Navigator(
+                  key: navigatorKeys[screens.indexOf(e)],
+                  onGenerateRoute: (settings) =>
+                      MaterialPageRoute(builder: (context) => e),
+                ),
+              )
+              .toList(),
+        ),
         backgroundColor: context.bgColor,
-        selectedItemColor: context.primary,
-        unselectedItemColor: const Color(0xffB5B5B5),
-        iconSize: 20.h,
-        selectedLabelStyle: GoogleFonts.inter(
-          fontSize: 12.sp,
-          fontWeight: FontWeight.bold,
-          color: context.primary,
-        ),
-        unselectedLabelStyle: GoogleFonts.inter(
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w400,
-          color: const Color(0xffB5B5B5),
-        ),
-        type: BottomNavigationBarType.fixed,
-        elevation: 0,
-        currentIndex: currentIndex,
-        onTap: (i) {
-          if (i == currentIndex) {
-            navigatorKeys[i].currentState!.popUntil((route) => route.isFirst);
-          } else {
-            setState(() => currentIndex = i);
-          }
-        },
-        items: [0, 1, 3, 4]
-            .map(
-              (a) => BottomNavigationBarItem(
-                icon: Padding(
-                  padding: EdgeInsets.only(top: 12.h),
-                  child: Image.asset(
-                    'h${a}0'.png,
-                    height: 24.h,
-                    width: 24.h,
-                    color: const Color(0xffB5B5B5),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: context.bgColor,
+          selectedItemColor: context.primary,
+          unselectedItemColor: const Color(0xffB5B5B5),
+          iconSize: 20.h,
+          selectedLabelStyle: GoogleFonts.inter(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.bold,
+            color: context.primary,
+          ),
+          unselectedLabelStyle: GoogleFonts.inter(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w400,
+            color: const Color(0xffB5B5B5),
+          ),
+          type: BottomNavigationBarType.fixed,
+          elevation: 0,
+          currentIndex: currentIndex,
+          onTap: (i) {
+            if (i == currentIndex) {
+              navigatorKeys[i].currentState!.popUntil((route) => route.isFirst);
+            } else {
+              setState(() => currentIndex = i);
+            }
+          },
+          items: [0, 1, 3, 4]
+              .map(
+                (a) => BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: EdgeInsets.only(top: 12.h),
+                    child: Image.asset(
+                      'h${a}0'.png,
+                      height: 24.h,
+                      width: 24.h,
+                      color: const Color(0xffB5B5B5),
+                    ),
                   ),
-                ),
-                activeIcon: Padding(
-                  padding: EdgeInsets.only(top: 12.h),
-                  child: Image.asset(
-                    'h${a}1'.png,
-                    height: 24.h,
-                    width: 24.h,
-                    color: context.primary,
+                  activeIcon: Padding(
+                    padding: EdgeInsets.only(top: 12.h),
+                    child: Image.asset(
+                      'h${a}1'.png,
+                      height: 24.h,
+                      width: 24.h,
+                      color: context.primary,
+                    ),
                   ),
+                  label: ['Home', 'Bible', '', 'Explore', 'Profile'][a],
                 ),
-                label: ['Home', 'Bible', '', 'Explore', 'Profile'][a],
-              ),
-            )
-            .toList(),
+              )
+              .toList(),
+        ),
       ),
     );
   }

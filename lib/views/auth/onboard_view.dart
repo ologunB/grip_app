@@ -60,7 +60,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                         SizedBox(height: 100.h),
                         HexText(
                           b[e],
-                          fontSize: 32.sp,
+                          fontSize: 28.sp,
                           color: context.textColor,
                           align: TextAlign.center,
                           fontWeight: FontWeight.w600,
@@ -74,7 +74,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                               'onboard$e'.png,
                               height: 350.h,
                               fit: BoxFit.cover,
-                              width: 225.h,
+                              //width: 225.h,
                             ),
                           ),
                         ),
@@ -212,7 +212,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
 
   List<String> get b => [
         'Discover Stories from\nChristian Creators',
-        'Explore the Bible with\nAmazing Creator',
+        'Explore the Bible with\nAmazing Creators',
         'Experience Bible\nStudy with Creators',
       ];
 }

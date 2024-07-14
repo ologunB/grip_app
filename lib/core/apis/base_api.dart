@@ -17,8 +17,8 @@ class BaseAPI {
     Dio dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        sendTimeout: const Duration(seconds: 50),
-        connectTimeout: const Duration(seconds: 50),
+        // sendTimeout: const Duration(seconds: 50),
+        // connectTimeout: const Duration(seconds: 50),
         receiveTimeout: const Duration(seconds: 50),
         contentType: 'application/json',
         validateStatus: (int? s) => s! < 500,

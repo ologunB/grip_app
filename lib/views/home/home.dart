@@ -166,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: HexText(
                                     ['Recent Posts', 'Recommended'][i],
                                     style: AppThemes.tabHeader.copyWith(
+                                      fontSize: 14.sp,
                                       color: index == i
                                           ? context.primary
                                           : const Color(0xffC6C6C6),

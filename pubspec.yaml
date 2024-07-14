@@ -13,8 +13,8 @@ dependencies:
   cached_network_image: ^3.3.1
   camera: ^0.11.0
   collection:
-  dio: ^5.4.3+1
-  file_picker: ^8.0.5
+  dio: ^5.5.0+1
+  file_picker: ^8.0.6
   flutter_datetime_picker_plus: ^2.2.0
   flutter_screenutil: ^5.9.3
   flutter_spinkit: ^5.2.1
@@ -39,14 +39,14 @@ dependencies:
   provider: ^6.1.2
   scrollable_positioned_list: ^0.3.8
   share_plus: ^9.0.0
-  timeago: ^3.6.1
+  timeago: ^3.7.0
   the_apple_sign_in: ^1.1.1
   url_launcher: ^6.3.0
   watcher: ^1.1.0
   flick_video_player: ^0.8.0
   chewie_audio: ^1.5.0
   audioplayers: ^6.0.0
-  record: ^5.1.1
+  record: ^5.1.2
   video_editor:
     git:
       url: https://github.com/mitch2na/video_editor.git
@@ -57,13 +57,13 @@ dependencies:
       ref: master
   fraction: ^5.0.2
   ffmpeg_kit_flutter_min: ^6.0.3
-  firebase_dynamic_links: ^6.0.1
-  firebase_core: ^3.1.0
+  firebase_dynamic_links: ^6.0.3
+  firebase_core: ^3.2.0
   like_button: ^2.0.5
   device_info_plus: ^10.1.0
 
 dev_dependencies:
-  flutter_native_splash: ^2.4.0
+  flutter_native_splash: ^2.4.1
   flutter_launcher_icons: ^0.13.1
   flutter_lints: ^4.0.0
   build_runner: ^2.4.11
@@ -84,10 +84,10 @@ flutter_native_splash:
   image_dark_ios: assets/images/logo-dark.png
 
   android_12:
-    image: assets/images/logo-light.png
-    icon_background_color: "#CCFD54"
-    image_dark: assets/images/logo-dark.png
-    icon_background_color_dark: "#5441BF"
+    image: assets/images/logo-12-light.png
+    #icon_background_color: "#CCFD54"
+    image_dark: assets/images/logo-12-dark.png
+    #icon_background_color_dark: "#5441BF"
   android: true
   ios: true
   web: true

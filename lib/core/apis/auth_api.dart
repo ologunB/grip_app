@@ -280,7 +280,7 @@ class AuthApi extends BaseAPI {
           throw error(res.data);
       }
     } catch (e) {
-      log(e.runtimeType);
+      log(e);
       String? a;
       // if (e.message.contains('html')) a = 'Image too large';
       throw GripException(DioErrorUtil.handleError(a ?? e));

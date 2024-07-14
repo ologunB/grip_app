@@ -85,9 +85,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       onTap: () async {
                         if (file != null) {
                           String? a = await model.uploadMedia(file!);
+                          if (a == null) return;
                           file = null;
                           imageUrl = a;
-                          setState(() {});
+                          if (mounted) setState(() {});
                         } else {
                           dynamic a = await showModalBottomSheet(
                               backgroundColor: context.sheetBG,

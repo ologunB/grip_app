@@ -87,7 +87,7 @@ class HexField extends StatelessWidget {
           ),
         TextFormField(
           enableInteractiveSelection: enableCopy,
-          cursorColor: AppColors.black,
+          cursorColor: context.textColor,
           cursorWidth: 1.h,
           focusNode: focusNode,
           textCapitalization: TextCapitalization.sentences,

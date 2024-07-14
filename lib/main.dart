@@ -76,9 +76,12 @@ class _AppState extends State<App> {
                   GoogleFonts.interTextTheme(Theme.of(context).textTheme),
               //    colorScheme: const ColorScheme.dark(surface: Colors.transparent),
               primaryColor: AppColors.secondary,
-              tabBarTheme: const TabBarTheme(
-                indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(color: Colors.white),
+              appBarTheme:
+                  const AppBarTheme(surfaceTintColor: Colors.transparent),
+              tabBarTheme: TabBarTheme(
+                indicatorColor: context.primary,
+                indicator: const UnderlineTabIndicator(
+                  borderSide: BorderSide(color: Colors.transparent),
                 ),
               ),
             ),
