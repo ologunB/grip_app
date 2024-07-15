@@ -7,6 +7,107 @@ import '../widgets/hex_text.dart';
 import 'one_version.dart';
 import 'search.dart';
 
+class SelectText extends StatelessWidget {
+  const SelectText({super.key, required this.verse});
+
+  final Verse verse;
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 25.h),
+      physics: const ClampingScrollPhysics(),
+      children: [
+        Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: HexText(
+                'Select Tool',
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                align: TextAlign.center,
+                color: context.textColor,
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  'close'.png,
+                  height: 24.h,
+                  width: 24.h,
+                  color: context.textColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 20.h),
+        Divider(
+          height: 0.h,
+          thickness: 1.h,
+          color: const Color(0xffE6E6E6),
+        ),
+        InkWell(
+          onTap: () async {
+            Navigator.pop(context, 0);
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 20.h),
+            child: HexText(
+              AppCache.getVersesOperation(false).contains(verse.absoluteVerse)
+                  ? 'Remove Highlight'
+                  : 'Highlight',
+              align: TextAlign.center,
+              style: AppThemes.buttonText.copyWith(
+                color: context.textColor,
+              ),
+            ),
+          ),
+        ),
+        Divider(
+          height: 0.h,
+          thickness: 1.h,
+          color: const Color(0xffE6E6E6),
+        ),
+        InkWell(
+          onTap: () async {
+            Navigator.pop(context, 1);
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 20.h),
+            child: HexText(
+              AppCache.getVersesOperation(true).contains(verse.absoluteVerse)
+                  ? 'Remove Underline'
+                  : 'Underline',
+              align: TextAlign.center,
+              style: AppThemes.buttonText.copyWith(
+                color: context.textColor,
+              ),
+            ),
+          ),
+        ),
+        HexButton(
+          'Cancel',
+          buttonColor: AppColors.secondary,
+          height: 48,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w400,
+          textColor: AppColors.white,
+          borderRadius: 10.h,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+  }
+}
+
 class VersesScreen extends StatefulWidget {
   const VersesScreen({super.key, required this.chapter, required this.book});
 
@@ -91,27 +192,47 @@ class _VersesScreenState extends State<VersesScreen> {
     });
   }
 
+  Timer? _timer;
+  String? previousKeyword;
+
+  void searchWithThrottle(String keyword, Function() fn) {
+    _timer?.cancel();
+    if (keyword != previousKeyword) {
+      previousKeyword = keyword;
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        fn();
+        _timer?.cancel();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   String selectedText = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.bgColor,
       appBar: PreferredSize(
-        preferredSize: Size(0, 70.h),
+        preferredSize: Size(0, 80.h),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(top: 16.h),
+            padding: EdgeInsets.only(top: 16.h, bottom: 8.h),
             child: Row(
               children: [
                 SizedBox(width: 25.h),
                 IntrinsicHeight(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: context.isLight
-                          ? const Color(0xffEAEAEA)
-                          : AppColors.darkGrey,
-                      borderRadius: BorderRadius.circular(40.h),
-                    ),
+                        color: context.bgColor,
+                        borderRadius: BorderRadius.circular(8.h),
+                        border: Border.all(
+                          color: context.textColor,
+                        )),
                     child: Row(
                       children: [
                         InkWell(
@@ -157,7 +278,7 @@ class _VersesScreenState extends State<VersesScreen> {
                                 SizedBox(width: 10.h),
                                 Image.asset(
                                   'down'.png,
-                                  height: 32.h,
+                                  height: 24.h,
                                   color: context.primary,
                                 ),
                               ],
@@ -218,72 +339,35 @@ class _VersesScreenState extends State<VersesScreen> {
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
-          GestureDetector(
-            onTap: () {
-              openFont = false;
-              setState(() {});
+          ScrollablePositionedList.builder(
+            itemCount: verses.length,
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, index) {
+              Verse v = verses[index];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 5.h),
+                  if (v.verse == 1) header(v.chapterName),
+                  AnimatedContainer(
+                    padding: EdgeInsets.only(
+                      top: v.verse == 1 ? 5.h : 0.h,
+                      bottom: 5.h,
+                      right: 25.h,
+                      left: 25.h,
+                    ),
+                    duration: const Duration(seconds: 1),
+                    color: (v.verse == verse && v.chapter == chapter)
+                        ? AppColors.secondary.withOpacity(.2)
+                        : null,
+                    child: bibleText(v),
+                  )
+                ],
+              );
             },
-            child: SelectionArea(
-              onSelectionChanged: (value) {
-                selectedText = value?.plainText ?? "";
-              },
-              contextMenuBuilder: (context, editableTextState) {
-                final List<ContextMenuButtonItem> buttonItems =
-                    editableTextState.contextMenuButtonItems;
-                buttonItems.removeWhere(
-                    (e) => e.type == ContextMenuButtonType.selectAll);
-                buttonItems.insert(
-                  0,
-                  ContextMenuButtonItem(
-                    label: 'Share Verse(s)',
-                    onPressed: () {
-                      editableTextState.hideToolbar();
-                      Share.share(selectedText, subject: 'Bible Verse');
-                    },
-                  ),
-                );
-                return AdaptiveTextSelectionToolbar.buttonItems(
-                  anchors: editableTextState.contextMenuAnchors,
-                  buttonItems: buttonItems,
-                );
-              },
-              child: ScrollablePositionedList.builder(
-                itemCount: verses.length,
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  Verse v = verses[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 5.h),
-                      if (v.verse == 1) header(v.chapterName),
-                      AnimatedContainer(
-                        padding: EdgeInsets.only(
-                          top: v.verse == 1 ? 5.h : 0.h,
-                          bottom: 5.h,
-                          right: 25.h,
-                          left: 25.h,
-                        ),
-                        duration: const Duration(seconds: 1),
-                        color: (v.verse == verse && v.chapter == chapter)
-                            ? AppColors.secondary.withOpacity(.2)
-                            : null,
-                        child: HexText(
-                          '${v.verse}. ${v.text}',
-                          key: ValueKey(v.absoluteVerse),
-                          fontSize: bibleFontSize().sp,
-                          color: context.textColor,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      )
-                    ],
-                  );
-                },
-                itemScrollController: itemScrollController,
-                itemPositionsListener: itemPositionsListener,
-              ),
-            ),
+            itemScrollController: itemScrollController,
+            itemPositionsListener: itemPositionsListener,
           ),
           if (currentChapter != null) header(currentChapter!),
           if (openFont)
@@ -355,6 +439,56 @@ class _VersesScreenState extends State<VersesScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Verse? verseClicked;
+  Widget bibleText(Verse v) {
+    return GestureDetector(
+      onTap: () async {
+        openFont = false;
+        verseClicked = v;
+        setState(() {});
+        dynamic a = await showModalBottomSheet(
+          backgroundColor: context.sheetBG,
+          context: context,
+          useRootNavigator: true,
+          isScrollControlled: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(50.h),
+              topLeft: Radius.circular(50.h),
+            ),
+          ),
+          builder: (c) => SelectText(verse: v),
+        );
+        verseClicked = null;
+        setState(() {});
+        if (a == null) return;
+        if (a == 0) {
+          AppCache.setVersesOperation(false, v.absoluteVerse);
+        } else {
+          AppCache.setVersesOperation(true, v.absoluteVerse);
+        }
+        setState(() {});
+      },
+      child: Container(
+        color: AppCache.getVersesOperation(false).contains(v.absoluteVerse)
+            ? AppColors.primary30
+            : null,
+        child: HexText(
+          '${v.verse}. ${v.text}',
+          key: ValueKey(v.absoluteVerse),
+          fontSize: bibleFontSize().sp,
+          color: context.textColor,
+          fontWeight: FontWeight.w400,
+          otherDecor: verseClicked == v,
+          decoration: verseClicked == v ||
+                  AppCache.getVersesOperation(true).contains(v.absoluteVerse)
+              ? TextDecoration.underline
+              : null,
+        ),
+      ),
     );
   }
 }

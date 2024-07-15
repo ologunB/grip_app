@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcelon/views/widgets/colors.dart';
 
 export 'dart:async';
 export 'dart:convert';
@@ -51,7 +52,7 @@ class HexText extends StatelessWidget {
     this.overflow,
     this.decoration,
     this.fontWeight,
-    this.blur = false,
+    this.otherDecor = false,
     this.fontSize = 14,
     this.fontFamily,
     this.fontStyle,
@@ -70,37 +71,47 @@ class HexText extends StatelessWidget {
   final TextDecoration? decoration;
   final FontStyle? fontStyle;
   final FontWeight? fontWeight;
-  final bool blur;
+  final bool otherDecor;
   final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        textAlign: align,
-        maxLines: maxLines,
-        overflow: overflow,
-        softWrap: true,
-        style: style ??
-            (fontFamily != null
-                ? TextStyle(
-                    fontFamily: fontFamily,
-                    color: color,
-                    letterSpacing: letterSpacing,
-                    fontSize: fontSize,
-                    height: height,
-                    fontStyle: fontStyle,
-                    fontWeight: fontWeight,
-                    decoration: decoration,
-                  )
-                : GoogleFonts.inter(
-                    color: color,
-                    letterSpacing: letterSpacing,
-                    fontSize: fontSize,
-                    height: height,
-                    fontStyle: fontStyle,
-                    fontWeight: fontWeight,
-                    decoration: decoration,
-                  )));
+    return Text(
+      text,
+      textAlign: align,
+      maxLines: maxLines,
+      overflow: overflow,
+      softWrap: true,
+      style: style ??
+          (fontFamily != null
+              ? TextStyle(
+                  fontFamily: fontFamily,
+                  color: color,
+                  letterSpacing: letterSpacing,
+                  fontSize: fontSize,
+                  height: height,
+                  fontStyle: fontStyle,
+                  fontWeight: fontWeight,
+                  decoration: decoration,
+                  decorationColor: AppColors.grey,
+                  decorationStyle: TextDecorationStyle.dashed,
+                  decorationThickness: 2,
+                )
+              : GoogleFonts.inter(
+                  color: color,
+                  letterSpacing: letterSpacing,
+                  fontSize: fontSize,
+                  height: height,
+                  fontStyle: fontStyle,
+                  fontWeight: fontWeight,
+                  decoration: decoration,
+                  decorationColor:
+                      !otherDecor ? context.textColor : AppColors.grey,
+                  decorationStyle:
+                      !otherDecor ? null : TextDecorationStyle.dashed,
+                  decorationThickness: 2,
+                )),
+    );
   }
 }
 

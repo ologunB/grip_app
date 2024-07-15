@@ -112,11 +112,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   };
                   bool a =
                       await pModel.createPost(data, [widget.file!, coverPic!]);
-                  if (a) {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    successSnackBar(context, 'Post created successfully');
-                  }
+                  if (!a) return;
+                  if (mounted) Navigator.pop(context);
+                  if (mounted) Navigator.pop(context);
+                  successSnackBar(context, 'Post created successfully');
                 },
               ),
             ),

@@ -16,6 +16,8 @@ class AppCache {
   static const String bibleFontKey = 'bibleFontKey';
   static const String darkModeKey = 'darkModeKey';
   static const String bibleWeightKey = 'bibleWeighttKey';
+  static const String highlightKey = 'highlightKey';
+  static const String underlineKey = 'underlineKey';
 
   static Future<void> init() async {
     await Hive.initFlutter();
@@ -50,6 +52,22 @@ class AppCache {
     await _defaultBox.put(darkModeKey, mode);
   }
 
+  static List<int> getVersesOperation(bool underline) {
+    return _defaultBox
+        .get(underline ? underlineKey : highlightKey, defaultValue: <int>[]);
+  }
+
+  static Future<void> setVersesOperation(bool underline, int a) async {
+    List<int> list = getVersesOperation(underline);
+    print(list.contains(a));
+    if (list.contains(a)) {
+      list.remove(a);
+    } else {
+      list.add(a);
+    }
+    _defaultBox.put(underline ? underlineKey : highlightKey, list);
+  }
+
   static double getBibleFont() {
     return _defaultBox.get(bibleFontKey, defaultValue: 0.4);
   }
@@ -82,8 +100,8 @@ class AppCache {
     await _userBox.clear();
   }
 
-  static void clean(String key) {
-    _userBox.delete(key);
+  static void clean(bool user, String key) {
+    user ? _userBox.delete(key) : _defaultBox.delete(key);
   }
 
   static String? get(String key) {

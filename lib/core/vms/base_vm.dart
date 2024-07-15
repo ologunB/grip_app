@@ -28,6 +28,8 @@ class BaseModel extends ChangeNotifier {
   BuildContext get vmContext => AppNavigator.navKey.currentContext!;
 
   void showVMSnackbar(String title, {bool err = false}) {
-    err ? errorSnackBar(vmContext, title) : successSnackBar(vmContext, title);
+    if (vmContext.mounted) {
+      err ? errorSnackBar(vmContext, title) : successSnackBar(vmContext, title);
+    }
   }
 }
