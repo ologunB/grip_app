@@ -164,6 +164,7 @@ class AuthViewModel extends BaseModel {
       user?.user = m;
       AppCache.setUser(user!);
       setBusy(false);
+      if (a.isNotEmpty) showVMSnackbar('Profile Successfully Updated');
       return true;
     } on GripException catch (e) {
       error = e.message;
@@ -231,6 +232,7 @@ class AuthViewModel extends BaseModel {
       user?.user?.image = link;
       AppCache.setUser(user!);
       setBusy(false);
+      showVMSnackbar('Profile Picture Successfully Updated');
       return link;
     } on GripException catch (e) {
       error = e.message;

@@ -15,7 +15,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   TextEditingController oldPassword = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController cPassword = TextEditingController();
-  bool hideText = true;
+  bool hideText1 = true;
+  bool hideText2 = true;
+  bool hideText3 = true;
 
   bool autoValidate = false;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -79,13 +81,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 textInputType: TextInputType.text,
                 textInputAction: TextInputAction.done,
                 controller: oldPassword,
-                obscureText: hideText,
+                obscureText: hideText1,
                 suffix: GripVisibility(
                   onTap: () {
-                    hideText = !hideText;
+                    hideText1 = !hideText1;
                     setState(() {});
                   },
-                  hideText: hideText,
+                  hideText: hideText1,
                 ),
                 validator: (a) {
                   return Utils.isValidPassword(a);
@@ -97,13 +99,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 textInputType: TextInputType.text,
                 textInputAction: TextInputAction.done,
                 controller: password,
-                obscureText: hideText,
+                obscureText: hideText2,
                 suffix: GripVisibility(
                   onTap: () {
-                    hideText = !hideText;
+                    hideText2 = !hideText2;
                     setState(() {});
                   },
-                  hideText: hideText,
+                  hideText: hideText2,
                 ),
                 validator: (a) {
                   return Utils.isValidPassword(a);
@@ -115,13 +117,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 textInputType: TextInputType.text,
                 textInputAction: TextInputAction.done,
                 controller: cPassword,
-                obscureText: hideText,
+                obscureText: hideText3,
                 suffix: GripVisibility(
                   onTap: () {
-                    hideText = !hideText;
+                    hideText3 = !hideText3;
                     setState(() {});
                   },
-                  hideText: hideText,
+                  hideText: hideText3,
                 ),
                 validator: (a) {
                   if (a!.isEmpty) {

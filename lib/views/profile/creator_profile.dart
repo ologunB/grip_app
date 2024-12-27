@@ -1,6 +1,7 @@
 import '../../core/models/post_model.dart';
 import '../../core/storage/local_storage.dart';
 import '../../core/vms/post_vm.dart';
+import '../../core/vms/settings_vm.dart';
 import '../bible/search.dart';
 import '../home/post_details.dart';
 import '../profile/all_versions.dart';
@@ -26,7 +27,18 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
   @override
   void initState() {
     controller = TabController(length: 3, vsync: this);
+    sSub = settingsVM.outUsers.listen((event) {
+      setState(() {});
+    });
     super.initState();
+  }
+
+  StreamSubscription? sSub;
+
+  @override
+  void dispose() {
+    sSub?.cancel();
+    super.dispose();
   }
 
   @override

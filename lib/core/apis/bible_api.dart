@@ -17,7 +17,7 @@ class BibleApi extends BaseAPI {
           if (percent > 99) present.remove(abbr);
           // if (percent % 10 == 0) log('$abbr is $percent%');
           if (percent < 5) AppCache.setBibleWeights(abbr, b);
-          if (percent == 100) AppCache.setDefaultBible(abbr);
+          // if (percent == 100) AppCache.setDefaultBible(abbr);
         },
       );
 

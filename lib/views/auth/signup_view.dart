@@ -41,10 +41,14 @@ class _SignupScreenState extends State<SignupScreen> {
               HexField(
                 hintText: 'Username',
                 textInputType: TextInputType.text,
+                maxLength: 20,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9_]')),
+                ],
                 textInputAction: TextInputAction.next,
                 controller: name,
                 validator: (a) {
-                  return Utils.isValidName(a, type: 'Username', length: 4);
+                  return Utils.isValidName(a, type: 'Username', length: 3);
                 },
               ),
               SizedBox(height: 20.h),
@@ -74,42 +78,68 @@ class _SignupScreenState extends State<SignupScreen> {
                 },
               ),
               SizedBox(height: 30.h),
-              Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      tick = tick == 0 ? 1 : 0;
-                      setState(() {});
-                    },
-                    child: Row(
-                      children: [
-                        Image.asset(
+              InkWell(
+                onTap: () {
+                  tick = tick == 0 ? 1 : 0;
+                  setState(() {});
+                },
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      WidgetSpan(
+                        child: Image.asset(
                           'tick$tick'.png,
                           height: 24.h,
                           color: context.primary,
                         ),
-                        SizedBox(width: 16.h),
-                        HexText(
-                          'I agree to the ',
+                      ),
+                      WidgetSpan(
+                        child: HexText(
+                          '  I agree to the ',
                           fontSize: 14.sp,
                           color: context.textColor,
                           fontWeight: FontWeight.normal,
                         ),
-                        InkWell(
+                      ),
+                      WidgetSpan(
+                        child: InkWell(
                           onTap: () {
-                            // launchUrlString('urlString');
+                            launchUrlString(
+                                'https://grip-app.netlify.app/terms-condition');
                           },
                           child: HexText(
-                            'terms of use',
+                            'terms and conditions',
                             fontSize: 14.sp,
                             color: context.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      WidgetSpan(
+                        child: HexText(
+                          ' and ',
+                          fontSize: 14.sp,
+                          color: context.textColor,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      WidgetSpan(
+                        child: InkWell(
+                          onTap: () {
+                            launchUrlString(
+                                'https://www.freeprivacypolicy.com/live/9b92505d-34cc-4ada-9fa1-1799fa39b89c');
+                          },
+                          child: HexText(
+                            'privacy policy',
+                            fontSize: 14.sp,
+                            color: context.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
               SizedBox(height: 30.h),
               HexButton(

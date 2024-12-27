@@ -27,7 +27,7 @@ class _OTPScreenState extends State<OTPScreen> {
       title: const [
         'Verify your email',
         'done',
-        'Enter the Verification code\nyou just received',
+        'Enter OTP\nyou just received',
       ],
       other: true,
       body: BaseView<AuthViewModel>(

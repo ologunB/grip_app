@@ -65,30 +65,30 @@ class _AppState extends State<App> {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, builder) => MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Grip',
-            theme: ThemeData(
-              brightness: AppCache.getDarkMode() == 'dark'
-                  ? Brightness.dark
-                  : Brightness.light,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-              textTheme:
-                  GoogleFonts.interTextTheme(Theme.of(context).textTheme),
-              //    colorScheme: const ColorScheme.dark(surface: Colors.transparent),
-              primaryColor: AppColors.secondary,
-              appBarTheme:
-                  const AppBarTheme(surfaceTintColor: Colors.transparent),
-              tabBarTheme: TabBarTheme(
-                indicatorColor: context.primary,
-                indicator: const UnderlineTabIndicator(
-                  borderSide: BorderSide(color: Colors.transparent),
-                ),
+          debugShowCheckedModeBanner: false,
+          title: 'Grip',
+          theme: ThemeData(
+            brightness: AppCache.getDarkMode() == 'dark'
+                ? Brightness.dark
+                : Brightness.light,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme),
+            //    colorScheme: const ColorScheme.dark(surface: Colors.transparent),
+            primaryColor: AppColors.secondary,
+            appBarTheme:
+                const AppBarTheme(surfaceTintColor: Colors.transparent),
+            tabBarTheme: TabBarTheme(
+              indicatorColor: context.primary,
+              indicator: const UnderlineTabIndicator(
+                borderSide: BorderSide(color: Colors.transparent),
               ),
             ),
-            navigatorKey: AppNavigator.navKey,
-            home: AppCache.getUser() == null
-                ? const OnboardScreen()
-                : const UserLayout()),
+          ),
+          navigatorKey: AppNavigator.navKey,
+          home: AppCache.getUser() == null
+              ? const OnboardScreen()
+              : const UserLayout(),
+        ),
       ),
     );
   }

@@ -171,6 +171,7 @@ class _VersesScreenState extends State<VersesScreen> {
     oldChapter = verses[li.first.index].chapterName;
     if (oldChapter != currentChapter) {
       currentChapter = oldChapter;
+      book = currentChapter?.split(' ').first ?? book;
       setState(() {});
     }
   }
@@ -431,7 +432,8 @@ class _VersesScreenState extends State<VersesScreen> {
             borderRadius: BorderRadius.circular(8.h),
           ),
           child: HexText(
-            a,
+            a.replaceFirstMapped(
+                RegExp(r'(\d+)$'), (match) => 'Chapter ${match.group(1)}'),
             fontSize: bibleFontSize().sp,
             color: context.textColor,
             align: TextAlign.center,

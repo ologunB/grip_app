@@ -1,6 +1,8 @@
 import 'package:hexcelon/core/apis/base_api.dart';
 import 'package:hexcelon/views/auth/follow_topics_view.dart';
 
+import '../../core/vms/auth_vm.dart';
+import '../../core/vms/settings_vm.dart';
 import '../auth/login_view.dart';
 import '../widgets/hex_text.dart';
 import '../widgets/user_image.dart';
@@ -17,84 +19,72 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  StreamSubscription? sSub;
+
+  @override
+  void initState() {
+    sSub = settingsVM.outUsers.listen((event) {
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    sSub?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.bgColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              UserImage(
-                size: 107.h,
-                radius: 107.h,
-                imageUrl: AppCache.getUser()?.user?.image,
-              ),
-              SizedBox(height: 8.h),
-              HexText(
-                '@${AppCache.getUser()?.user?.username}',
-                fontSize: 16.sp,
-                align: TextAlign.center,
-                color: context.primary,
-                fontWeight: FontWeight.bold,
-              ),
-              SizedBox(height: 21.h),
-              IntrinsicHeight(
-                child: Row(
+      body: BaseView<AuthViewModel>(
+        builder: (_, AuthViewModel model, __) => RefreshIndicator(
+          onRefresh: () async {
+            await model.update({});
+            return;
+          },
+          color: context.primary,
+          child: SafeArea(
+            child: ListView(
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            HexText(
-                              '${AppCache.getUser()?.user?.followingCount}',
-                              fontSize: 16.sp,
-                              color: context.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            HexText(
-                              ' Creators',
-                              fontSize: 16.sp,
-                              color: context.textColor,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        HexText(
-                          'Following',
-                          fontSize: 16.sp,
-                          color: AppColors.grey2,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ],
+                    UserImage(
+                      size: 107.h,
+                      radius: 107.h,
+                      imageUrl: AppCache.getUser()?.user?.image,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 60.h),
-                      child: VerticalDivider(
-                        color: const Color(0xffA0A0A0),
-                        width: 0,
-                        thickness: 1.h,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        await push(context, const FollowTopicsScreen());
-                        setState(() {});
-                      },
-                      child: Column(
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                HexText(
+                  '@${AppCache.getUser()?.user?.username}',
+                  fontSize: 16.sp,
+                  align: TextAlign.center,
+                  color: context.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+                SizedBox(height: 21.h),
+                IntrinsicHeight(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
                         children: [
                           Row(
                             children: [
                               HexText(
-                                '${AppCache.getUser()?.user?.categories?.length}',
+                                '${AppCache.getUser()?.user?.followingCount}',
                                 fontSize: 16.sp,
                                 color: context.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                               HexText(
-                                ' Topics',
+                                ' Creators',
                                 fontSize: 16.sp,
                                 color: context.textColor,
                                 fontWeight: FontWeight.normal,
@@ -110,92 +100,133 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 56.h),
-              ListView.separated(
-                separatorBuilder: (_, __) => Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25.h),
-                  child: Divider(
-                    height: 0.h,
-                    thickness: 1.h,
-                    color: const Color(0xffE6E6E6),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 60.h),
+                        child: VerticalDivider(
+                          color: const Color(0xffA0A0A0),
+                          width: 0,
+                          thickness: 1.h,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          await push(context, const FollowTopicsScreen());
+                          setState(() {});
+                        },
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                HexText(
+                                  '${AppCache.getUser()?.user?.categories?.length}',
+                                  fontSize: 16.sp,
+                                  color: context.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                HexText(
+                                  ' Topics',
+                                  fontSize: 16.sp,
+                                  color: context.textColor,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.h),
+                            HexText(
+                              'Following',
+                              fontSize: 16.sp,
+                              color: AppColors.grey2,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
-                padding: EdgeInsets.zero,
-                itemCount: all.length,
-                itemBuilder: (c, i) {
-                  return InkWell(
-                    onTap: () async {
-                      if (i == 3) {
-                        AppCache.setDarkMode();
-                        setState(() {});
-                      } else if (i == 5) {
-                        showModalBottomSheet(
-                          backgroundColor: context.sheetBG,
-                          context: context,
-                          useRootNavigator: true,
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(50.h),
-                              topLeft: Radius.circular(50.h),
-                            ),
-                          ),
-                          builder: (c) {
-                            return const LogoutDialog();
-                          },
-                        );
-                      } else {
-                        await push(context, all[i].last);
-                        setState(() {});
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: i == 3 ? 15 : 25.h,
-                        horizontal: 25.h,
-                      ),
-                      child: Row(
-                        children: [
-                          Image.asset('p${all[i][1]}'.png, height: 24.h),
-                          SizedBox(width: 30.h),
-                          HexText(
-                            all[i].first,
-                            fontSize: 16.sp,
-                            color: all[i].first == 'Log out'
-                                ? AppColors.red
-                                : context.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          const Spacer(),
-                          SizedBox(width: 8.h),
-                          i == 5
-                              ? const SizedBox()
-                              : i == 3
-                                  ? Switch.adaptive(
-                                      value: AppCache.getDarkMode() == 'dark',
-                                      onChanged: (a) {
-                                        AppCache.setDarkMode();
-                                        setState(() {});
-                                      },
-                                    )
-                                  : Image.asset(
-                                      'go'.png,
-                                      height: 24.h,
-                                      color: context.primary,
-                                    )
-                        ],
-                      ),
+                SizedBox(height: 56.h),
+                ListView.separated(
+                  separatorBuilder: (_, __) => Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 25.h),
+                    child: Divider(
+                      height: 0.h,
+                      thickness: 1.h,
+                      color: const Color(0xffE6E6E6),
                     ),
-                  );
-                },
-              ),
-            ],
+                  ),
+                  shrinkWrap: true,
+                  physics: const ClampingScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemCount: all.length,
+                  itemBuilder: (c, i) {
+                    return InkWell(
+                      onTap: () async {
+                        if (i == 3) {
+                          AppCache.setDarkMode();
+                          setState(() {});
+                        } else if (i == 5) {
+                          showModalBottomSheet(
+                            backgroundColor: context.sheetBG,
+                            context: context,
+                            useRootNavigator: true,
+                            isScrollControlled: true,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(50.h),
+                                topLeft: Radius.circular(50.h),
+                              ),
+                            ),
+                            builder: (c) {
+                              return const LogoutDialog();
+                            },
+                          );
+                        } else {
+                          await push(context, all[i].last);
+                          setState(() {});
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: i == 3 ? 15 : 25.h,
+                          horizontal: 25.h,
+                        ),
+                        child: Row(
+                          children: [
+                            Image.asset('p${all[i][1]}'.png, height: 24.h),
+                            SizedBox(width: 30.h),
+                            HexText(
+                              all[i].first,
+                              fontSize: 16.sp,
+                              color: all[i].first == 'Log out'
+                                  ? AppColors.red
+                                  : context.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            const Spacer(),
+                            SizedBox(width: 8.h),
+                            i == 5
+                                ? const SizedBox()
+                                : i == 3
+                                    ? Switch.adaptive(
+                                        value: AppCache.getDarkMode() == 'dark',
+                                        onChanged: (a) {
+                                          AppCache.setDarkMode();
+                                          setState(() {});
+                                        },
+                                      )
+                                    : Image.asset(
+                                        'go'.png,
+                                        height: 24.h,
+                                        color: context.primary,
+                                      )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
